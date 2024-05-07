@@ -955,7 +955,9 @@ namespace chen {
 发送一次WM_KEYDOWN及一次WM_KEYUP结果出现了2次按键，原因是最后一个参数lParam不规范导致，
 此参数0到15位为该键在键盘上的重复次数，经常设为1，即按键1次；
 16至23位为键盘的扫描码，通过API函数MapVirtualKey可以得到；24位为扩展键，
-即某些右ALT和CTRL；29一般为0；30位-[原状态]已按下为1否则0（KEYUP要设为1）；31位-[状态切换]（KEYDOWN设为0，KEYUP要设为1）。
+即某些右ALT和CTRL；29一般为0；30位-[原状态]已按下为1否则0（KEYUP要设为1）；31位-[状态切换]（KEYDOWN设为0，KEYUP要设为1）。
+
+
 资料显示第30位对于keydown在和shift等结合的时候通常要设置为1，未经验证。
 
 
@@ -1084,7 +1086,9 @@ namespace chen {
 			/*
 			这个 KeyDown与 KeyUP 是有讲究哈 ^_^
 			发送1次按键结果出现2次按键的情况
-发送一次WM_KEYDOWN及一次WM_KEYUP结果出现了2次按键，原因是最后一个参数lParam不规范导致，此参数0到15位为该键在键盘上的重复次数，经常设为1，即按键1次；16至23位为键盘的扫描码，通过API函数MapVirtualKey可以得到；24位为扩展键，即某些右ALT和CTRL；29一般为0；30位-[原状态]已按下为1否则0（KEYUP要设为1）；31位-[状态切换]（KEYDOWN设为0，KEYUP要设为1）。
+发送一次WM_KEYDOWN及一次WM_KEYUP结果出现了2次按键，原因是最后一个参数lParam不规范导致，此参数0到15位为该键在键盘上的重复次数，经常设为1，即按键1次；16至23位为键盘的扫描码，通过API函数MapVirtualKey可以得到；24位为扩展键，即某些右ALT和CTRL；29一般为0；30位-[原状态]已按下为1否则0（KEYUP要设为1）；31位-[状态切换]（KEYDOWN设为0，KEYUP要设为1）。
+
+
 资料显示第30位对于keydown在和shift等结合的时候通常要设置为1，未经验证。
 
 
@@ -1860,7 +1864,7 @@ namespace chen {
 			POINT CursorPoint;
 			CursorPoint.x = PosX;
 			CursorPoint.y = PosY;
-			::ClientToScreen(mwin, &CursorPoint);
+			//::ClientToScreen(mwin, &CursorPoint);
 			//::SetFocus(mwin);
 			//INPUT input[4];
 			//hwndConsole = GetConsoleWindow();
@@ -1925,7 +1929,9 @@ namespace chen {
 			/*raw.header.dwSize = sizeof(raw);
 			raw.header.dwType = RIM_TYPEMOUSE;
 			raw.header.wParam = MAKEWPARAM(DeltaX, DeltaY);*/ //(wParam & 0xff =0 => 0) 
-			//raw.header.hDevice = hDevice;
+			//raw.header.hDevice = hDevice;
+
+
 			//data 
 			//raw.data.mouse.lLastX = DeltaX;
 			//raw.data.mouse.lLastY = DeltaY;
@@ -1935,9 +1941,11 @@ namespace chen {
 			//raw.data.keyboard.MakeCode = static_cast<WORD>(MapVirtualKeyEx(c, MAPVK_VK_TO_VSC, GetKeyboardLayout(0)));
 			//raw.data.keyboard.Message = WM_KEYDOWN;
 			//raw.data.keyboard.VKey = VkKeyScanEx(c, GetKeyboardLayout(0));
-			//raw.data.keyboard.ExtraInformation = 0;   //??? 			//HGLOBAL raw_input_ptr = ::GlobalAlloc(GHND, sizeof(RAWINPUT));
+			//raw.data.keyboard.ExtraInformation = 0;   //??? 
+			//HGLOBAL raw_input_ptr = ::GlobalAlloc(GHND, sizeof(RAWINPUT));
 			// *pRaw = reinterpret_cast<RAWINPUT*>(::GlobalLock(raw_input_ptr));
 			//if (pRaw)
+			if (false)
 			{
 				//char c = 'W';
 			//header
@@ -1972,12 +1980,13 @@ namespace chen {
 				}
 				//::GlobalUnlock(raw_input_ptr);
 
-				//UINT dataSz{ 0 };				 MOUSE_INPUT(mwin);
+				//UINT dataSz{ 0 };
+				 MOUSE_INPUT(mwin);
 				//Send the message ///*Raw input handle*/
 				MESSAGE(mwin, WM_INPUT, (WPARAM)RIM_INPUT, MAKELPARAM(CursorPoint.x, CursorPoint.y));  //TODO: Handle to raw input 
 			}
 			
-			MOUSE_INPUT(mwin);
+			//MOUSE_INPUT(mwin);
 			MESSAGE(mwin, WM_MOUSEMOVE /*WM_MOUSEMOVE*//*WM_INPUT 、 WM_NCMOUSEMOVE UE4 move dug TODO@chensong 20220611 */ /*WM_MOUSEMOVE*/, MAKEWPARAM(DeltaX, DeltaY) , MAKELPARAM(PosX, PosY));
 			//MESSAGE(mwin, WM_INPUT /*WM_MOUSEMOVE*//*WM_INPUT 、 WM_NCMOUSEMOVE UE4 move dug TODO@chensong 20220611 */ /*WM_MOUSEMOVE*/, MAKEWPARAM(DeltaX, DeltaY), MAKELPARAM(CursorPoint.x, CursorPoint.y));
 
@@ -2143,7 +2152,9 @@ namespace chen {
 			/*raw.header.dwSize = sizeof(raw);
 			raw.header.dwType = RIM_TYPEMOUSE;
 			raw.header.wParam = MAKEWPARAM(DeltaX, DeltaY);*/ //(wParam & 0xff =0 => 0) 
-			//raw.header.hDevice = hDevice;
+			//raw.header.hDevice = hDevice;
+
+
 			//data 
 			//raw.data.mouse.lLastX = DeltaX;
 			//raw.data.mouse.lLastY = DeltaY;
@@ -2153,7 +2164,8 @@ namespace chen {
 			//raw.data.keyboard.MakeCode = static_cast<WORD>(MapVirtualKeyEx(c, MAPVK_VK_TO_VSC, GetKeyboardLayout(0)));
 			//raw.data.keyboard.Message = WM_KEYDOWN;
 			//raw.data.keyboard.VKey = VkKeyScanEx(c, GetKeyboardLayout(0));
-			//raw.data.keyboard.ExtraInformation = 0;   //??? 			//HGLOBAL raw_input_ptr = ::GlobalAlloc(GHND, sizeof(RAWINPUT));
+			//raw.data.keyboard.ExtraInformation = 0;   //??? 
+			//HGLOBAL raw_input_ptr = ::GlobalAlloc(GHND, sizeof(RAWINPUT));
 			// *pRaw = reinterpret_cast<RAWINPUT*>(::GlobalLock(raw_input_ptr));
 			//if (pRaw)
 			{
@@ -2190,7 +2202,8 @@ namespace chen {
 				}
 				//::GlobalUnlock(raw_input_ptr);
 
-				//UINT dataSz{ 0 };				MOUSE_INPUT(mwin);
+				//UINT dataSz{ 0 };
+				MOUSE_INPUT(mwin);
 				//Send the message ///*Raw input handle*/
 				MESSAGE(mwin, WM_INPUT, (WPARAM)RIM_INPUT, MAKELPARAM(CursorPoint.x, CursorPoint.y));  //TODO: Handle to raw input 
 			}
