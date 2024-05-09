@@ -915,6 +915,11 @@ namespace chen {
 		KeyDownEvent.SetKeyDown(KeyCode, Repeat != 0);
 		NORMAL_LOG("OnKeyDown==KeyCode = %u, Repeat = %u", KeyCode, Repeat);
 		#if defined(_MSC_VER)
+		// TODO@chensong 20240509  win11电脑按下win键 只发送一个键盘事件
+		if (KeyCode == 91)
+		{
+			return true;
+		}
 		if (KeyCode < 58 && KeyCode > 47 && !g_ctrl)
 		{
 			return true;
@@ -1157,6 +1162,10 @@ namespace chen {
 		KeyUpEvent.SetKeyUp(KeyCode);
 		NORMAL_LOG("OnKeyUp==KeyCode = %u", KeyCode);
 		#if defined(_MSC_VER)
+		if (KeyCode == 91)
+		{
+			return true;
+		}
 		if (KeyCode < 58 && KeyCode > 47 && !g_ctrl)
 		{
 			return true;
@@ -1365,6 +1374,10 @@ namespace chen {
 			Character = 109;
 		}
 #if defined(_MSC_VER)
+		if (Character == 91)
+		{
+			return true;
+		}
 		WINDOW_MAIN();
 
 

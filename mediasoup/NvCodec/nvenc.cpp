@@ -384,7 +384,7 @@ static bool nvenc_init(void *nvenc_data, void *encoder_config)
 	initializeParams.encodeHeight = enc->height;
 	initializeParams.version = NV_ENC_INITIALIZE_PARAMS_VER;
 	initializeParams.encodeGUID = NV_ENC_CODEC_H264_GUID;
-	initializeParams.presetGUID = NV_ENC_PRESET_P4_GUID;
+	initializeParams.presetGUID = NV_ENC_PRESET_P5_GUID;
 	 
 	initializeParams.frameRateDen = 1;
 	initializeParams.enablePTD = 1;
@@ -422,17 +422,29 @@ static bool nvenc_init(void *nvenc_data, void *encoder_config)
 #define DEFAULT_BITRATE (1000000u)
 	uint32_t const MinQP = static_cast<uint32_t>(1);
 	uint32_t const MaxQP = static_cast<uint32_t>(51);
-	RateControlParams.rateControlMode = g_cfg.get_uint32(ECI_EnableEncoderCbr) > 0 ?  NV_ENC_PARAMS_RC_CBR: NV_ENC_PARAMS_RC_VBR; // NV_ENC_PARAMS_RC_VBR; // NV_ENC_PARAMS_RC_CBR_LOWDELAY_HQ
+	// = NV_ENC_PARAMS_RC_CONSTQP;// g_cfg.get_uint32(ECI_EnableEncoderCbr) > 0 ? NV_ENC_PARAMS_RC_CBR : NV_ENC_PARAMS_RC_VBR; // NV_ENC_PARAMS_RC_VBR; // NV_ENC_PARAMS_RC_CBR_LOWDELAY_HQ
+	if (g_cfg.get_uint32(ECI_EnableEncoderCbr) > 1)
+	{
+		RateControlParams.rateControlMode = NV_ENC_PARAMS_RC_CONSTQP;
+	}
+	else if (g_cfg.get_uint32(ECI_EnableEncoderCbr) == 1)
+	{
+		RateControlParams.rateControlMode = NV_ENC_PARAMS_RC_CBR;
+	}
+	else
+	{
+		RateControlParams.rateControlMode = NV_ENC_PARAMS_RC_VBR;
+	}
 	RateControlParams.averageBitRate = g_cfg.get_uint32(ECI_RtcAvgRate) * 1000;// DEFAULT_BITRATE;
 	RateControlParams.maxBitRate = g_cfg.get_uint32(ECI_RtcMaxRate) * 1000;// DEFAULT_BITRATE; // Not used for CBR
 	RateControlParams.multiPass = NV_ENC_TWO_PASS_FULL_RESOLUTION;
-	if (g_cfg.get_uint32(ECI_EnableEncoderCbr) <= 0)
+	if (g_cfg.get_uint32(ECI_EnableEncoderCbr) == 0)
 	{
 		RateControlParams.minQP = { MinQP, MinQP, MinQP };
 		RateControlParams.maxQP = { MaxQP, MaxQP, MaxQP };
 		RateControlParams.enableMinQP = 1;
-		RateControlParams.enableMaxQP = 1;
-	}
+		RateControlParams.enableMaxQP = 1; 
+	}   
 
 	// If we have QP ranges turned on use the last encoded QP to guide the max QP for an i-frame, so the i-frame doesn't look too blocky
 	// Note: this does nothing if we have i-frames turned off.
@@ -677,10 +689,11 @@ int nvenc_set_bitrate(void *nvenc_data, uint32_t bitrate_bps)
 	}
 	using namespace chen;
 	NORMAL_EX_LOG("------bitrate_bps = %u----->", bitrate_bps);
-	/*if (g_cfg.get_uint32(ECI_EnableEncoderCbr) > 0)
+	if (g_cfg.get_uint32(ECI_EnableEncoderCbr) > 0)
 	{ 
 		return 0;
 	}
+	/*
 	if ((bitrate_bps / 1000) > g_cfg.get_uint32(ECI_RtcMaxRate))
 	{
 		NORMAL_EX_LOG("[bitrate_bps = %u ]too big [defalut max bitrate = %u]", bitrate_bps/ 1000, g_cfg.get_uint32(ECI_RtcMaxRate));

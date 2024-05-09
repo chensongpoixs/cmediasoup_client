@@ -22,12 +22,15 @@ purpose:		nvenc
 安静，淡然，代码就是我的一切，写代码就是我本心回归的最好方式，我还没找到本心猎手，但我相信，顺着这个线索，我一定能顺藤摸瓜，把他揪出来。
 ËÙÂÊ¿ØÖÆ
 
-NVENC Ö§³Ö¶àÖÖËÙÂÊ¿ØÖÆÄ£Ê½£¬²¢Í¨¹ý½á¹¹NV_ENC_INITIALIZE_PARAMS::encodeConfig::rcParamsÌá¹©¶ÔÓëËÙÂÊ¿ØÖÆËã·¨Ïà¹ØµÄ¸÷ÖÖ²ÎÊýµÄ¿ØÖÆ . ËÙÂÊ¿ØÖÆËã·¨ÔÚ NVENC ¹Ì¼þÖÐÊµÏÖ¡£
-NVENC Ö§³ÖÒÔÏÂËÙÂÊ¿ØÖÆÄ£Ê½£º
-ºã¶¨±ÈÌØÂÊ (CBR)£ººã¶¨±ÈÌØÂÊÉèÖÃrateControlMode Îª NV_ENC_PARAMS_RC_CBR. ÔÚÕâÖÖÄ£Ê½ÏÂ£¬Ö»ÓÐaverageBitRateÐèÒª²¢ÓÃ×÷ËÙÂÊ¿ØÖÆËã·¨µÄÄ¿±êÊä³ö±ÈÌØÂÊ¡£¿Í»§¶Ë¿ÉÒÔÊ¹ÓÃNV_ENC_RC_PARAMS::lowDelayKeyFrameScaleÀ´¿ØÖÆ I Ö¡Óë P Ö¡µÄ±ÈÂÊ£¬Èç¹û I Ö¡×îÖÕÉú³É´óÁ¿±ÈÌØ£¬Õâ¶ÔÓÚ±ÜÃâÐÅµÀÓµÈûºÜÓÐÓÃ¡£ÉèÖÃNV_ENC_CONFIG_H264/ NV_ENC_CONFIG_HEVC::enableFillerDataInsertion = 1ÒÔ·ÀÐèÒªÑÏ¸ñ×ñÊØ±ÈÌØÂÊ¡£
-¿É±ä±ÈÌØÂÊ (VBR)£º¿É±ä±ÈÌØÂÊÉèÖÃrateControlMode Îª NV_ENC_PARAMS_RC_VBR¡£ ±àÂëÆ÷³¢ÊÔ·ûºÏÆ½¾ù±ÈÌØÂÊaverageBitRate£¬²¢ÔÚ±àÂëµÄÈÎºÎÊ±¼ä²»ÄÚ³¬¹ýmaxBitRate¡£ÔÚÕâÖÖÄ£Ê½ÏÂ£¬averageBitRate±ØÐëÖ¸¶¨¡£Èç¹ûmaxBitRateÎ´Ö¸¶¨£¬NVENC »á½«ÆäÉèÖÃÎªÄÚ²¿È·¶¨µÄÄ¬ÈÏÖµ¡£ÎªÁË¸üºÃµÄ¿ØÖÆ£¬½¨Òé¿Í»§¶ËÍ¬Ê±Ö¸¶¨ÕâÁ½¸ö²ÎÊýmaxBitRateºÍaverageBitRate¡£
-ºã¶¨ QP£º´ËÄ£Ê½ÉèÖÃrateControlModeÎª NV_ENC_PARAMS_RC_CONSTQP. ÔÚÕâÖÖÄ£Ê½ÏÂ£¬Õû¸öÖ¡Ê¹ÓÃÖ¸¶¨µÄ QP (NV_ENC_RC_PARAMS::constQP)±àÂë¡£
-Ä¿±êÖÊÁ¿£º´ËÄ£Ê½ÉèÖÃrateControlModeÎªVBR ºÍËùÐèµÄÄ¿±êÖÊÁ¿targetQuality. ´ËÄ¿±êÖÊÁ¿µÄ·¶Î§ÊÇ 0 µ½ 51£¨ÊÓÆµ±à½âÂëÆ÷ SDK 8.0 ¼°¸ü¸ß°æ±¾Ò²Ö§³ÖÐ¡ÊýÖµ£©¡£ÔÚÕâÖÖÄ£Ê½ÏÂ£¬±àÂëÆ÷Í¨¹ýmaxBitRateÖÐÖ¸¶¨µÄ±ÈÌØÂÊ²ÎÊýµÄ±ä»¯À´±£³ÖÃ¿Ö¡µÄÖÊÁ¿. Òò´Ë£¬×îÖÕµÄÆ½¾ù±ÈÌØÂÊ¿ÉÄÜ»áÒòÕýÔÚ±àÂëµÄÊÓÆµÄÚÈÝ¶øÓÐºÜ´ó²îÒì¡£Èç¹ûmaxBitRateÎ´Ö¸¶¨£¬±àÂëÆ÷½«¸ù¾ÝÐèÒªÊ¹ÓÃ¾¡¿ÉÄÜ¶àµÄÎ»À´ÊµÏÖÄ¿±êÖÊÁ¿¡£È»¶ø£¬Èç¹ûmaxBitRateÉèÖÃºó£¬Ëü½«ÐÎ³ÉÊµ¼Ê±ÈÌØÂÊµÄÉÏÏÞ¡£Èç¹ûmaxBitRateÔÚ´ËÄ£Ê½ÏÂÉèÖÃ¹ýµÍ£¬±ÈÌØÂÊ¿ÉÄÜ»áÊÜµ½ÏÞÖÆ£¬µ¼ÖÂ¿ÉÄÜÎÞ·¨ÊµÏÖËùÐèµÄÄ¿±êÖÊÁ¿¡£
+速率控制
+
+NVENC 支持多种速率控制模式，并通过结构NV_ENC_INITIALIZE_PARAMS::encodeConfig::rcParams提供对与速率控制算法相关的各种参数的控制 . 速率控制算法在 NVENC 固件中实现。
+NVENC 支持以下速率控制模式：
+恒定比特率 (CBR)：恒定比特率设置rateControlMode 为 NV_ENC_PARAMS_RC_CBR. 在这种模式下，只有averageBitRate需要并用作速率控制算法的目标输出比特率。客户端可以使用NV_ENC_RC_PARAMS::lowDelayKeyFrameScale来控制 I 帧与 P 帧的比率，如果 I 帧最终生成大量比特，这对于避免信道拥塞很有用。设置NV_ENC_CONFIG_H264/ NV_ENC_CONFIG_HEVC::enableFillerDataInsertion = 1以防需要严格遵守比特率。
+可变比特率 (VBR)：可变比特率设置rateControlMode 为 NV_ENC_PARAMS_RC_VBR。 编码器尝试符合平均比特率averageBitRate，并在编码的任何时间不内超过maxBitRate。在这种模式下，averageBitRate必须指定。如果maxBitRate未指定，NVENC 会将其设置为内部确定的默认值。为了更好的控制，建议客户端同时指定这两个参数maxBitRate和averageBitRate。
+恒定 QP：此模式设置rateControlMode为 NV_ENC_PARAMS_RC_CONSTQP. 在这种模式下，整个帧使用指定的 QP (NV_ENC_RC_PARAMS::constQP)编码。
+目标质量：此模式设置rateControlMode为VBR 和所需的目标质量targetQuality. 此目标质量的范围是 0 到 51（视频编解码器 SDK 8.0 及更高版本也支持小数值）。在这种模式下，编码器通过maxBitRate中指定的比特率参数的变化来保持每帧的质量. 因此，最终的平均比特率可能会因正在编码的视频内容而有很大差异。如果maxBitRate未指定，编码器将根据需要使用尽可能多的位来实现目标质量。然而，如果maxBitRate设置后，它将形成实际比特率的上限。如果maxBitRate在此模式下设置过低，比特率可能会受到限制，导致可能无法实现所需的目标质量。
+
 
  
 
