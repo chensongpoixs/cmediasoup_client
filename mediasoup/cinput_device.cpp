@@ -282,6 +282,8 @@ namespace chen {
 	static std::map<const WNDCLASSA*, const  WNDCLASSA*> g_wnd_classA;
 	static std::map<const  WNDCLASSW*,const  WNDCLASSW*> g_wnd_classW;
 	static SHORT    g_ctrl = 0;
+	static SHORT    g_alt = 0;//   
+
 //#define MESSAGE(g_wnd, message_id, param1, param2)  for (std::map<const WNDCLASSA*, const WNDCLASSA*>::const_iterator iter = g_wnd_classA.begin(); iter != g_wnd_classA.end(); ++iter) \
 //	{																																	\
 //		if (iter->first && iter->first->lpfnWndProc)																					\
@@ -423,6 +425,10 @@ namespace chen {
 			}
 			
 		}
+		if (key == VK_MENU)
+		{
+			ret = g_alt;
+		}
 		// NORMAL_EX_LOG("[hook_RealGetKeyState][][key = %u][ret = %u]", key,  static_cast<int>(ret));
 		return ret;
 	}
@@ -437,6 +443,10 @@ namespace chen {
 				ret = g_ctrl;
 			}
 			
+		}
+		if (Key == VK_MENU)
+		{
+			ret = g_alt;
 		}
 		
 	 //	NORMAL_EX_LOG("[key = %u][ret = %u]", Key, ret);
@@ -947,6 +957,10 @@ namespace chen {
 		{
 			g_ctrl = 4294967168;
 		}
+		if (VK_MENU == KeyCode)
+		{
+			g_alt = 4294934529;
+		}
 		/*else if (32 == KeyCode)
 		{
 			g_ctrl = 0;
@@ -1080,6 +1094,10 @@ namespace chen {
 		if (VK_CONTROL == KeyCode)
 		{
 			g_ctrl = 4294967168;
+		}
+		if (VK_MENU == KeyCode)
+		{
+			g_alt = 4294934529;
 		}
 		/*else if (32 == KeyCode)
 		{
@@ -1236,6 +1254,10 @@ namespace chen {
 		{
 			g_ctrl = 0;
 		}
+		if (VK_MENU == KeyCode)
+		{
+			g_alt = 0;
+		}
 		/*else if (32 == KeyCode)
 		{
 			g_ctrl = 4294967168;
@@ -1344,6 +1366,10 @@ namespace chen {
 		if (VK_CONTROL == KeyCode)
 		{
 			g_ctrl = 0;
+		}
+		if (VK_MENU == KeyCode)
+		{
+			g_alt = 0;
 		}
 		/*else if (32 == KeyCode)
 		{
