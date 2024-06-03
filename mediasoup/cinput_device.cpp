@@ -425,7 +425,7 @@ namespace chen {
 			}
 			
 		}
-		if (key == VK_MENU)
+		if (key == VK_MENU || key == VK_LMENU || key == VK_RMENU)
 		{
 			ret = g_alt;
 		}
@@ -444,7 +444,7 @@ namespace chen {
 			}
 			
 		}
-		if (Key == VK_MENU)
+		if (Key == VK_MENU || Key == VK_LMENU || Key == VK_RMENU)
 		{
 			ret = g_alt;
 		}
@@ -956,11 +956,12 @@ namespace chen {
 		if (VK_CONTROL == KeyCode)
 		{
 			g_ctrl = 4294967168;
+			       //4294934529;
 		}
-		if (VK_MENU == KeyCode)
+	 	if (VK_MENU == KeyCode)
 		{
 			g_alt = 4294934529;
-		}
+		} 
 		/*else if (32 == KeyCode)
 		{
 			g_ctrl = 0;
@@ -989,7 +990,16 @@ namespace chen {
 			//else
 			{
 				MOUSE_INPUT(childwin);
-				MESSAGE(childwin, WM_KEYDOWN, KeyCode, 3224961025/*Repeat*/);
+			//	MESSAGE(childwin, WM_KEYDOWN, KeyCode, 3224961025/*Repeat*/);
+				 if (KeyCode != 18)
+				{
+
+					MESSAGE(childwin, WM_KEYDOWN, KeyCode, 3224961025);
+				}
+				 else
+				{
+					MESSAGE(childwin, WM_SYSKEYDOWN, KeyCode, 1614282753);
+				} 
 			}//if (KeyCode == 17 || KeyCode == 77 || KeyCode == 109)
 			//{
 			//	//keybd_event(16, 0, 0, 0);//按下Shift键
@@ -1011,7 +1021,15 @@ namespace chen {
 			//else
 			{
 				MOUSE_INPUT(mwin);
-				MESSAGE(mwin, WM_KEYDOWN, KeyCode, 3224961025/*Repeat*/);
+				if (KeyCode != 18)
+				{
+
+					MESSAGE(childwin, WM_KEYDOWN, KeyCode, 3224961025);
+				}
+				else
+				{
+					MESSAGE(childwin, WM_SYSKEYDOWN, KeyCode, 1614282753);
+				}
 			}
 			//if (KeyCode == 17 || KeyCode == 77 || KeyCode == 109)
 			//{
@@ -1095,10 +1113,10 @@ namespace chen {
 		{
 			g_ctrl = 4294967168;
 		}
-		if (VK_MENU == KeyCode)
+		 if (VK_MENU == KeyCode)
 		{
 			g_alt = 4294934529;
-		}
+		} 
 		/*else if (32 == KeyCode)
 		{
 			g_ctrl = 0;
@@ -1212,7 +1230,15 @@ namespace chen {
 			//else
 			{
 				MOUSE_INPUT(childwin);
-				MESSAGE(childwin, WM_KEYUP, KeyCode, 3224961025);
+				if (KeyCode != 18)
+				{
+
+					MESSAGE(childwin, WM_KEYUP, KeyCode, 3224961025);
+				}
+				else
+				{
+					MESSAGE(childwin, WM_SYSKEYUP, KeyCode, 0);
+				}
 			}//if (KeyCode == 17 || KeyCode == 77 || KeyCode == 109)
 			//{
 			//	//keybd_event(16, 0, 0, 0);//按下Shift键
@@ -1233,7 +1259,15 @@ namespace chen {
 			//else
 			{
 				MOUSE_INPUT(childwin);
-				MESSAGE(childwin, WM_KEYUP, KeyCode, 3224961025);
+				 if (KeyCode != 18)
+				{
+
+					MESSAGE(childwin, WM_KEYUP, KeyCode, 3224961025);
+				}
+				  else
+				{
+					MESSAGE(childwin, WM_SYSKEYUP, KeyCode, 0);
+				}  
 			}
 			
 			//if (KeyCode == 17 || KeyCode == 77 || KeyCode == 109)
@@ -1404,6 +1438,14 @@ namespace chen {
 		{
 			return true;
 		}
+		/*if (VK_MENU == Character)
+		{
+			g_alt = 4294934528;
+		}*/
+		 if (Character == VK_MENU)
+		{
+			return true;
+		} 
 		WINDOW_MAIN();
 
 
