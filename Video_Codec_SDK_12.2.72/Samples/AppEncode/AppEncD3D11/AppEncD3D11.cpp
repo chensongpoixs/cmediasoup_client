@@ -185,10 +185,13 @@ void Encode(ID3D11Device *pDevice, ID3D11DeviceContext *pContext, RGBToNV12Conve
             enc.EndEncode(vPacket);
         }
         nFrame += (int)vPacket.size();
+        uint32_t fame_size = 0;
         for (std::vector<uint8_t> &packet : vPacket)
         {
             fpOut.write(reinterpret_cast<char*>(packet.data()), packet.size());
+            fame_size += packet.size();
         }
+        printf("[fame_size = %u]\n", fame_size);
         if (nRead != nSize) {
             break;
         }

@@ -249,7 +249,45 @@ void NvEncoder::CreateEncoder(const NV_ENC_INITIALIZE_PARAMS* pEncoderParams)
         }
     }
     m_initializeParams.encodeConfig = &m_encodeConfig;
+  //  m_initializeParams.presetGUID = NV_ENC_PRESET_P7_GUID;
+    // 初始化 NV_ENC_CONFIG_H264_VUI_PARAMETERS 结构体
+    NV_ENC_CONFIG_H264_VUI_PARAMETERS vuiParams = { 0 };
 
+    // 设置 BT.709 色彩原理
+    vuiParams.colourPrimaries = 1; // 值为 1
+
+    // 设置 BT.709 传输特性
+    vuiParams.transferCharacteristics = 1; // 值为 1
+
+    // 设置 BT.709 色彩矩阵系数
+    vuiParams.colourMatrix = 1; // 值为 1
+
+    vuiParams.videoFullRangeFlag = 1;
+    vuiParams.colourDescriptionPresentFlag = 1; //
+    vuiParams.videoSignalTypePresentFlag = 1; //
+    /// <summary>
+    /// 
+    /*m_initializeParams.encodeConfig->encodeCodecConfig.h264Config.outputBufferingPeriodSEI = 0;
+    m_initializeParams.encodeConfig->encodeCodecConfig.h264Config.outputPictureTimingSEI = 0;*/
+
+    //m_initializeParams.encodeConfig->encodeCodecConfig.h264Config.sliceMode = 3;
+    //m_initializeParams.encodeConfig->encodeCodecConfig.h264Config.sliceModeData = 1;
+    //m_initializeParams.encodeConfig->encodeCodecConfig.h264Config.disableSPSPPS = 0;
+    //m_initializeParams.encodeConfig->encodeCodecConfig.h264Config.repeatSPSPPS = 1;
+   // m_initializeParams.encodeConfig->encodeCodecConfig.h264Config.outputAUD = 1;
+    /// </summary>
+    /// <param name="pEncoderParams"></param>
+    // m_initializeParams.encodeConfig->encodeCodecConfig.h264Config.qpPrimeYZeroTransformBypassFlag = 1; //
+    m_initializeParams.encodeConfig->encodeCodecConfig.h264Config.useConstrainedIntraPred = 1;
+    m_initializeParams.encodeConfig->encodeCodecConfig.h264Config.h264VUIParameters = vuiParams;
+    m_initializeParams.encodeConfig->encodeCodecConfig.h264Config.fmoMode = NV_ENC_H264_FMO_DISABLE;
+    m_initializeParams.encodeConfig->encodeCodecConfig.h264Config.chromaFormatIDC = 3;//
+    //m_initializeParams.encodeConfig->encodeCodecConfig.h264Config.level = 
+   /* m_initializeParams.encodeConfig->encodeCodecConfig.h264Config.h264VUIParameters.colourPrimaries = 1;
+    m_initializeParams.encodeConfig->encodeCodecConfig.h264Config.h264VUIParameters.transferCharacteristics = 1;
+    m_initializeParams.encodeConfig->encodeCodecConfig.h264Config.h264VUIParameters.colourMatrix = 1;*/
+    //m_initializeParams.encodeConfig->encodeCodecConfig.h264Config.h264VUIParameters.colourDescriptionPresentFlag
+    
     NVENC_API_CALL(m_nvenc.nvEncInitializeEncoder(m_hEncoder, &m_initializeParams));
 
     m_bEncoderInitialized = true;

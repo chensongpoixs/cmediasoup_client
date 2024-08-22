@@ -66,9 +66,7 @@
     <ClInclude Include="NvCodec\nvenc.h" />
     <ClInclude Include="NvCodec\NvEncoder\nvEncodeAPI.h" />
     <ClInclude Include="NvCodec\NvEncoder\NvEncoder.h" />
-    <ClInclude Include="NvCodec\NvEncoder\NvEncoderCuda.h" />
     <ClInclude Include="NvCodec\NvEncoder\NvEncoderD3D11.h" />
-    <ClInclude Include="NvCodec\NvEncoder\NvEncoderD3D9.h" />
     <ClInclude Include="NvCodec\nv_encoder.h" />
     <ClInclude Include="NvCodec\Utils\AppEncUtils.h" />
     <ClInclude Include="NvCodec\Utils\Logger.h" />
@@ -122,9 +120,7 @@
     <ClCompile Include="mediasoupclient.cpp" />
     <ClCompile Include="NvCodec\nvenc.cpp" />
     <ClCompile Include="NvCodec\NvEncoder\NvEncoder.cpp" />
-    <ClCompile Include="NvCodec\NvEncoder\NvEncoderCuda.cpp" />
     <ClCompile Include="NvCodec\NvEncoder\NvEncoderD3D11.cpp" />
-    <ClCompile Include="NvCodec\NvEncoder\NvEncoderD3D9.cpp" />
     <ClCompile Include="NvCodec\nv_encoder.cc" />
     <ClCompile Include="ortc.cpp" />
     <ClCompile Include="parser.cpp" />
@@ -259,7 +255,7 @@
       <Optimization>Disabled</Optimization>
       <FunctionLevelLinking>true</FunctionLevelLinking>
       <IntrinsicFunctions>true</IntrinsicFunctions>
-      <SDLCheck>true</SDLCheck>
+      <SDLCheck>false</SDLCheck>
       <ConformanceMode>true</ConformanceMode>
       <PreprocessorDefinitions>_SILENCE_ALL_CXX17_DEPRECATION_WARNINGS;WIN32;_WINDOWS;OATPP_DISABLE_ENV_OBJECT_COUNTERS;OATPP_DISABLE_POOL_ALLOCATIONS;OATPP_COMPAT_BUILD_NO_THREAD_LOCAL;OATPP_DISABLE_LOGV;OATPP_DISABLE_LOGD;OATPP_DISABLE_LOGI;OATPP_DISABLE_LOGW;OATPP_DISABLE_LOGE;WEBRTC_WIN=1;_CRT_SECURE_NO_WARNINGS;NOMINMAX;WIN32_LEAN_AND_MEAN;USE_AURA=1;NO_TCMALLOC;FULL_SAFE_BROWSING;SAFE_BROWSING_CSD;SAFE_BROWSING_DB_LOCAL;CHROMIUM_BUILD;_HAS_EXCEPTIONS=0;__STD_C;_CRT_RAND_S;_CRT_SECURE_NO_DEPRECATE;_SCL_SECURE_NO_DEPRECATE;_ATL_NO_OPENGL;CERT_CHAIN_PARA_HAS_EXTRA_FIELDS;PSAPI_VERSION=2;_SECURE_ATL;_USING_V110_SDK71_;WINAPI_FAMILY=WINAPI_FAMILY_DESKTOP_APP;_UNICODE;UNICODE;NTDDI_VERSION=NTDDI_WIN10_RS2;_WIN32_WINNT=0x0A00;WINVER=0x0A00;DYNAMIC_ANNOTATIONS_ENABLED=1;WTF_USE_DYNAMIC_ANNOTATIONS=1;_HAS_ITERATOR_DEBUGGING=0;WEBRTC_ENABLE_PROTOBUF=1;WEBRTC_INCLUDE_INTERNAL_AUDIO_DEVICE;RTC_ENABLE_VP9;HAVE_SCTP;WEBRTC_NON_STATIC_TRACE_EVENT_HANDLERS=1;ABSL_ALLOCATOR_NOTHROW=1;GTEST_API_=;GTEST_HAS_POSIX_RE=0;GTEST_LANG_CXX11=1;GTEST_HAS_TR1_TUPLE=0;GTEST_HAS_ABSL=1;HAVE_WEBRTC_VIDEO;_CONSOLE;%(PreprocessorDefinitions)</PreprocessorDefinitions>
       <LanguageStandard>

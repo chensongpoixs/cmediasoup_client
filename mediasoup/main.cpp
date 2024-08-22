@@ -38,7 +38,7 @@ void signalHandler(int signum)
 
 
 
-int  yymain(int argc, char *argv[])
+int  fffwwwmain(int argc, char *argv[])
 {
 	signal(SIGINT, signalHandler);
 	signal(SIGTERM, signalHandler);

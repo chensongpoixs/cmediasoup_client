@@ -69,12 +69,6 @@
     <ClInclude Include="NvCodec\NvEncoder\NvEncoder.h">
       <Filter>NvCodec\NvEncoder</Filter>
     </ClInclude>
-    <ClInclude Include="NvCodec\NvEncoder\NvEncoderCuda.h">
-      <Filter>NvCodec\NvEncoder</Filter>
-    </ClInclude>
-    <ClInclude Include="NvCodec\NvEncoder\NvEncoderD3D9.h">
-      <Filter>NvCodec\NvEncoder</Filter>
-    </ClInclude>
     <ClInclude Include="NvCodec\NvEncoder\NvEncoderD3D11.h">
       <Filter>NvCodec\NvEncoder</Filter>
     </ClInclude>
@@ -136,12 +130,6 @@
       <Filter>NvCodec</Filter>
     </ClCompile>
     <ClCompile Include="NvCodec\NvEncoder\NvEncoder.cpp">
-      <Filter>NvCodec\NvEncoder</Filter>
-    </ClCompile>
-    <ClCompile Include="NvCodec\NvEncoder\NvEncoderCuda.cpp">
-      <Filter>NvCodec\NvEncoder</Filter>
-    </ClCompile>
-    <ClCompile Include="NvCodec\NvEncoder\NvEncoderD3D9.cpp">
       <Filter>NvCodec\NvEncoder</Filter>
     </ClCompile>
     <ClCompile Include="NvCodec\NvEncoder\NvEncoderD3D11.cpp">

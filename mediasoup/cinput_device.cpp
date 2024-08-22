@@ -269,6 +269,37 @@ namespace chen {
 	PFN_EnumDisplaySettingsA RealEnumDisplaySettingsA;
 	typedef BOOL(WINAPI* PFN_EnumDisplaySettingsW)(_In_opt_ LPCSTR lpszDeviceName, _In_ DWORD iModeNum, _Inout_ DEVMODEA* lpDevMode);
 	PFN_EnumDisplaySettingsW RealEnumDisplaySettingsW;
+
+
+
+
+	typedef   BOOL(WINAPI* PFN_RegisterHotKey)(
+		_In_opt_ HWND hWnd,
+		_In_ int id,
+		_In_ UINT fsModifiers,
+		_In_ UINT vk);
+	PFN_RegisterHotKey  RealRegisterHotKey;
+
+
+
+	typedef BOOL
+		(WINAPI* PFN_GetMessageA)(
+			_Out_ LPMSG lpMsg,
+			_In_opt_ HWND hWnd,
+			_In_ UINT wMsgFilterMin,
+			_In_ UINT wMsgFilterMax);
+
+	PFN_GetMessageA    RealGetMessageA;
+	typedef   
+		BOOL
+		(WINAPI* 
+			PFN_GetMessageW)(
+			_Out_ LPMSG lpMsg,
+			_In_opt_ HWND hWnd,
+			_In_ UINT wMsgFilterMin,
+			_In_ UINT wMsgFilterMax);
+	PFN_GetMessageW    RealGetMessageW;
+
 	///////////////////////////////////////////////////////////////////////////////
 	 
 
@@ -282,7 +313,12 @@ namespace chen {
 	static std::map<const WNDCLASSA*, const  WNDCLASSA*> g_wnd_classA;
 	static std::map<const  WNDCLASSW*,const  WNDCLASSW*> g_wnd_classW;
 	static SHORT    g_ctrl = 0;
-	static SHORT    g_alt = 0;//   
+	static SHORT    g_alt = 0;//  
+
+
+	static uint64  g_hot_key = 0;
+	
+	static std::unordered_map<uint64, std::unordered_map<uint64, uint64>>       g_app_hot;
 
 //#define MESSAGE(g_wnd, message_id, param1, param2)  for (std::map<const WNDCLASSA*, const WNDCLASSA*>::const_iterator iter = g_wnd_classA.begin(); iter != g_wnd_classA.end(); ++iter) \
 //	{																																	\
@@ -405,6 +441,23 @@ namespace chen {
 		return UnregisterClassW(lpClassName, hInstance);
 	}
 
+	static BOOL hook_RegisterHotKey(
+		_In_opt_ HWND hWnd,
+		_In_ int id,
+		_In_ UINT fsModifiers,
+		_In_ UINT vk)
+	{
+		NORMAL_EX_LOG("");
+		BOOL ret = RealRegisterHotKey(hWnd, id, fsModifiers, vk);;
+			//g_app_hot
+		if (ret)
+		{
+			NORMAL_EX_LOG("[id = %u][mod = %u][vk = %u]", id, fsModifiers, vk);
+			g_app_hot[vk][fsModifiers] = id;
+		}
+		
+		return ret;
+	}
 	static inline HMODULE get_system_module(const char* system_path, const char* module)
 	{
 		char base_path[MAX_PATH];
@@ -461,6 +514,7 @@ namespace chen {
 		WideCharToMultiByte(m_encode, 0, wp.c_str(), wp.size(), (LPSTR)(str.data()), len, NULL, NULL);
 		return str;
 	}
+
 	static BOOL hook_EnumDisplaySettingsA(_In_opt_ LPCSTR lpszDeviceName, _In_ DWORD iModeNum, _Inout_ DEVMODEA* lpDevMode)
 	{
 		NORMAL_EX_LOG("");
@@ -513,6 +567,40 @@ namespace chen {
 		}
 		return ret;
 	}
+
+	static  BOOL hook_GetMessageA(
+		_Out_ LPMSG lpMsg,
+		_In_opt_ HWND hWnd,
+		_In_ UINT wMsgFilterMin,
+		_In_ UINT wMsgFilterMax)
+	{
+
+		NORMAL_EX_LOG("");
+		if (g_hot_key != 0 && lpMsg && !hWnd)
+		{
+			lpMsg->message = WM_HOTKEY;
+			lpMsg->wParam = g_hot_key;
+			g_hot_key = 0;
+			return true;
+		}
+		return RealGetMessageA(lpMsg, hWnd, wMsgFilterMin, wMsgFilterMax);
+	}
+	static  BOOL hook_GetMessageW(
+		_Out_ LPMSG lpMsg,
+		_In_opt_ HWND hWnd,
+		_In_ UINT wMsgFilterMin,
+		_In_ UINT wMsgFilterMax)
+	{
+		NORMAL_EX_LOG("");
+		if (g_hot_key != 0 && lpMsg && !hWnd)
+		{
+			lpMsg->message = WM_HOTKEY;
+			lpMsg->wParam = g_hot_key;
+			g_hot_key = 0;
+			return true;
+		}
+		return RealGetMessageW(lpMsg, hWnd, wMsgFilterMin, wMsgFilterMax);
+	}
 	//static inline 
 
 	bool cinput_device::init()
@@ -526,7 +614,7 @@ namespace chen {
 		//g_hrawinput.resize(RAW_INPUT_SIZE);
 		 // win
 		char system_path[MAX_PATH] = {0};
-
+		 
 		UINT ret = GetSystemDirectoryA(system_path, MAX_PATH);
 		if (!ret)
 		{
@@ -547,7 +635,10 @@ namespace chen {
 		void* set_cursor_pos_proc = GetProcAddress(user32dll, "SetCursorPos");
 		void * get_key_state_proc = GetProcAddress(user32dll, "GetKeyState"); //hook_RealGetKeyState
 		void* get_async_key_state_proc = GetProcAddress(user32dll, "GetAsyncKeyState");
-
+		void* get_RealRegisterHotKey = GetProcAddress(user32dll, "RegisterHotKey");
+		void* get_RealGetMessageW = GetProcAddress(user32dll, "GetMessageW");
+		void* get_RealGetMessageA = GetProcAddress(user32dll, "GetMessageA");
+		 
 
 		//void* EnumDisplaySettingsA_proc = GetProcAddress(user32dll, "EnumDisplaySettingsA");
 		//void* EnumDisplaySettingsW_proc = GetProcAddress(user32dll, "EnumDisplaySettingsW");
@@ -598,6 +689,27 @@ namespace chen {
 				RealGetKeyState = (PFN_GetKeyState)get_key_state_proc;
 				DetourAttach((PVOID*)&RealGetKeyState,
 					hook_GetKeyState);
+			}
+
+			if (get_RealRegisterHotKey)
+			{
+				RealRegisterHotKey = (PFN_RegisterHotKey)get_RealRegisterHotKey;
+				DetourAttach((PVOID*)&RealRegisterHotKey,
+					hook_RegisterHotKey);
+			}
+
+			if (get_RealGetMessageA)
+			{
+				RealGetMessageA = (PFN_GetMessageA)get_RealGetMessageA;
+				DetourAttach((PVOID*)&RealGetMessageA,
+					hook_GetMessageA);
+			}
+
+			if (get_RealGetMessageW)
+			{
+				RealGetMessageW = (PFN_GetMessageW)get_RealGetMessageW;
+				DetourAttach((PVOID*)&RealGetMessageW,
+					hook_GetMessageW);
 			}
 
 			 /*if (EnumDisplaySettingsA_proc)
@@ -1000,6 +1112,24 @@ namespace chen {
 				{
 					MESSAGE(childwin, WM_SYSKEYDOWN, KeyCode, 1614282753);
 				} 
+				  
+				 // g_app_hot[vk][fsModifiers] = id;
+				 //if (g_app_hot[KeyCode][MOD_CONTROL] != 0)
+				 if (VK_F1 == KeyCode  && g_ctrl)
+				 {
+					 NORMAL_EX_LOG("---> mod");
+					 MESSAGE(NULL, WM_HOTKEY, 10001, 10001);
+					 g_hot_key = 10001;
+					 MESSAGE(NULL, WM_HOTKEY, g_hot_key, g_hot_key);
+				 }
+				 else if (VK_F2 == KeyCode && g_ctrl)
+				 {
+					 NORMAL_EX_LOG("---> mod");
+					 MESSAGE(NULL, WM_HOTKEY, 10002, 10002);
+					 g_hot_key = 10002;
+					 MESSAGE(NULL, WM_HOTKEY, g_hot_key, g_hot_key);
+				 }
+
 			}//if (KeyCode == 17 || KeyCode == 77 || KeyCode == 109)
 			//{
 			//	//keybd_event(16, 0, 0, 0);//按下Shift键
@@ -1024,11 +1154,31 @@ namespace chen {
 				if (KeyCode != 18)
 				{
 
-					MESSAGE(childwin, WM_KEYDOWN, KeyCode, 3224961025);
+					MESSAGE(mwin, WM_KEYDOWN, KeyCode, 3224961025);
 				}
 				else
 				{
-					MESSAGE(childwin, WM_SYSKEYDOWN, KeyCode, 1614282753);
+					MESSAGE(mwin, WM_SYSKEYDOWN, KeyCode, 1614282753);
+				}
+				/*if (g_app_hot[KeyCode][MOD_CONTROL] != 0)
+				{
+					 
+					MESSAGE(NULL, WM_HOTKEY, g_app_hot[KeyCode][MOD_CONTROL], g_app_hot[KeyCode][MOD_CONTROL]);
+				}*/
+				if (VK_F1 == KeyCode && g_ctrl)
+				{
+					NORMAL_EX_LOG("---> mod");
+					MESSAGE(NULL, WM_HOTKEY, 10001, 10001);
+					g_hot_key = 10001;
+					MESSAGE(NULL, WM_HOTKEY, g_hot_key, g_hot_key);
+					
+				}
+				else if (VK_F2 == KeyCode && g_ctrl)
+				{
+					NORMAL_EX_LOG("---> mod");
+					MESSAGE(NULL, WM_HOTKEY, 10002, 10002);
+					g_hot_key = 10002;
+					MESSAGE(NULL, WM_HOTKEY, g_hot_key, g_hot_key);
 				}
 			}
 			//if (KeyCode == 17 || KeyCode == 77 || KeyCode == 109)
@@ -1442,7 +1592,8 @@ namespace chen {
 		{
 			g_alt = 4294934528;
 		}*/
-		 if (Character == VK_MENU)
+		
+		 if (Character == VK_MENU || Character == VK_CONTROL)
 		{
 			return true;
 		} 
@@ -1927,7 +2078,7 @@ namespace chen {
 		#if defined(_MSC_VER)
 
 		WINDOW_MAIN();
-		MOUSE_INPUT(mwin);
+		//MOUSE_INPUT(mwin);
 		/*registerinputdevice(mwin);
 		SetForegroundWindow(mwin);
 		SetActiveWindow(mwin);*/

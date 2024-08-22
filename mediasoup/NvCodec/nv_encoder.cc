@@ -42,6 +42,7 @@ purpose:		nvenc
 #include "third_party/libyuv/include/libyuv/scale.h"
 #include "third_party/libyuv/include/libyuv.h"
 #include "../ccfg.h"
+#include "../clog.h"
 namespace webrtc {
 
 namespace {
@@ -245,6 +246,7 @@ int32_t NvEncoder::InitEncode(const VideoCodec* inst,
 	int32_t number_of_cores,
 	size_t max_payload_size)
 {
+	using namespace chen;
 	ReportInit();
 	if (!inst || inst->codecType != kVideoCodecH264) {
 		ReportError();
@@ -464,6 +466,7 @@ int32_t NvEncoder::Encode(const VideoFrame& input_frame,
 	std::chrono::steady_clock::duration dur;
 	std::chrono::milliseconds milliseconds;
 	uint32_t elapse = 0;
+	NORMAL_EX_LOG("--=====>");
 	if (nv_encoders_.empty()) {
 		ReportError();
 		return WEBRTC_VIDEO_CODEC_UNINITIALIZED;
@@ -537,33 +540,34 @@ int32_t NvEncoder::Encode(const VideoFrame& input_frame,
 
 		if (frame_packet.use_size == 0) 
 		{
+			NORMAL_EX_LOG("frame_packet.use_size == 0");
 			return WEBRTC_VIDEO_CODEC_OK;
 		}
 		else {
-			//NORMAL_EX_LOG("frame size = %u", frame_packet.use_size);
+			NORMAL_EX_LOG("frame size = %u", frame_packet.use_size);
 			if (frame_packet.frame.get()[4] == 0x67)
 			{
-				//NORMAL_EX_LOG(" I frame  = %u", m_key_frame_count);
+				NORMAL_EX_LOG(" I frame  = %u", m_key_frame_count);
 				m_key_frame_count = 0;
 				info.eFrameType = videoFrameTypeIDR;
 			}
 			else if (frame_packet.frame.get()[4] == 0x61)
 			{
-			//	NORMAL_EX_LOG(" P frame ");
+				NORMAL_EX_LOG(" P frame ");
 				info.eFrameType = videoFrameTypeP;
 			}
 			else {
-			//	NORMAL_EX_LOG(" B frame ");
+				NORMAL_EX_LOG(" B frame ");
 				info.eFrameType = videoFrameTypeP;
 			}
 		}
 
-	/*	static FILE* out_test_h264_ptr = ::fopen("chensong_h.h264", "wb+");
+		/* static FILE* out_test_h264_ptr = ::fopen("chensong_h.h264", "wb+");
 		if (out_test_h264_ptr)
 		{
 			fwrite(&frame_packet.frame.get()[0], 1, frame_packet.use_size, out_test_h264_ptr);
 			fflush(out_test_h264_ptr);
-		}*/
+		} */
 		encoded_images_[i]._encodedWidth = configurations_[i].width;
 		encoded_images_[i]._encodedHeight = configurations_[i].height;
 		encoded_images_[i].SetTimestamp(input_frame.timestamp());

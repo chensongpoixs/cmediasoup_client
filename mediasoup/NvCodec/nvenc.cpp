@@ -74,6 +74,147 @@ namespace chen {
 		}
 		return NV_ENC_TUNING_INFO_ULTRA_LOW_LATENCY;
 	}
+
+
+	namespace gpu_encode_info
+	{
+		const char* szCodecNames = "h264 hevc";
+		static  const   std::vector<GUID> vCodec = {
+		  NV_ENC_CODEC_H264_GUID,
+		  NV_ENC_CODEC_HEVC_GUID
+		};
+
+		const char* szChromaNames = "yuv420 yuv444";
+		static  const  std::vector<uint32_t> vChroma =
+		{
+			1, 3
+		};
+
+		const char* szPresetNames = "default hp hq bd ll ll_hp ll_hq lossless lossless_hp";
+		const char* szLowLatencyPresetNames = "ll ll_hp ll_hq";
+		static  const  std::vector<GUID> vPreset = {
+		  NV_ENC_PRESET_DEFAULT_GUID,
+		  NV_ENC_PRESET_HP_GUID,
+		  NV_ENC_PRESET_HQ_GUID,
+		  NV_ENC_PRESET_BD_GUID,
+		  NV_ENC_PRESET_LOW_LATENCY_DEFAULT_GUID,
+		  NV_ENC_PRESET_LOW_LATENCY_HP_GUID,
+		  NV_ENC_PRESET_LOW_LATENCY_HQ_GUID,
+		  NV_ENC_PRESET_LOSSLESS_DEFAULT_GUID,
+		  NV_ENC_PRESET_LOSSLESS_HP_GUID
+		};
+
+		static  const  std::vector<GUID> vLowLatencyPreset = {
+			  NV_ENC_PRESET_LOW_LATENCY_DEFAULT_GUID,
+			  NV_ENC_PRESET_LOW_LATENCY_HP_GUID,
+			  NV_ENC_PRESET_LOW_LATENCY_HQ_GUID,
+		};
+
+		const char* szH264ProfileNames = "baseline main high high444";
+		static  const  std::vector<GUID> vH264Profile = {
+		  NV_ENC_H264_PROFILE_BASELINE_GUID,
+		  NV_ENC_H264_PROFILE_MAIN_GUID,
+		  NV_ENC_H264_PROFILE_HIGH_GUID,
+		  NV_ENC_H264_PROFILE_HIGH_444_GUID,
+		};
+		const char* szHevcProfileNames = "main main10 frext";
+		static  const   std::vector<GUID> vHevcProfile = {
+		  NV_ENC_HEVC_PROFILE_MAIN_GUID,
+		  NV_ENC_HEVC_PROFILE_MAIN10_GUID,
+		  NV_ENC_HEVC_PROFILE_FREXT_GUID,
+		};
+		const char* szProfileNames = "(default) auto baseline(h264) main(h264) high(h264) high444(h264)"
+			" stereo(h264) svc_temporal_scalability(h264) progressiv_high(h264) constrained_high(h264)"
+			" main(hevc) main10(hevc) frext(hevc)";
+		static  const   std::vector<GUID> vProfile = {
+			GUID{},
+			NV_ENC_CODEC_PROFILE_AUTOSELECT_GUID,
+			NV_ENC_H264_PROFILE_BASELINE_GUID,
+			NV_ENC_H264_PROFILE_MAIN_GUID,
+			NV_ENC_H264_PROFILE_HIGH_GUID,
+			NV_ENC_H264_PROFILE_HIGH_444_GUID,
+			NV_ENC_H264_PROFILE_STEREO_GUID,
+			/* NV_ENC_H264_PROFILE_SVC_TEMPORAL_SCALABILTY,*/
+			 NV_ENC_H264_PROFILE_PROGRESSIVE_HIGH_GUID,
+			 NV_ENC_H264_PROFILE_CONSTRAINED_HIGH_GUID,
+			 NV_ENC_HEVC_PROFILE_MAIN_GUID,
+			 NV_ENC_HEVC_PROFILE_MAIN10_GUID,
+			 NV_ENC_HEVC_PROFILE_FREXT_GUID,
+		};
+
+		const char* szRcModeNames = "constqp vbr cbr cbr_ll_hq cbr_hq vbr_hq";
+		static  const   std::vector<NV_ENC_PARAMS_RC_MODE> vRcMode = {
+		  NV_ENC_PARAMS_RC_CONSTQP,
+		  NV_ENC_PARAMS_RC_VBR,
+		  NV_ENC_PARAMS_RC_CBR,
+		  NV_ENC_PARAMS_RC_CBR_LOWDELAY_HQ,
+		  NV_ENC_PARAMS_RC_CBR_HQ,
+		  NV_ENC_PARAMS_RC_VBR_HQ,
+		};
+
+		const char* szQpMapModeNames = "disabled emphasis_level_map delta_qp_map qp_map";
+		static  const   std::vector<NV_ENC_QP_MAP_MODE> vQpMapMode = {
+		  NV_ENC_QP_MAP_DISABLED,
+		  NV_ENC_QP_MAP_EMPHASIS,
+		  NV_ENC_QP_MAP_DELTA,
+		  NV_ENC_QP_MAP,
+		};
+		inline std::vector<std::string> split(const std::string& s, char delimiter)
+		{
+			std::vector<std::string> tokens;
+			std::string token;
+			std::istringstream tokenStream(s);
+			while (std::getline(tokenStream, token, delimiter))
+			{
+				tokens.push_back(token);
+			}
+			return tokens;
+		}
+		template<typename T>
+		std::string ConvertValueToString(const std::vector<T>& vValue, const std::string& strValueNames, T value) {
+			auto it = std::find(vValue.begin(), vValue.end(), value);
+			if (it == vValue.end()) {
+				//LOG(ERROR) << "Invalid value. Can't convert to one of " << strValueNames;
+				ERROR_EX_LOG("Invalid value. Can't convert to one of  %s", strValueNames.c_str());
+				return std::string();
+			}
+			return split(strValueNames, ' ')[it - vValue.begin()];
+		}
+		static 	std::string g_MainParamToString(const NV_ENC_INITIALIZE_PARAMS* pParams) {
+			std::ostringstream os;
+			os
+				<< "Encoding Parameters:"
+				<< std::endl << "\tcodec        : " << ConvertValueToString(vCodec, szCodecNames, pParams->encodeGUID)
+				<< std::endl << "\tpreset       : " << ConvertValueToString(vPreset, szPresetNames, pParams->presetGUID)
+				<< std::endl << "\tprofile      : " << ConvertValueToString(vProfile, szProfileNames, pParams->encodeConfig->profileGUID)
+				<< std::endl << "\tchroma       : " << ConvertValueToString(vChroma, szChromaNames, (pParams->encodeGUID == NV_ENC_CODEC_H264_GUID) ? pParams->encodeConfig->encodeCodecConfig.h264Config.chromaFormatIDC : pParams->encodeConfig->encodeCodecConfig.hevcConfig.chromaFormatIDC)
+				<< std::endl << "\tbitdepth     : " << ((pParams->encodeGUID == NV_ENC_CODEC_H264_GUID) ? 0 : pParams->encodeConfig->encodeCodecConfig.hevcConfig.pixelBitDepthMinus8) + 8
+				<< std::endl << "\trc           : " << ConvertValueToString(vRcMode, szRcModeNames, pParams->encodeConfig->rcParams.rateControlMode)
+				;
+			if (pParams->encodeConfig->rcParams.rateControlMode == NV_ENC_PARAMS_RC_CONSTQP) {
+				os << " (P,B,I=" << pParams->encodeConfig->rcParams.constQP.qpInterP << "," << pParams->encodeConfig->rcParams.constQP.qpInterB << "," << pParams->encodeConfig->rcParams.constQP.qpIntra << ")";
+			}
+			os
+				<< std::endl << "\tfps          : " << pParams->frameRateNum << "/" << pParams->frameRateDen
+				<< std::endl << "\tgop          : " << (pParams->encodeConfig->gopLength == NVENC_INFINITE_GOPLENGTH ? "INF" : std::to_string(pParams->encodeConfig->gopLength))
+				<< std::endl << "\tbf           : " << pParams->encodeConfig->frameIntervalP - 1
+				<< std::endl << "\tsize         : " << pParams->encodeWidth << "x" << pParams->encodeHeight
+				<< std::endl << "\tbitrate      : " << pParams->encodeConfig->rcParams.averageBitRate
+				<< std::endl << "\tmaxbitrate   : " << pParams->encodeConfig->rcParams.maxBitRate
+				<< std::endl << "\tvbvbufsize   : " << pParams->encodeConfig->rcParams.vbvBufferSize
+				<< std::endl << "\tvbvinit      : " << pParams->encodeConfig->rcParams.vbvInitialDelay
+				<< std::endl << "\taq           : " << (pParams->encodeConfig->rcParams.enableAQ ? (pParams->encodeConfig->rcParams.aqStrength ? std::to_string(pParams->encodeConfig->rcParams.aqStrength) : "auto") : "disabled")
+				<< std::endl << "\ttemporalaq   : " << (pParams->encodeConfig->rcParams.enableTemporalAQ ? "enabled" : "disabled")
+				<< std::endl << "\tlookahead    : " << (pParams->encodeConfig->rcParams.enableLookahead ? std::to_string(pParams->encodeConfig->rcParams.lookaheadDepth) : "disabled")
+				<< std::endl << "\tcq           : " << pParams->encodeConfig->rcParams.targetQuality
+				<< std::endl << "\tqmin         : P,B,I=" << pParams->encodeConfig->rcParams.minQP.qpInterP << "," << pParams->encodeConfig->rcParams.minQP.qpInterB << "," << pParams->encodeConfig->rcParams.minQP.qpIntra
+				<< std::endl << "\tqmax         : P,B,I=" << pParams->encodeConfig->rcParams.maxQP.qpInterP << "," << pParams->encodeConfig->rcParams.maxQP.qpInterB << "," << pParams->encodeConfig->rcParams.maxQP.qpIntra
+				<< std::endl << "\tinitqp       : P,B,I=" << pParams->encodeConfig->rcParams.initialRCQP.qpInterP << "," << pParams->encodeConfig->rcParams.initialRCQP.qpInterB << "," << pParams->encodeConfig->rcParams.initialRCQP.qpIntra
+				;
+			return os.str();
+		}
+
+	}
 struct nvenc_data
 {
 	ID3D11Device*        d3d11_device  = nullptr;
@@ -384,26 +525,30 @@ static bool nvenc_init(void *nvenc_data, void *encoder_config)
 	initializeParams.encodeHeight = enc->height;
 	initializeParams.version = NV_ENC_INITIALIZE_PARAMS_VER;
 	initializeParams.encodeGUID = NV_ENC_CODEC_H264_GUID;
-	initializeParams.presetGUID = NV_ENC_PRESET_P5_GUID;
-	 
+	//initializeParams.presetGUID = NV_ENC_PRESET_P5_GUID;
+	//initializeParams.encodeConfig->profileGUID = NV_ENC_H264_PROFILE_HIGH_444_GUID;
 	initializeParams.frameRateDen = 1;
 	initializeParams.enablePTD = 1;
 	initializeParams.reportSliceOffsets = 0;
 	initializeParams.enableSubFrameWrite = 0;
 	
-	initializeParams.tuningInfo = NV_ENC_TUNING_INFO_ULTRA_LOW_LATENCY;
+	initializeParams.tuningInfo = NV_ENC_TUNING_INFO_HIGH_QUALITY;
 	initializeParams.frameRateNum = g_cfg.get_int32(ECI_RtcFrames);
 
 
 	///////////////
 	// H.264 specific settings
 	///
-	
+	initializeParams.encodeConfig->encodeCodecConfig.h264Config.h264VUIParameters.colourPrimaries = 1;
+	initializeParams.encodeConfig->encodeCodecConfig.h264Config.h264VUIParameters.transferCharacteristics = 1;
+	//initializeParams.encodeConfig->encodeCodecConfig.h264Config.h264VUIParameters.transferCharacteristics = 1;
+
 	initializeParams.encodeConfig->encodeCodecConfig.h264Config.enableIntraRefresh = 1;
 	initializeParams.encodeConfig->encodeCodecConfig.h264Config.intraRefreshPeriod = 180;
 	initializeParams.encodeConfig->encodeCodecConfig.h264Config.intraRefreshCnt = 180;
 	//initializeParams.encodeConfig->encodeCodecConfig.h264Config.idrPeriod = 
 	initializeParams.encodeConfig->encodeCodecConfig.h264Config.repeatSPSPPS = 1;
+	initializeParams.encodeConfig->encodeCodecConfig.h264Config.chromaFormatIDC = 3;
 	/*
 	* Slice mode - set the slice mode to "entire frame as a single slice" because WebRTC implementation doesn't work well with slicing. The default slicing mode
 	* produces (rarely, but especially under packet loss) grey full screen or just top half of it.
@@ -420,8 +565,8 @@ static bool nvenc_init(void *nvenc_data, void *encoder_config)
 	//initializeParams.encodeConfig->rcParams.qpMapMode = NV_ENC_QP_MAP_DELTA;
 	NV_ENC_RC_PARAMS& RateControlParams = initializeParams.encodeConfig->rcParams;
 #define DEFAULT_BITRATE (1000000u)
-	uint32_t const MinQP = static_cast<uint32_t>(1);
-	uint32_t const MaxQP = static_cast<uint32_t>(51);
+	uint32_t const MinQP = static_cast<uint32_t>(g_cfg.get_uint32(ECI_EncodeQpMin));
+	uint32_t const MaxQP = static_cast<uint32_t>(g_cfg.get_uint32(ECI_EncodeQpMax));
 	// = NV_ENC_PARAMS_RC_CONSTQP;// g_cfg.get_uint32(ECI_EnableEncoderCbr) > 0 ? NV_ENC_PARAMS_RC_CBR : NV_ENC_PARAMS_RC_VBR; // NV_ENC_PARAMS_RC_VBR; // NV_ENC_PARAMS_RC_CBR_LOWDELAY_HQ
 	if (g_cfg.get_uint32(ECI_EnableEncoderCbr) > 1)
 	{
@@ -435,8 +580,8 @@ static bool nvenc_init(void *nvenc_data, void *encoder_config)
 	{
 		RateControlParams.rateControlMode = NV_ENC_PARAMS_RC_VBR;
 	}
-	RateControlParams.averageBitRate = g_cfg.get_uint32(ECI_RtcAvgRate) * 1000;// DEFAULT_BITRATE;
-	RateControlParams.maxBitRate = g_cfg.get_uint32(ECI_RtcMaxRate) * 1000;// DEFAULT_BITRATE; // Not used for CBR
+ 	RateControlParams.averageBitRate = g_cfg.get_uint32(ECI_RtcAvgRate) * 1000;// DEFAULT_BITRATE;
+ 	RateControlParams.maxBitRate = g_cfg.get_uint32(ECI_RtcMaxRate) * 1000;// DEFAULT_BITRATE; // Not used for CBR
 	RateControlParams.multiPass = NV_ENC_TWO_PASS_FULL_RESOLUTION;
 	if (g_cfg.get_uint32(ECI_EnableEncoderCbr) == 0)
 	{
@@ -444,6 +589,7 @@ static bool nvenc_init(void *nvenc_data, void *encoder_config)
 		RateControlParams.maxQP = { MaxQP, MaxQP, MaxQP };
 		RateControlParams.enableMinQP = 1;
 		RateControlParams.enableMaxQP = 1; 
+		NORMAL_EX_LOG("QP min = %u, max = %u", MinQP, MaxQP);
 	}   
 
 	// If we have QP ranges turned on use the last encoded QP to guide the max QP for an i-frame, so the i-frame doesn't look too blocky
@@ -452,6 +598,7 @@ static bool nvenc_init(void *nvenc_data, void *encoder_config)
 	{
 		RateControlParams.maxQP.qpIntra = LastEncodedQP;
 	}*/
+	NORMAL_EX_LOG("====>>>>%s", gpu_encode_info::g_MainParamToString(&initializeParams).c_str());
 	
 	enc->nvenc->CreateEncoder(&initializeParams);
 	NORMAL_EX_LOG("------------->encoder create ok !!!");

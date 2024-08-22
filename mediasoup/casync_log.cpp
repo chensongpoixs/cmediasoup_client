@@ -32,6 +32,7 @@
 #include <string>
 #include "ctime_api.h"
 //#include "httplib.h"
+#define LOG_WRITE_FILE (0)
 #ifdef _MSC_VER
 #include <io.h>
 #include <direct.h>

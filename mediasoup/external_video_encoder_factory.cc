@@ -71,6 +71,10 @@ public:
 				}
 			}			
 		}
+		else
+		{
+			WARNING_EX_LOG("not find codec = %s", format.name.c_str());
+		}
 
 		return nullptr;
 	}
