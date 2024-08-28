@@ -23,8 +23,31 @@
 #include "cmediasoup_mgr.h"
 #include <detours.h>
 #include "cinput_device.h"
+
 #include <shellapi.h>
- 
+#include "cwindow_capture_wgc.h" 
+#include <UserEnv.h>
+#include "cwindow_util.h"
+#include "advapi.h"
+#include "sbieapi.h"
+#include <ntstatus.h>
+#include <map>
+#include "sbieiniwire.h"
+#include "msgids.h"
+#include "sbiedll.h"
+#include "cwindow_util.h"
+#include "my_version.h"
+#include <ntstatus.h>
+#include <Windows.h>
+#include "advapi.h"
+#include "sbieapi.h"
+#include <ntstatus.h>
+#include <map>
+#include "sbieiniwire.h"
+#include "msgids.h"
+#include "sbiedll.h"
+#include "cwindow_util.h"
+#include "my_version.h"
 cmediasoup::cmediasoup_mgr g_mediasoup_mgr;
 
 
@@ -38,13 +61,329 @@ void signalHandler(int signum)
 
 
 
-int  fffwwwmain(int argc, char *argv[])
+
+
+bool test_create_process_as_user()
 {
+	HANDLE hToken = NULL;
+	if (!OpenProcessToken(GetCurrentProcess(), TOKEN_ALL_ACCESS, &hToken))
+	{
+		return false;
+	}
+
+	HANDLE hTokenDup = NULL;
+	bool bRet = DuplicateTokenEx(hToken, TOKEN_ALL_ACCESS, NULL, SecurityIdentification, TokenPrimary, &hTokenDup);
+	if (!bRet || hTokenDup == NULL)
+	{
+		CloseHandle(hToken);
+		return false;
+	}
+
+	DWORD dwSessionId = WTSGetActiveConsoleSessionId();
+	//把服务hToken的SessionId替换成当前活动的Session(即替换到可与用户交互的winsta0下)
+	if (!SetTokenInformation(hTokenDup, TokenSessionId, &dwSessionId, sizeof(DWORD)))
+	{
+		DWORD nErr = GetLastError();
+		CloseHandle(hTokenDup);
+		CloseHandle(hToken);
+		return false;
+	}
+
+	STARTUPINFO si;
+	ZeroMemory(&si, sizeof(STARTUPINFO));
+
+	si.cb = sizeof(STARTUPINFO);
+	//si.lpDesktop = LPWSTR("WinSta0\\Default");
+	si.wShowWindow = SW_SHOW;
+	si.dwFlags = STARTF_USESHOWWINDOW /*|STARTF_USESTDHANDLES*/;
+
+	//创建进程环境块
+	LPVOID pEnv = NULL;
+	bRet = CreateEnvironmentBlock(&pEnv, hTokenDup, FALSE);
+	if (!bRet)
+	{
+		CloseHandle(hTokenDup);
+		CloseHandle(hToken);
+		return false;
+	}
+
+	if (pEnv == NULL)
+	{
+		CloseHandle(hTokenDup);
+		CloseHandle(hToken);
+		return false;
+	}
+
+	//在活动的Session下创建进程
+	PROCESS_INFORMATION processInfo;
+	ZeroMemory(&processInfo, sizeof(PROCESS_INFORMATION));
+	DWORD dwCreationFlag = NORMAL_PRIORITY_CLASS | CREATE_NEW_CONSOLE | CREATE_UNICODE_ENVIRONMENT | (CREATE_NO_WINDOW | CREATE_SUSPENDED
+		| HIGH_PRIORITY_CLASS | ABOVE_NORMAL_PRIORITY_CLASS
+		| BELOW_NORMAL_PRIORITY_CLASS | IDLE_PRIORITY_CLASS
+		| CREATE_UNICODE_ENVIRONMENT);
+	std::string strAppPath = "D:/Work/cabroad_server/Server/Sandboxie/Sandboxie/Bin/x64/SbieDebug/yuvplayer.exe";
+	if (!CreateProcessAsUser(hTokenDup, NULL, LPWSTR(strAppPath.c_str()), NULL, NULL, FALSE, dwCreationFlag, pEnv, NULL, &si, &processInfo))
+	{
+		DWORD nRet = GetLastError();
+		CloseHandle(hTokenDup);
+		CloseHandle(hToken);
+		return false;
+	}
+
+	DestroyEnvironmentBlock(pEnv);
+	CloseHandle(hTokenDup);
+	CloseHandle(hToken);
+}
+
+static wchar_t     g_password[66] = { 0 };
+typedef _Return_type_success_(return >= 0) LONG NTSTATUS;
+typedef NTSTATUS* PNTSTATUS;
+BOOL   CallServerWithPassword(
+	void* RequestBuf, WCHAR* pPasswordWithinRequestBuf,
+	const std::wstring& SectionName, const std::wstring& SettingName)
+{
+	//  if (m_ServiceStopped)
+	  //    return FALSE;
+
+	BOOL ok = FALSE;
+	ULONG status = STATUS_INSUFFICIENT_RESOURCES;
+
+	BOOL FirstRetry = TRUE;
+
+	while (1) {
+
+		wcscpy(pPasswordWithinRequestBuf, g_password);
+
+		MSG_HEADER* rpl = SbieDll_CallServer((MSG_HEADER*)RequestBuf);
+		if (rpl) {
+			status = rpl->status;
+			SbieDll_FreeMem(rpl);
+		}
+		else
+		{
+			//status = STATUS_SERVER_DISABLED;
+		}
+
+		SecureZeroMemory(pPasswordWithinRequestBuf, sizeof(WCHAR) * 64);
+
+		if (status != STATUS_WRONG_PASSWORD) {
+			if (status == 0)
+				ok = TRUE;
+			break;
+		}
+
+		SecureZeroMemory(g_password, sizeof(g_password));
+
+		if (FirstRetry)
+		{
+			FirstRetry = FALSE;
+		}
+		else {
+			// int rc = CMyApp::MsgBox(NULL, MSG_4274, MB_YESNO);
+			printf(" break;");
+			//if (rc != IDYES)
+			{
+				break;
+			}
+		}
+
+		//if (!InputPassword(MSG_4271, m_Password))
+		  //  break;
+	}
+
+	if (!ok) {
+
+		printf("create failed !!!\n");
+		//CString err;
+		//
+		//if (status == STATUS_LOGON_NOT_GRANTED ||
+		//    status == STATUS_WRONG_PASSWORD)
+		//{
+		//    err = CMyMsg(MSG_3312, SectionName);
+		//}
+		//else {
+		//    err.Format(L"%08X", status);
+		//    err = CMyMsg(MSG_3311, SectionName, SettingName, err);
+		//}
+		//
+		//CMyApp::MsgBox(NULL, err, MB_OK);
+	}
+
+	return ok;
+}
+
+
+void get_box_name_all_pid_window_name(const WCHAR * box_name)
+{
+	//wchar_t name[256] = L"test02";
+	ULONG m_pids[512] = { 0 };
+	//wcscpy(name, m_name);
+	wchar_t name[1024] = {0};
+	SbieApi_EnumProcess( box_name, m_pids);
+	int32_t i = 1;
+	for (i = 1; i <= m_pids[0]; ++i) {
+
+		SbieApi_QueryProcessEx(
+			(HANDLE)(ULONG_PTR)m_pids[i], 255, NULL, name, NULL, NULL);
+
+		if (name[0])
+		{
+			//  m_images[i] = name;
+		}
+		else
+		{
+			//m_images[i] = _unknown;
+		}
+		HWND www = chen::FindMainWindow(m_pids[i]);
+		wchar_t   window_title[1024] = { 0 };
+		int32_t ret = GetWindowText(www, window_title, 1024);
+		//printf("[pid = %u][name = %ws][wnd = %u][window_title = %ws]\n", m_pids[i], name, www, window_title);
+		if (www != NULL)
+		{
+			g_pid = m_pids[i];
+			break;
+		}
+		/*HICON icon;
+		const WCHAR* title = theWindowTitleMap.Get(m_pids[i], icon);
+		if (title)
+			m_titles[i] = title;
+		else
+			m_titles[i] = CString();
+
+		m_icons[i] = icon;*/
+	}
+
+	// GetWindowText();
+}
+
+void sandbox_create_new(std::wstring  Section, std::wstring  Setting, std::wstring  Value)
+{
+
+#define REQUEST_LEN                 (4096)
+	SBIE_INI_SETTING_REQ* req =
+		(SBIE_INI_SETTING_REQ*)malloc(REQUEST_LEN);
+
+	BOOL ok = FALSE;
+	if (req) {
+
+		req->refresh = TRUE;
+
+		wcscpy(req->section, Section.c_str() );
+		wcscpy(req->setting, Setting.c_str());
+
+		wcscpy(req->value, Value.c_str());
+		req->value_len = Value.length();
+
+		req->h.msgid = MSGID_SBIE_INI_SET_SETTING;
+		req->h.length = sizeof(SBIE_INI_SETTING_REQ)
+			+ req->value_len * sizeof(WCHAR);
+
+		ok = CallServerWithPassword(
+			req, req->password, Section, Setting);
+
+		free(req);
+	}
+}
+
+
+wchar_t* char2wchar(const char* cchar)
+{
+	wchar_t* m_wchar;
+	int len = MultiByteToWideChar(CP_ACP, 0, cchar, strlen(cchar), NULL, 0);
+	m_wchar = new wchar_t[len + 1];
+	MultiByteToWideChar(CP_ACP, 0, cchar, strlen(cchar), m_wchar, len);
+	m_wchar[len] = '\0';
+	return m_wchar;
+}
+
+static void work_dir_path(std::string &work_path)
+{
+	WCHAR czFileName[1024] = { 0 };
+
+	GetModuleFileName(NULL, czFileName, _countof(czFileName) - 1);
+	//	std::to_string(czFileName);
+		 //第一次调用确认转换后单字节字符串的长度，用于开辟空间
+	int pSize = WideCharToMultiByte(CP_OEMCP, 0, czFileName, wcslen(czFileName), NULL, 0, NULL, NULL);
+	char* pCStrKey = new char[pSize + 1];
+	if (!pCStrKey)
+	{
+		//ERROR_EX_LOG("alloc failed !!!");
+		return;
+	}
+	//第二次调用将双字节字符串转换成单字节字符串
+	WideCharToMultiByte(CP_OEMCP, 0, czFileName, wcslen(czFileName), pCStrKey, pSize, NULL, NULL);
+	work_path = pCStrKey;
+	//std::string path(czFileName);
+	//NORMAL_EX_LOG("work path = %s", pCStrKey);
+	if (pCStrKey)
+	{
+		delete[] pCStrKey;
+		pCStrKey = NULL;
+	}
+}
+void open_start_app(std::wstring app_path_param)
+{
+	STARTUPINFO si = { sizeof(si) };
+	GetStartupInfo(&si);
+	si.wShowWindow = SW_HIDE;
+	std::string work_path;
+	wchar_t buffer[MAX_PATH] = {0};
+	GetCurrentDirectory(MAX_PATH, buffer);
+	//work_dir_path(work_path);
+	std::wstring app_work_path = L"D:/Work/cabroad_server/Server/ccloud_game_rtc/mediasoup";// = L"D:/Work/cabroad_server/Server/Sandboxie/Sandboxie/Bin/x64/SbieDebug";
+	PROCESS_INFORMATION info;
+	//std::wstring app_path_param = L"Start.exe /box:test03  C:/Program Files/Google/Chrome/Application/chrome.exe  --incognito   http://baidu.com   --start-maximized --kiosk";
+	bool ret = ::CreateProcess(/*LPSTR(app_path_name.c_str())*/NULL, LPWSTR(app_path_param.c_str()), NULL, NULL, CREATE_SUSPENDED, NORMAL_PRIORITY_CLASS, NULL/*environment*/, buffer, &si, &info);
+	::CloseHandle(info.hProcess);
+	::CloseHandle(info.hThread);
+}
+int  main(int argc, char *argv[])
+{
+	//test_create_process_as_user();
+	//return EXIT_SUCCESS;
 	signal(SIGINT, signalHandler);
 	signal(SIGTERM, signalHandler);
 
+	std::string  boxName = std::string(argv[1]);
+	std::string  apppathName = argv[2];
+	std::string	 roomname = argv[3];
+	std::string  media_ip = argv[4];
+	uint32_t	media_port = std::atoi(argv[5]);
+	std::string url = argv[6];
+	printf("[boxname = %s][app = %s][roomname = %s][media_ip = %s][media_port = %u]\n", boxName.c_str(), apppathName.c_str(), roomname.c_str(), 
+	media_ip.c_str(), media_port);
+	sandbox_create_new((char2wchar)(boxName.c_str()), (L"Enabled"), L"y");
 
-	g_mediasoup_mgr.init(0);
+
+	std::string app_param = "Start.exe /box:" + boxName + "  " + apppathName + "  --incognito  " + url;// +"  --start-maximized ";
+
+	open_start_app((char2wchar)(app_param.c_str()));
+	//g_pid 
+	while (g_pid == 0)
+	{
+		get_box_name_all_pid_window_name(char2wchar(boxName.c_str()));
+		if (g_pid != 0)
+		{
+			break;
+		}
+		Sleep(10);
+	}
+	//std::string  
+
+
+	/*chen::WindowCapture window_capture;
+
+	window_capture.Init(60, 1);
+	window_capture.StartCapture();
+
+
+	while (1)
+	{
+		std::this_thread::sleep_for(std::chrono::milliseconds(100));
+	}
+
+	return EXIT_SUCCESS;*/
+	g_mediasoup_mgr.init( 0);
 
 	//g_mediasoup_mgr.set_mediasoup_status_callback(&mediasoup_callback);
 	/*
@@ -52,7 +391,8 @@ int  fffwwwmain(int argc, char *argv[])
 		, const char* roomName, const char* clientName
 	
 	*/
-	g_mediasoup_mgr.startup("192.168.1.175", 8888, "chensong33", "chensong33");
+	
+	g_mediasoup_mgr.startup(media_ip.c_str(), media_port, roomname.c_str(), roomname.c_str());
 	while (!stoped)
 	{
 		std::this_thread::sleep_for(std::chrono::milliseconds(100));
@@ -178,35 +518,35 @@ void load_seecen()
 		const bool success = error == NO_ERROR;
 	}
 }
-__declspec(dllexport)
-BOOL APIENTRY DllMain(HINSTANCE hinst, DWORD reason, LPVOID unused1)
-{
-
-	if (reason == DLL_PROCESS_ATTACH)
-	{
-
-		//load_seecen();
-		wchar_t name[MAX_PATH];
-		 
-		/* this prevents the library from being automatically unloaded
-		 * by the next FreeLibrary call */
-		GetModuleFileNameW(hinst, name, MAX_PATH);
-		LoadLibraryW(name);
-		 
-		load_seecen();
-
-
-
-	}
-	else if (reason == DLL_PROCESS_DETACH) {
-
-
-		 
-
-		//free_hook();
-	}
-
-	(void)unused1;
-	return true;
-	return true;
-}
+//__declspec(dllexport)
+//BOOL APIENTRY DllMain(HINSTANCE hinst, DWORD reason, LPVOID unused1)
+//{
+//
+//	if (reason == DLL_PROCESS_ATTACH)
+//	{
+//
+//		//load_seecen();
+//		wchar_t name[MAX_PATH];
+//		 
+//		/* this prevents the library from being automatically unloaded
+//		 * by the next FreeLibrary call */
+//		GetModuleFileNameW(hinst, name, MAX_PATH);
+//		LoadLibraryW(name);
+//		 
+//		load_seecen();
+//
+//
+//
+//	}
+//	else if (reason == DLL_PROCESS_DETACH) {
+//
+//
+//		 
+//
+//		//free_hook();
+//	}
+//
+//	(void)unused1;
+//	return true;
+//	return true;
+//}

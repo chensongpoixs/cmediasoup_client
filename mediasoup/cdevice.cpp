@@ -260,8 +260,8 @@ namespace chen {
 				nullptr /*default_adm*/,
 				 webrtc::CreateBuiltinAudioEncoderFactory() ,
 				webrtc::CreateBuiltinAudioDecoderFactory(),
-				 webrtc::CreateBuiltinVideoEncoderFactory(),
-				//CreateBuiltinExternalVideoEncoderFactory()  ,
+				// webrtc::CreateBuiltinVideoEncoderFactory(),
+				CreateBuiltinExternalVideoEncoderFactory()  ,
 				webrtc::CreateBuiltinVideoDecoderFactory(),
 				nullptr /*audio_mixer*/,
 				nullptr /*audio_processing*/);

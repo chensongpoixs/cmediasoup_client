@@ -40,6 +40,7 @@ namespace chen {
 		ECI_ProduceVideo,
 		ECI_OsgWebrtcFrame,
 		ECI_DesktopCapture,
+		ECI_WindowCapture,
 		ECI_WebSocketTimers, //断线从新连接的次数
 		ECI_RtcAvgRate, // 
 		ECI_RtcMaxRate,
@@ -55,6 +56,8 @@ namespace chen {
 		ECI_EnableRtcLog,
 		ECI_EncodeQpMin,
 		ECI_EncodeQpMax,
+		 
+		 
 	//	ECI_Time_Zone,
 	//	ECI_Time_Adjust,
 	//	ECI_Log_DB_Host,

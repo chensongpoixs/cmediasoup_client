@@ -109,12 +109,14 @@ namespace chen {
 		, m_mediasoup_status_callback(nullptr)
 		, m_websocket_timer(0)
 		, m_send_produce_video_msg(false)
-		, m_p2p_connect_failed(0){}
+		, m_p2p_connect_failed(0)
+		, m_window_capture_wgc_ptr(NULL){}
 	cclient::~cclient(){}
 
 	static void show_work_dir()
 	{
 		WCHAR czFileName[1024] = { 0 };
+		 
 		GetModuleFileName(NULL, czFileName, _countof(czFileName) - 1);
 		//	std::to_string(czFileName);
 			 //第一次调用确认转换后单字节字符串的长度，用于开辟空间
@@ -233,6 +235,11 @@ namespace chen {
 			m_desktop_capture_ptr = DesktopCapture::Create(60, 0);
 			SYSTEM_LOG("desktop create fps ok !!!");
 		}
+		else if (g_cfg.get_int32(ECI_WindowCapture))
+		{
+			m_window_capture_wgc_ptr = new WindowCapture();
+			m_window_capture_wgc_ptr->Init(60, 0);
+		}
 		else
 		{
 			m_desktop_capture_ptr = nullptr;
@@ -254,6 +261,10 @@ namespace chen {
 		if (m_desktop_capture_ptr)
 		{
 			m_desktop_capture_ptr->StartCapture();
+		}
+		if (m_window_capture_wgc_ptr)
+		{
+			m_window_capture_wgc_ptr->StartCapture();
 		}
 		// mediasoup_ip, mediasoup_port ;
 		// room_name , client_id;
@@ -621,6 +632,11 @@ namespace chen {
 			m_desktop_capture_ptr->StopCapture();
 			m_desktop_capture_ptr = nullptr;
 		 }
+		if (m_window_capture_wgc_ptr)
+		{
+			m_window_capture_wgc_ptr->StartCapture();
+			m_window_capture_wgc_ptr = NULL;
+		}
 		SYSTEM_LOG("osg copy thread destroy ...");
 		if (m_osg_copy_thread.joinable())
 		{

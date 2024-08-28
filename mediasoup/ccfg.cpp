@@ -51,6 +51,7 @@ namespace chen {
 		set_int32(ECI_ProduceVideo, "produce_video", 0);
 		set_uint32(ECI_OsgWebrtcFrame, "osg_webrtc_frame", 3);
 		set_uint32(ECI_DesktopCapture, "desktop_capture", 0);
+		set_uint32(ECI_WindowCapture, "window_capture", 0);
 		set_uint32(ECI_WebSocketTimers, "websocket_timer", 3);
 		set_uint32(ECI_RtcAvgRate, "rtc_avg_rate", 8000);
 		set_uint32(ECI_RtcMaxRate, "rtc_max_rate", 12000);

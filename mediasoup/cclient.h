@@ -33,6 +33,7 @@ purpose:		assertion macros
 #include "csingleton.h"
 #include "cdesktop_capture.h"
 #include "cmediasoup_mgr.h"
+#include "cwindow_capture_wgc.h"
 namespace chen {
 
 	class csend_transport;
@@ -215,6 +216,7 @@ namespace chen {
 
 
 		DesktopCapture*					m_desktop_capture_ptr;
+		chen::WindowCapture* m_window_capture_wgc_ptr;
 
 		cmediasoup::mediasoup_status_update_cb		m_mediasoup_status_callback;
 		uint32							m_websocket_timer;
