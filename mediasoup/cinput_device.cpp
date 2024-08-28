@@ -94,13 +94,13 @@ namespace chen {
 
 
 
- 
+#define MOUSE_INPUT(g_wnd)	
 
 	//if (GetCapture() != g_wnd)
-#define MOUSE_INPUT(g_wnd)		 { \
-								SetForegroundWindow(g_wnd);  \
-								SetCapture(g_wnd);           \
-								SetFocus(g_wnd); }
+//#define MOUSE_INPUT(g_wnd)		 { \
+//								SetForegroundWindow(g_wnd);  \
+//								SetCapture(g_wnd);           \
+//								SetFocus(g_wnd); }
 
 #define CliENTTOSCREENPOINT(hwnd, xx, yy) POINT CursorPoint; \
 	CursorPoint.x = xx; \
@@ -1409,15 +1409,15 @@ namespace chen {
 			//}
 			//else
 			{
-				MOUSE_INPUT(childwin);
+				MOUSE_INPUT(mwin);
 				 if (KeyCode != 18)
 				{
 
-					MESSAGE(childwin, WM_KEYUP, KeyCode, 3224961025);
+					MESSAGE(mwin, WM_KEYUP, KeyCode, 3224961025);
 				}
 				  else
 				{
-					MESSAGE(childwin, WM_SYSKEYUP, KeyCode, 0);
+					MESSAGE(mwin, WM_SYSKEYUP, KeyCode, 0);
 				}  
 			}
 			
