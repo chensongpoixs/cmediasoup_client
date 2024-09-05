@@ -1509,7 +1509,7 @@ namespace chen {
 		global_hook_info_ptr =(struct hook_info*) MapViewOfFile(shader_ptr,
 			FILE_MAP_ALL_ACCESS, 0, 0,
 			4);
-		i420_buffer_ = webrtc::I420Buffer::Create(2048, 2048);
+		i420_buffer_ = webrtc::I420Buffer::Create(1920, 1040);
 		while (true)
 		{
 			pre_time = std::chrono::steady_clock::now();

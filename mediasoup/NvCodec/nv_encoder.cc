@@ -582,12 +582,12 @@ int32_t NvEncoder::Encode(const VideoFrame& input_frame,
 			}
 		}
 
-		 static FILE* out_test_h264_ptr = ::fopen("chensong_h.h264", "wb+");
+		/* static FILE* out_test_h264_ptr = ::fopen("chensong_h.h264", "wb+");
 		if (out_test_h264_ptr)
 		{
 			fwrite(&frame_packet.frame.get()[0], 1, frame_packet.use_size, out_test_h264_ptr);
 			fflush(out_test_h264_ptr);
-		} 
+		}*/ 
 		encoded_images_[i]._encodedWidth = configurations_[i].width;
 		encoded_images_[i]._encodedHeight = configurations_[i].height;
 		encoded_images_[i].SetTimestamp(input_frame.timestamp());
