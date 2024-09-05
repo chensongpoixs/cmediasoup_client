@@ -83,6 +83,7 @@
     <ClInclude Include="crtc_media_mgr.h" />
     <ClInclude Include="cdata_channel.h" />
     <ClInclude Include="cwindow_capture_wgc.h" />
+    <ClInclude Include="ComPtr.hpp" />
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="casync_log.cpp" />

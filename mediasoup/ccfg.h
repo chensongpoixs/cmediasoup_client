@@ -56,6 +56,7 @@ namespace chen {
 		ECI_EnableRtcLog,
 		ECI_EncodeQpMin,
 		ECI_EncodeQpMax,
+		ECI_SharedGpuHandleAddressPid,
 		 
 		 
 	//	ECI_Time_Zone,

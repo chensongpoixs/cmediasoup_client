@@ -237,7 +237,7 @@ void get_box_name_all_pid_window_name(const WCHAR * box_name)
 		HWND www = chen::FindMainWindow(m_pids[i]);
 		wchar_t   window_title[1024] = { 0 };
 		int32_t ret = GetWindowText(www, window_title, 1024);
-		//printf("[pid = %u][name = %ws][wnd = %u][window_title = %ws]\n", m_pids[i], name, www, window_title);
+		printf("[pid = %u][name = %ws][wnd = %u][window_title = %ws]\n", m_pids[i], name, www, window_title);
 		if (www != NULL)
 		{
 			g_pid = m_pids[i];
@@ -352,22 +352,22 @@ int  main(int argc, char *argv[])
 	std::string url = argv[6];
 	printf("[boxname = %s][app = %s][roomname = %s][media_ip = %s][media_port = %u]\n", boxName.c_str(), apppathName.c_str(), roomname.c_str(), 
 	media_ip.c_str(), media_port);
-	sandbox_create_new((char2wchar)(boxName.c_str()), (L"Enabled"), L"y");
+	//sandbox_create_new((char2wchar)(boxName.c_str()), (L"Enabled"), L"y");
 
+	//// --start-maximized 
+	//std::string app_param = "Start.exe /box:" + boxName + "  " + apppathName + "  --incognito  --app=" + url + "    ";
 
-	std::string app_param = "Start.exe /box:" + boxName + "  " + apppathName + "  --incognito  " + url;// +"  --start-maximized ";
-
-	open_start_app((char2wchar)(app_param.c_str()));
-	//g_pid 
-	while (g_pid == 0)
-	{
-		get_box_name_all_pid_window_name(char2wchar(boxName.c_str()));
-		if (g_pid != 0)
-		{
-			break;
-		}
-		Sleep(10);
-	}
+	//open_start_app((char2wchar)(app_param.c_str()));
+	////g_pid 
+	//while (g_pid == 0)
+	//{
+	//	get_box_name_all_pid_window_name(char2wchar(boxName.c_str()));
+	//	if (g_pid != 0)
+	//	{
+	//		break;
+	//	}
+	//	Sleep(10);
+	//}
 	//std::string  
 
 
@@ -383,6 +383,7 @@ int  main(int argc, char *argv[])
 	}
 
 	return EXIT_SUCCESS;*/
+	g_pid = 38748;
 	g_mediasoup_mgr.init( 0);
 
 	//g_mediasoup_mgr.set_mediasoup_status_callback(&mediasoup_callback);

@@ -266,6 +266,10 @@ namespace chen {
 		{
 			m_window_capture_wgc_ptr->StartCapture();
 		}
+		if (g_cfg.get_uint32(ECI_SharedGpuHandleAddressPid))
+		{
+			m_shared_gpu_handle_address_pthread = std::thread(&cclient::_shared_gpu_handle_address, this);
+		}
 		// mediasoup_ip, mediasoup_port ;
 		// room_name , client_id;
 		//  Reconnect_waittime, 
@@ -636,6 +640,10 @@ namespace chen {
 		{
 			m_window_capture_wgc_ptr->StartCapture();
 			m_window_capture_wgc_ptr = NULL;
+		}
+		if (m_shared_gpu_handle_address_pthread.joinable())
+		{
+			m_shared_gpu_handle_address_pthread.join();
 		}
 		SYSTEM_LOG("osg copy thread destroy ...");
 		if (m_osg_copy_thread.joinable())
@@ -1370,6 +1378,199 @@ namespace chen {
 			}
 			 
 		}*/
+	}
+	void cclient::_shared_gpu_handle_address()
+	{
+
+		struct d3d8_offsets {
+			uint32_t present;
+		};
+
+		struct d3d9_offsets {
+			uint32_t present;
+			uint32_t present_ex;
+			uint32_t present_swap;
+			uint32_t d3d9_clsoff;
+			uint32_t is_d3d9ex_clsoff;
+		};
+
+		struct d3d12_offsets {
+			uint32_t execute_command_lists;
+		};
+
+		struct dxgi_offsets {
+			uint32_t present;
+			uint32_t resize;
+
+			uint32_t present1;
+		};
+
+		struct dxgi_offsets2 {
+			uint32_t release;
+		};
+
+		struct ddraw_offsets {
+			uint32_t surface_create;
+			uint32_t surface_restore;
+			uint32_t surface_release;
+			uint32_t surface_unlock;
+			uint32_t surface_blt;
+			uint32_t surface_flip;
+			uint32_t surface_set_palette;
+			uint32_t palette_set_entries;
+		};
+
+		struct shmem_data {
+			volatile int last_tex;
+			uint32_t tex1_offset;
+			uint32_t tex2_offset;
+		};
+
+		struct shtex_data {
+			uint32_t tex_handle;
+		};
+
+		enum capture_type {
+			CAPTURE_TYPE_MEMORY,
+			CAPTURE_TYPE_TEXTURE,
+		};
+
+		struct graphics_offsets {
+			struct d3d8_offsets d3d8;
+			struct d3d9_offsets d3d9;
+			struct dxgi_offsets dxgi;
+			struct ddraw_offsets ddraw;
+			struct dxgi_offsets2 dxgi2;
+			struct d3d12_offsets d3d12;
+		};
+
+		struct hook_info {
+			/* hook version */
+			uint32_t hook_ver_major;
+			uint32_t hook_ver_minor;
+
+			/* capture info */
+			enum capture_type type;
+			uint32_t window;
+			uint32_t format;
+			uint32_t cx;
+			uint32_t cy;
+			uint32_t UNUSED_base_cx;
+			uint32_t UNUSED_base_cy;
+			uint32_t pitch;
+			uint32_t map_id;
+			uint32_t map_size;
+			bool flip;
+
+			/* additional options */
+			uint64_t frame_interval;
+			bool UNUSED_use_scale;
+			bool force_shmem;
+			bool capture_overlay;
+			bool allow_srgb_alias;
+
+			/* hook addresses */
+			struct graphics_offsets offsets;
+
+			uint32_t reserved[126];
+		};
+
+
+
+		std::chrono::steady_clock::time_point cur_time_ms;
+		std::chrono::steady_clock::time_point pre_time;
+		std::chrono::steady_clock::duration dur;
+		std::chrono::microseconds ms;
+		uint32_t elapse = 0;
+		static const uint32 frame_s = (1000 ) / 200;
+
+		auto timestamp =
+			std::chrono::duration_cast<std::chrono::milliseconds>(
+				std::chrono::system_clock::now().time_since_epoch())
+			.count();
+		size_t cnt = 0;
+
+		rtc::scoped_refptr<webrtc::I420Buffer> i420_buffer_;
+
+
+#define SHMEM_HOOK_INFO L"CaptureHook_HookInfo"
+#define SHMEM_TEXTURE L"CaptureHook_Texture"
+#define GC_MAPPING_FLAGS (FILE_MAP_READ | FILE_MAP_WRITE)
+		wchar_t new_name[64] = L"CaptureHook_Texture_12918194_7";
+		//swprintf(new_name, 64, L"%s%lu", SHMEM_TEXTURE, g_cfg.get_uint32(ECI_SharedGpuHandleAddressPid));
+
+		//debug("map id: %S", new_name);
+
+		 
+		HANDLE shader_ptr  =   OpenFileMappingW(GC_MAPPING_FLAGS, false, new_name);
+
+		void * global_hook_info_ptr = NULL;
+
+		global_hook_info_ptr =(struct hook_info*) MapViewOfFile(shader_ptr,
+			FILE_MAP_ALL_ACCESS, 0, 0,
+			4);
+		i420_buffer_ = webrtc::I420Buffer::Create(2048, 2048);
+		while (true)
+		{
+			pre_time = std::chrono::steady_clock::now();
+			//shtex_data* ddd_ptr = (shtex_data *)global_hook_info_ptr;
+			if (true)
+			{
+				// webgpu Rte2.exe 932b9c2e0250b666_C2 eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJhdWQiOiJhZG1pbiJ9.uPchyky8YSNmaJjxTHPIM_CnS9X8hcjzLp9H55aohag 192.168.1.175 192.168.1.244 8500 9871 6379 syz@8015 192.168.2.52  9905 0 0 1920 1040 1 1 192.168.0.191 8300 192.168.0.191 8301 1 1 192.168.1.244 9871
+				// http://localhost:8080/getHandle
+				uint64 address = 0XC0003942;
+				//ShowWindow(m_window_wnd, SW_HIDE);
+				i420_buffer_->set_texture((void*)address);
+				//memcpy(i420_buffer_->MutableDataY(), frame.data, frame.width * frame.height * 4);
+				/*libyuv::ConvertToI420(frame.data, 0, i420_buffer_->MutableDataY(),
+					i420_buffer_->StrideY(), i420_buffer_->MutableDataU(),
+					i420_buffer_->StrideU(), i420_buffer_->MutableDataV(),
+					i420_buffer_->StrideV(), 0, 0, frame.width, frame.height, frame.width,
+					frame.height, libyuv::kRotate0, libyuv::FOURCC_ARGB);*/
+
+					//static uint64 frame_count = 0;
+					//printf("[%s][%u][frame_count = %u][width = %u][height = %u]\n", __FUNCTION__, __LINE__, ++frame_count, frame.width, frame.height);
+					// seting ÂíÁ÷µÄÐÅÏ¢
+
+				webrtc::VideoFrame captureFrame =
+					webrtc::VideoFrame::Builder()
+					.set_video_frame_buffer(i420_buffer_)
+					.set_timestamp_rtp(0)
+					.set_timestamp_ms(rtc::TimeMillis())
+					.set_rotation(webrtc::kVideoRotation_0)
+					.build();
+				// captureFrame.set_ntp_time_ms(0);
+				s_client.webrtc_video(captureFrame);
+				cnt++;
+				auto timestamp_curr = std::chrono::duration_cast<std::chrono::milliseconds>(
+					std::chrono::system_clock::now().time_since_epoch())
+					.count();
+				if (timestamp_curr - timestamp > 1000) {
+					//RTC_LOG(LS_INFO) <<   << cnt;
+					NORMAL_EX_LOG("===============>> send --> FPS: %u ", cnt);
+					cnt = 0;
+					timestamp = timestamp_curr;
+				}
+			}
+			{
+				cur_time_ms = std::chrono::steady_clock::now();
+				dur = cur_time_ms - pre_time;
+				ms = std::chrono::duration_cast<std::chrono::milliseconds>(dur);
+				elapse = static_cast<uint32_t>(ms.count());
+
+				if (elapse < frame_s)
+				{
+
+					std::this_thread::sleep_for(std::chrono::milliseconds(frame_s - elapse));
+				}
+				else
+				{
+					NORMAL_EX_LOG("send frame  = %u msc [frame_s = %u]", elapse, frame_s);
+				}
+			}
+
+
+		}
 	}
 	void cclient::_mediasoup_status_callback(uint32 status, uint32 error)
 	{

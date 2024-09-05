@@ -457,10 +457,30 @@ int32_t NvEncoder::SetRateAllocation(const VideoBitrateAllocation & bitrate, uin
 
 	return WEBRTC_VIDEO_CODEC_OK;
 }
-
+static auto timestamp =
+std::chrono::duration_cast<std::chrono::milliseconds>(
+	std::chrono::system_clock::now().time_since_epoch())
+	.count();
+static size_t cnt = 0;
 int32_t NvEncoder::Encode(const VideoFrame& input_frame,
 						  const std::vector<VideoFrameType>* frame_types)
 {
+
+
+
+	 
+	
+
+	cnt++;
+	auto timestamp_curr = std::chrono::duration_cast<std::chrono::milliseconds>(
+		std::chrono::system_clock::now().time_since_epoch())
+		.count();
+	if (timestamp_curr - timestamp > 1000) {
+		//RTC_LOG(LS_INFO) <<   << cnt;
+		NORMAL_EX_LOG("===============>> encode --> FPS: %u ", cnt);
+		cnt = 0;
+		timestamp = timestamp_curr;
+	}
 	std::chrono::steady_clock::time_point cur_time_ms;
 	std::chrono::steady_clock::time_point pre_time = std::chrono::steady_clock::now();
 	std::chrono::steady_clock::duration dur;
@@ -538,7 +558,7 @@ int32_t NvEncoder::Encode(const VideoFrame& input_frame,
 			return false;
 		}
 
-		if (frame_packet.use_size == 0) 
+		if (frame_packet.use_size <= 0) 
 		{
 			NORMAL_EX_LOG("frame_packet.use_size == 0");
 			return WEBRTC_VIDEO_CODEC_OK;
@@ -562,12 +582,12 @@ int32_t NvEncoder::Encode(const VideoFrame& input_frame,
 			}
 		}
 
-		/* static FILE* out_test_h264_ptr = ::fopen("chensong_h.h264", "wb+");
+		 static FILE* out_test_h264_ptr = ::fopen("chensong_h.h264", "wb+");
 		if (out_test_h264_ptr)
 		{
 			fwrite(&frame_packet.frame.get()[0], 1, frame_packet.use_size, out_test_h264_ptr);
 			fflush(out_test_h264_ptr);
-		} */
+		} 
 		encoded_images_[i]._encodedWidth = configurations_[i].width;
 		encoded_images_[i]._encodedHeight = configurations_[i].height;
 		encoded_images_[i].SetTimestamp(input_frame.timestamp());

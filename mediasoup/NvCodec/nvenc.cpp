@@ -32,6 +32,7 @@ purpose:		nvenc
 #include <dxgi1_2.h>
 #include "../clog.h"
 #include "../ccfg.h"
+#include "../ComPtr.hpp"
 //#include "Utils/AppEncUtils.h"
 //#include "Utils/AppEncUtils.h"
 namespace chen {
@@ -225,6 +226,7 @@ struct nvenc_data
 
 	HANDLE           input_handle  = nullptr;
 	ID3D11Texture2D* input_texture = nullptr;;
+	ID3D11Resource* input_resource = nullptr;
 	IDXGIKeyedMutex* keyed_mutex   = nullptr;
 
 	std::mutex mutex;
@@ -236,6 +238,8 @@ struct nvenc_data
 	std::string codec;
 	DXGI_FORMAT format = DXGI_FORMAT_UNKNOWN;
 	NvEncoderD3D11 *nvenc = nullptr;
+	uint64_t lock_key = 0;
+	bool     acquired = false;
 };
 
 static bool is_supported(void)
@@ -295,7 +299,9 @@ static void* nvenc_create()
 	
 	SYSTEM_LOG(" start  gpu info [g_gpu_index = %u] ....", g_gpu_index);
 
-
+	uint32 DeviceFlags = 0;
+	D3D_FEATURE_LEVEL FeatureLevel = D3D_FEATURE_LEVEL_11_0;
+	D3D_FEATURE_LEVEL ActualFeatureLevel;
 	hr = enc->factory->EnumAdapters(g_gpu_index, &enc->adapter);
 	if (FAILED(hr)) 
 	{
@@ -305,13 +311,14 @@ static void* nvenc_create()
 	else
 	{
 		char desc[128] = { 0 };
+		
 		DXGI_ADAPTER_DESC adapterDesc;
 		enc->adapter->GetDesc(&adapterDesc);
 		wcstombs(desc, adapterDesc.Description, sizeof(desc));
 		if (strstr(desc, "NVIDIA") != NULL) 
 		{
-			hr = D3D11CreateDevice(enc->adapter, D3D_DRIVER_TYPE_UNKNOWN, NULL, 0, NULL, 0, D3D11_SDK_VERSION,
-				&enc->d3d11_device, nullptr, &enc->d3d11_context);
+			hr = D3D11CreateDevice(enc->adapter, D3D_DRIVER_TYPE_UNKNOWN, NULL, DeviceFlags, &FeatureLevel, 1, D3D11_SDK_VERSION,
+				&enc->d3d11_device, &ActualFeatureLevel, &enc->d3d11_context);
 			enc->adapter->Release();
 			enc->adapter = nullptr;
 			if (SUCCEEDED(hr)) 
@@ -346,8 +353,8 @@ gpuadapter:
 			}
 		}
 		index = gpuIndex;
-		hr = D3D11CreateDevice(enc->adapter, D3D_DRIVER_TYPE_UNKNOWN, NULL, 0, NULL, 0, D3D11_SDK_VERSION,
-							   &enc->d3d11_device, nullptr, &enc->d3d11_context);
+		hr = D3D11CreateDevice(enc->adapter, D3D_DRIVER_TYPE_UNKNOWN, NULL, DeviceFlags, &FeatureLevel, 1, D3D11_SDK_VERSION,
+							   &enc->d3d11_device, &ActualFeatureLevel, &enc->d3d11_context);
 		enc->adapter->Release();
 		enc->adapter = nullptr;
 		if (SUCCEEDED(hr)) {
@@ -525,27 +532,57 @@ static bool nvenc_init(void *nvenc_data, void *encoder_config)
 	initializeParams.encodeHeight = enc->height;
 	initializeParams.version = NV_ENC_INITIALIZE_PARAMS_VER;
 	initializeParams.encodeGUID = NV_ENC_CODEC_H264_GUID;
+
 	//initializeParams.presetGUID = NV_ENC_PRESET_P5_GUID;
 	//initializeParams.encodeConfig->profileGUID = NV_ENC_H264_PROFILE_HIGH_444_GUID;
+	initializeParams.frameRateNum = g_cfg.get_int32(ECI_RtcFrames);
 	initializeParams.frameRateDen = 1;
 	initializeParams.enablePTD = 1;
 	initializeParams.reportSliceOffsets = 0;
 	initializeParams.enableSubFrameWrite = 0;
+	//initializeParams.maxEncodeWidth = 4096;
+	//initializeParams.maxEncodeHeight = 4096;
+	initializeParams.tuningInfo = NV_ENC_TUNING_INFO_ULTRA_LOW_LATENCY;
+	//initializeParams.tuningInfo = NV_ENC_TUNING_INFO_HIGH_QUALITY;
 	
-	initializeParams.tuningInfo = NV_ENC_TUNING_INFO_HIGH_QUALITY;
-	initializeParams.frameRateNum = g_cfg.get_int32(ECI_RtcFrames);
 
 
 	///////////////
 	// H.264 specific settings
 	///
+
 	initializeParams.encodeConfig->encodeCodecConfig.h264Config.h264VUIParameters.colourPrimaries = 1;
 	initializeParams.encodeConfig->encodeCodecConfig.h264Config.h264VUIParameters.transferCharacteristics = 1;
 	//initializeParams.encodeConfig->encodeCodecConfig.h264Config.h264VUIParameters.transferCharacteristics = 1;
+	int32 IntraRefreshPeriodFrames = 1; //CVarNVENCIntraRefreshPeriodFrames.GetValueOnAnyThread();
+	int32 IntraRefreshCountFrames = 1; // CVarNVENCIntraRefreshCountFrames.GetValueOnAnyThread();
+	bool bIntraRefreshSupported = enc->nvenc->GetCapabilityValue(NV_ENC_CODEC_H264_GUID, NV_ENC_CAPS_SUPPORT_INTRA_REFRESH);// GetEncoderCapability(NVENC, NVEncoder, NV_ENC_CAPS_SUPPORT_INTRA_REFRESH) > 0;
+	bool bIntraRefreshEnabled = IntraRefreshPeriodFrames > 0;
 
-	initializeParams.encodeConfig->encodeCodecConfig.h264Config.enableIntraRefresh = 1;
-	initializeParams.encodeConfig->encodeCodecConfig.h264Config.intraRefreshPeriod = 180;
-	initializeParams.encodeConfig->encodeCodecConfig.h264Config.intraRefreshCnt = 180;
+	if (bIntraRefreshEnabled && bIntraRefreshSupported)
+	{
+		initializeParams.encodeConfig->encodeCodecConfig.h264Config.enableIntraRefresh = 1;
+		// TODO@chensong 20240903
+		// 每次帧内刷新之间的总帧数。较小的值将导致更频繁的帧内刷新。默认值：0。值<=0将禁用帧内刷新。
+		initializeParams.encodeConfig->encodeCodecConfig.h264Config.intraRefreshPeriod = 180; // 180;
+		// TODO@chensong 20240903
+		// 应用作“帧内刷新”帧的帧内刷新周期内的总帧数。较小的值使流恢复更快，但代价是占用了更多的带宽。默认值：0。
+		initializeParams.encodeConfig->encodeCodecConfig.h264Config.intraRefreshCnt =  1;
+		NORMAL_EX_LOG("NVENC intra refresh enabled.");
+		NORMAL_EX_LOG("NVENC intra refresh period set to = %d", IntraRefreshPeriodFrames);
+		NORMAL_EX_LOG("NVENC intra refresh count = %d", IntraRefreshCountFrames);
+	}
+	else
+	{
+		WARNING_EX_LOG("NVENC intra refresh capability is not supported on this device, cannot use this feature");
+	}
+
+
+
+	// TODO@chensong 202409-06 
+	// 每N帧发送一个IDR帧。默认值：300。注意：值<=0将禁用在间隔上发送IDR帧。
+	initializeParams.encodeConfig->encodeCodecConfig.h264Config.idrPeriod = 300;
+
 	//initializeParams.encodeConfig->encodeCodecConfig.h264Config.idrPeriod = 
 	initializeParams.encodeConfig->encodeCodecConfig.h264Config.repeatSPSPPS = 1;
 	initializeParams.encodeConfig->encodeCodecConfig.h264Config.chromaFormatIDC = 3;
@@ -557,7 +594,8 @@ static bool nvenc_init(void *nvenc_data, void *encoder_config)
 	initializeParams.encodeConfig->encodeCodecConfig.h264Config.sliceModeData = 0;
 	// `outputPictureTimingSEI` is used in CBR mode to fill video frame with data to match the requested bitrate.
 	initializeParams.encodeConfig->encodeCodecConfig.h264Config.outputPictureTimingSEI = 1;
-	initializeParams.encodeConfig->encodeCodecConfig.h264Config.enableFillerDataInsertion = 1;
+	initializeParams.encodeConfig->encodeCodecConfig.h264Config.outputRecoveryPointSEI = 1;
+	
 	//initializeParams.encodeConfig->gopLength =  g_cfg.get_uint32(ECI_EncoderVideoGop);//NVENC_INFINITE_GOPLENGTH;//
 	//initializeParams.encodeConfig->rcParams.averageBitRate = g_cfg.get_uint32(ECI_RtcAvgRate) * 1000 ;
 	//initializeParams.encodeConfig->rcParams.maxBitRate = g_cfg.get_uint32(ECI_RtcMaxRate) * 1000;
@@ -575,6 +613,9 @@ static bool nvenc_init(void *nvenc_data, void *encoder_config)
 	else if (g_cfg.get_uint32(ECI_EnableEncoderCbr) == 1)
 	{
 		RateControlParams.rateControlMode = NV_ENC_PARAMS_RC_CBR;
+		// TODO@chensong 20240903 
+		// `outputPictureTimingSEI`在CBR模式下用于用数据填充视频帧，以匹配请求的比特率。
+		 initializeParams.encodeConfig->encodeCodecConfig.h264Config.enableFillerDataInsertion = 1;
 	}
 	else
 	{
@@ -663,6 +704,64 @@ int nvenc_encode_texture(void *nvenc_data, ID3D11Texture2D *texture,int * ready,
 
 
 
+
+static int device_texture_acquire_sync(struct nvenc_data* enc, uint32_t ms)
+{
+	/*gs_texture_2d* tex2d = reinterpret_cast<gs_texture_2d*>(tex);
+	if (tex->type != GS_TEXTURE_2D)
+		return -1;*/
+
+	if (enc->acquired)
+	{
+		WARNING_EX_LOG("");
+		return 0;
+	}
+
+	ComQIPtr<IDXGIKeyedMutex> keyedMutex(enc->input_texture);
+	if (!keyedMutex)
+	{
+		WARNING_EX_LOG("");
+		return -1;
+	}
+
+	HRESULT hr = keyedMutex->AcquireSync(enc->lock_key, ms);
+	if (hr == S_OK) {
+		enc->acquired = true;
+		return 0;
+	}
+	else if (hr == WAIT_TIMEOUT) 
+	{
+		WARNING_EX_LOG("");
+		return ETIMEDOUT;
+	}
+
+	return -1;
+}
+
+int device_texture_release_sync(struct nvenc_data* enc)
+{
+	if (!enc->acquired)
+	{
+		WARNING_EX_LOG("");
+		return 0;
+	}
+
+	ComQIPtr<IDXGIKeyedMutex> keyedMutex(enc->input_texture);
+	if (!keyedMutex)
+	{
+		WARNING_EX_LOG("");
+		return -1;
+	}
+
+	HRESULT hr = keyedMutex->ReleaseSync(++enc->lock_key);
+	if (hr == S_OK) {
+		enc->acquired = false;
+		return 0;
+	}
+
+	return -1;
+}
+
 int nvenc_encode_texture_unlock_lock(void *nvenc_data, ID3D11Texture2D *texture , uint8_t* out_buf, uint32_t out_buf_size, int lock_key, int unlock_key, IDXGIKeyedMutex* keyed_mutex)
 {
 	using namespace chen;
@@ -690,19 +789,31 @@ int nvenc_encode_texture_unlock_lock(void *nvenc_data, ID3D11Texture2D *texture 
 	ID3D11Texture2D *encoder_texture = reinterpret_cast<ID3D11Texture2D*>(input_frame->inputPtr);
 	//*ready = 1;
 	//NORMAL_EX_LOG("");
-	if (lock_key >= 0 && unlock_key >= 0 && keyed_mutex)
+	//if (lock_key >= 0 && unlock_key >= 0 && keyed_mutex)
 	{
-		HRESULT hr = keyed_mutex->AcquireSync(lock_key, 3);
-		if (hr != S_OK)
+#define GS_WAIT_INFINITE (uint32_t) - 1
+		//HRESULT hr = keyed_mutex->AcquireSync(enc->lock_key, GS_WAIT_INFINITE);
+		//if (hr != S_OK)
+		/*if (device_texture_acquire_sync(enc, GS_WAIT_INFINITE)!= 0)
 		{
 			NORMAL_EX_LOG("AcquireSync time out !!!");
 			return -1;
-		}
+		}*/
 	}
 	enc->d3d11_context->CopyResource(encoder_texture, texture);
-	if (lock_key >= 0 && unlock_key >= 0 && keyed_mutex)
+	//D3D11_BOX srcBox;
+	//srcBox.left = 0;
+	//srcBox.right = 1920;
+	//srcBox.bottom = 1040;
+	//srcBox.top = 0;
+	//srcBox.front = 0;
+	//srcBox.back = 1;
+	//  enc->d3d11_context->CopySubresourceRegion(encoder_texture, 0, 0, 0, 0,
+	//	  texture, 0, &srcBox);
+	//if (lock_key >= 0 && unlock_key >= 0 && keyed_mutex)
 	{
-		keyed_mutex->ReleaseSync(unlock_key);
+		//device_texture_release_sync(enc);
+		//keyed_mutex->ReleaseSync(enc->lock_key++);
 	}
 	//*ready = 0;
 	//NORMAL_EX_LOG("");
@@ -729,6 +840,23 @@ int nvenc_encode_texture_unlock_lock(void *nvenc_data, ID3D11Texture2D *texture 
 	}*/
 
 	return packet_size;
+}
+
+static void  GetSharedHandle(struct nvenc_data*  enc, IDXGIResource* dxgi_res)
+{
+	HANDLE handle;
+	HRESULT hr;
+
+	hr = dxgi_res->GetSharedHandle(&handle);
+	if (FAILED(hr)) {
+		WARNING_EX_LOG(
+			"GetSharedHandle: Failed to "
+			"get shared handle: %08lX",
+			hr);
+	}
+	else {
+		enc->input_handle = handle;
+	}
 }
 
 int nvenc_encode_handle(void *nvenc_data, HANDLE handle, int lock_key, int unlock_key, 
@@ -772,28 +900,46 @@ int nvenc_encode_handle(void *nvenc_data, HANDLE handle, int lock_key, int unloc
 			WARNING_EX_LOG("[handle = %p]OpenSharedResource  failed !!!", handle);
 			return -1;
 		}
+	/*	enc->input_resource->QueryInterface(__uuidof(ID3D11Texture2D), (void**)(&enc->input_texture));
+		enc->input_resource->Release();
+		enc->input_resource = NULL;
+		enc->input_texture->AddRef();*/
 	//	NORMAL_EX_LOG("");
 		input_texture = enc->input_texture;
+		D3D11_TEXTURE2D_DESC  desc_p;
+		enc->acquired = false;
+		input_texture->GetDesc(&desc_p);
+		if ((desc_p.MiscFlags & D3D11_RESOURCE_MISC_SHARED_KEYEDMUTEX) != 0)
+		{
+			ComQIPtr<IDXGIResource> dxgi_res(enc->input_texture);
+			if (dxgi_res)
+			{
+				GetSharedHandle(enc, dxgi_res);
+			}
+			device_texture_acquire_sync(enc, INFINITE);
+		}
 		//NORMAL_EX_LOG("");
 		//if (g_cfg.get_uint32(ECI_GpuVideoLock) > 0)
 		{
 			//if (lock_key >= 0 && unlock_key >= 0)
 			//{
-			//	hr = input_texture->QueryInterface(_uuidof(IDXGIKeyedMutex), reinterpret_cast<void**>(&enc->keyed_mutex));
-			//	//NORMAL_EX_LOG("hr = %u", hr);
-			//	if (FAILED(hr))
-			//	{
-			//		enc->input_texture->Release();
-			//		enc->input_texture = nullptr;
-			//		return -1;
-			//	}
-			//	//NORMAL_EX_LOG("");
-			//	keyed_mutex = enc->keyed_mutex;
+				//hr = input_texture->QueryInterface(_uuidof(IDXGIKeyedMutex), reinterpret_cast<void**>(&enc->keyed_mutex));
+				////NORMAL_EX_LOG("hr = %u", hr);
+				//if (FAILED(hr))
+				//{
+				//	enc->input_texture->Release();
+				//	enc->input_texture = nullptr;
+				//	return -1;
+				//}
+				////NORMAL_EX_LOG("");
+				//keyed_mutex = enc->keyed_mutex;
 			//}
+			
 		}
 		
 		//NORMAL_EX_LOG("");
 		enc->input_handle = handle;
+		//device_texture_acquire_sync(enc, INFINITE);
 	}
 	//NORMAL_EX_LOG("");
 	if (input_texture != nullptr)
@@ -840,7 +986,7 @@ int nvenc_set_bitrate(void *nvenc_data, uint32_t bitrate_bps)
 	{ 
 		return 0;
 	}*/
-	/*
+	
 	if ((bitrate_bps / 1000) > g_cfg.get_uint32(ECI_RtcMaxRate))
 	{
 		NORMAL_EX_LOG("[bitrate_bps = %u ]too big [defalut max bitrate = %u]", bitrate_bps/ 1000, g_cfg.get_uint32(ECI_RtcMaxRate));
@@ -851,7 +997,7 @@ int nvenc_set_bitrate(void *nvenc_data, uint32_t bitrate_bps)
 		WARNING_EX_LOG("[bitrate_bps = %u ]too big [defalut avg bitrate = %u]", bitrate_bps / 1000, g_cfg.get_uint32(ECI_RtcAvgRate));
 		bitrate_bps = g_cfg.get_uint32(ECI_RtcAvgRate) * 1000;
 	}
-	 */
+	 
 	/*if ((bitrate_bps / 1000) > g_cfg.get_uint32(ECI_RtcAvgRate))
 	{
 		WARNING_EX_LOG("[bitrate_bps = %u ]too big [defalut bitrate = %u]", bitrate_bps / 1000, g_cfg.get_uint32(ECI_RtcAvgRate));

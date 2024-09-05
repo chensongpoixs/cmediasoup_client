@@ -94,13 +94,13 @@ namespace chen {
 
 
 
-#define MOUSE_INPUT(g_wnd)	
+//#define MOUSE_INPUT(g_wnd)	
 
 	//if (GetCapture() != g_wnd)
-//#define MOUSE_INPUT(g_wnd)		 { \
-//								SetForegroundWindow(g_wnd);  \
-//								SetCapture(g_wnd);           \
-//								SetFocus(g_wnd); }
+#define MOUSE_INPUT(g_wnd)		 { \
+								SetForegroundWindow(g_wnd);  \
+								SetCapture(g_wnd);           \
+								SetFocus(g_wnd); }
 
 #define CliENTTOSCREENPOINT(hwnd, xx, yy) POINT CursorPoint; \
 	CursorPoint.x = xx; \
@@ -2483,6 +2483,7 @@ namespace chen {
 	*/
 	bool cinput_device::OnMouseDoubleClick(const uint8*& Data,   uint32 Size)
 	{
+		return false;
 		//WM_LBUTTONDBLCLK
 		GET(FButtonType, Button);
 		GET(FPosType, PosX);

@@ -70,6 +70,7 @@ namespace chen {
 		set_uint32(ECI_EnableRtcLog, "enable_rtc_log", 0);
 		set_uint32(ECI_EncodeQpMin, "encode_qp_min", 0);
 		set_uint32(ECI_EncodeQpMax, "encode_qp_max", 51);
+		set_uint32(ECI_SharedGpuHandleAddressPid, "shard_gpu_handle_address_pid", 0);
 #if _DEBUG
 		set_uint32(ECI_LogLevel, "log_level", ELogLevel_Num);
 #endif // _DEBUG
