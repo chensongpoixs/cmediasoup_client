@@ -353,7 +353,7 @@ int  main(int argc, char *argv[])
 	printf("[boxname = %s][app = %s][roomname = %s][media_ip = %s][media_port = %u]\n", boxName.c_str(), apppathName.c_str(), roomname.c_str(), 
 	media_ip.c_str(), media_port);
 	//sandbox_create_new((char2wchar)(boxName.c_str()), (L"Enabled"), L"y");
-
+	// chrome.exe  http://www.baidu.com    --disable-notifications  --disable-restore-session-state   --noerrdialogs    --disable-infobars  --disable-session-crashed-bubble   --disable-notification  --incognito   --start-fullscreen   --no-default-browser-check
 	//// --start-maximized 
 	//std::string app_param = "Start.exe /box:" + boxName + "  " + apppathName + "  --incognito  --app=" + url + "    ";
 
@@ -383,7 +383,7 @@ int  main(int argc, char *argv[])
 	}
 
 	return EXIT_SUCCESS;*/
-	g_pid = 33436;
+	g_pid = 43032;
 	g_mediasoup_mgr.init( 0);
 
 	//g_mediasoup_mgr.set_mediasoup_status_callback(&mediasoup_callback);
