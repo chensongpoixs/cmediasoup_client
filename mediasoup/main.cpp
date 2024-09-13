@@ -38,7 +38,7 @@ void signalHandler(int signum)
 
 
 
-int  fffwwwmain(int argc, char *argv[])
+int  main(int argc, char *argv[])
 {
 	signal(SIGINT, signalHandler);
 	signal(SIGTERM, signalHandler);
@@ -52,7 +52,7 @@ int  fffwwwmain(int argc, char *argv[])
 		, const char* roomName, const char* clientName
 	
 	*/
-	g_mediasoup_mgr.startup("192.168.1.175", 8888, "chensong33", "chensong33");
+	g_mediasoup_mgr.startup("192.168.2.202", 8888, "93sdfds2_C1", "93sdfds2_C1");
 	while (!stoped)
 	{
 		std::this_thread::sleep_for(std::chrono::milliseconds(100));
@@ -178,35 +178,35 @@ void load_seecen()
 		const bool success = error == NO_ERROR;
 	}
 }
-__declspec(dllexport)
-BOOL APIENTRY DllMain(HINSTANCE hinst, DWORD reason, LPVOID unused1)
-{
-
-	if (reason == DLL_PROCESS_ATTACH)
-	{
-
-		//load_seecen();
-		wchar_t name[MAX_PATH];
-		 
-		/* this prevents the library from being automatically unloaded
-		 * by the next FreeLibrary call */
-		GetModuleFileNameW(hinst, name, MAX_PATH);
-		LoadLibraryW(name);
-		 
-		load_seecen();
-
-
-
-	}
-	else if (reason == DLL_PROCESS_DETACH) {
-
-
-		 
-
-		//free_hook();
-	}
-
-	(void)unused1;
-	return true;
-	return true;
-}
+//__declspec(dllexport)
+//BOOL APIENTRY DllMain(HINSTANCE hinst, DWORD reason, LPVOID unused1)
+//{
+//
+//	if (reason == DLL_PROCESS_ATTACH)
+//	{
+//
+//		//load_seecen();
+//		wchar_t name[MAX_PATH];
+//		 
+//		/* this prevents the library from being automatically unloaded
+//		 * by the next FreeLibrary call */
+//		GetModuleFileNameW(hinst, name, MAX_PATH);
+//		LoadLibraryW(name);
+//		 
+//		load_seecen();
+//
+//
+//
+//	}
+//	else if (reason == DLL_PROCESS_DETACH) {
+//
+//
+//		 
+//
+//		//free_hook();
+//	}
+//
+//	(void)unused1;
+//	return true;
+//	return true;
+//}

@@ -38,6 +38,8 @@ purpose:		assertion macros
 #include "cdataconsumer.h"
 #include "csession_description.h"
 #include "pc/video_track_source.h"
+#include <system_wrappers/include/field_trial.h>
+
 namespace chen {
 
 	
@@ -51,7 +53,8 @@ namespace chen {
 		const nlohmann::json& dtlsParameters,
 		const nlohmann::json& sctpParameters)
 	{
-		
+		/*const std::string field_trials = "WebRTC-FrameDropper/Disabled/";
+		webrtc::field_trial::InitFieldTrialsFromString(field_trials.c_str());*/
 		m_networkThread = rtc::Thread::CreateWithSocketServer() ;
 		m_signalingThread = rtc::Thread::Create();
 		m_workerThread = rtc::Thread::Create();

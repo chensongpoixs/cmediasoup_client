@@ -28,6 +28,11 @@ purpose:		assertion macros
 #include "cwebsocket_mgr.h"
 #include <iostream>
 #include <io.h>
+
+//#include "system_wrappers/include"
+
+#include <system_wrappers/include/field_trial.h>
+
 #define _CRT_SECURE_NO_WARNINGS
 #include "cdevice.h"
 #include "pc/video_track_source.h"
@@ -167,7 +172,9 @@ namespace chen {
 			std::cerr << " log init failed !!!";
 			return false;
 		}
-		 
+		const std::string field_trials = "WebRTC-FrameDropper/Disabled/";
+		 webrtc::field_trial::InitFieldTrialsFromString(field_trials.c_str());
+		// rtc::register_log_callback();
 		
 		show_work_dir();
 		 
@@ -192,7 +199,7 @@ namespace chen {
 
 		if (g_cfg.get_uint32(ECI_EnableRtcLog))
 		{
-			//rtc::register_log_callback(&rtc_log_file);
+			rtc::register_log_callback(&rtc_log_file);
 		}
 		if (!s_input_device.init())
 		{

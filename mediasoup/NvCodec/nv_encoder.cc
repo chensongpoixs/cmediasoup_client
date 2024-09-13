@@ -670,7 +670,23 @@ bool NvEncoder::EncodeFrame(int index, const VideoFrame& input_frame, cnv_frame_
 		ERROR_EX_LOG("nv encoder empty !!!");
 		return false;
 	}
+	//NORMAL_EX_LOG("");
+	static auto timestamp =
+		std::chrono::duration_cast<std::chrono::milliseconds>(
+			std::chrono::system_clock::now().time_since_epoch())
+		.count();
+	static size_t cnt = 0;
 
+	cnt++;
+	auto timestamp_curr = std::chrono::duration_cast<std::chrono::milliseconds>(
+		std::chrono::system_clock::now().time_since_epoch())
+		.count();
+	if (timestamp_curr - timestamp > 1000) {
+		//RTC_LOG(LS_INFO) << "FPS: " << cnt;
+		NORMAL_EX_LOG("fps = %u", cnt);
+		cnt = 0;
+		timestamp = timestamp_curr;
+	}
 	/*
 	if (video_format_ == EVideoFormatType::videoFormatI420) {
 		if (image_buffer_ != nullptr) {
@@ -724,7 +740,7 @@ bool NvEncoder::EncodeFrame(int index, const VideoFrame& input_frame, cnv_frame_
 		 }
 		 else*/ 
 		
-		 if ( 0 != g_gpu_index  )
+		// if ( 0 != g_gpu_index  )
 		 {
 			// NORMAL_EX_LOG("");
 			 D3D11_MAPPED_SUBRESOURCE dsec = { 0 };
@@ -749,21 +765,21 @@ bool NvEncoder::EncodeFrame(int index, const VideoFrame& input_frame, cnv_frame_
 			 }
 			 
 		 }
-		 else if (input_frame.video_frame_buffer()->ToI420()->get_texture())
-		 {
-			// NORMAL_EX_LOG("");
-			 int frame_size = nvenc_info.encode_handle((void*)nv_encoders_[index], (HANDLE)input_frame.video_frame_buffer()->ToI420()->get_texture(), 0, 0, frame_packet.frame.get(), max_buffer_size); ;
-			 frame_packet.use_size = frame_size;
-			 if (frame_packet.use_size < 1)
-			 {
-				 ERROR_EX_LOG("encoder texture  frame_size = %d !!!!", frame_size);
-				 return false;
-			 }
-		 }
-		 else
-		 {
-			 WARNING_EX_LOG("encoder texture type error !!!");
-		 }
+		 //else if (input_frame.video_frame_buffer()->ToI420()->get_texture())
+		 //{
+			//// NORMAL_EX_LOG("");
+			// int frame_size = nvenc_info.encode_handle((void*)nv_encoders_[index], (HANDLE)input_frame.video_frame_buffer()->ToI420()->get_texture(), 0, 0, frame_packet.frame.get(), max_buffer_size); ;
+			// frame_packet.use_size = frame_size;
+			// if (frame_packet.use_size < 1)
+			// {
+			//	 ERROR_EX_LOG("encoder texture  frame_size = %d !!!!", frame_size);
+			//	 return false;
+			// }
+		 //}
+		 //else
+		 //{
+			// WARNING_EX_LOG("encoder texture type error !!!");
+		 //}
 	}
 	else
 	{

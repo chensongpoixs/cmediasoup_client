@@ -93,7 +93,7 @@ namespace chen {
 		const char* szPresetNames = "default hp hq bd ll ll_hp ll_hq lossless lossless_hp";
 		const char* szLowLatencyPresetNames = "ll ll_hp ll_hq";
 		static  const  std::vector<GUID> vPreset = {
-		  NV_ENC_PRESET_DEFAULT_GUID,
+		/*  NV_ENC_PRESET_DEFAULT_GUID,
 		  NV_ENC_PRESET_HP_GUID,
 		  NV_ENC_PRESET_HQ_GUID,
 		  NV_ENC_PRESET_BD_GUID,
@@ -101,13 +101,13 @@ namespace chen {
 		  NV_ENC_PRESET_LOW_LATENCY_HP_GUID,
 		  NV_ENC_PRESET_LOW_LATENCY_HQ_GUID,
 		  NV_ENC_PRESET_LOSSLESS_DEFAULT_GUID,
-		  NV_ENC_PRESET_LOSSLESS_HP_GUID
+		  NV_ENC_PRESET_LOSSLESS_HP_GUID*/
 		};
 
 		static  const  std::vector<GUID> vLowLatencyPreset = {
-			  NV_ENC_PRESET_LOW_LATENCY_DEFAULT_GUID,
+			/*  NV_ENC_PRESET_LOW_LATENCY_DEFAULT_GUID,
 			  NV_ENC_PRESET_LOW_LATENCY_HP_GUID,
-			  NV_ENC_PRESET_LOW_LATENCY_HQ_GUID,
+			  NV_ENC_PRESET_LOW_LATENCY_HQ_GUID,*/
 		};
 
 		const char* szH264ProfileNames = "baseline main high high444";
@@ -525,14 +525,14 @@ static bool nvenc_init(void *nvenc_data, void *encoder_config)
 	initializeParams.encodeHeight = enc->height;
 	initializeParams.version = NV_ENC_INITIALIZE_PARAMS_VER;
 	initializeParams.encodeGUID = NV_ENC_CODEC_H264_GUID;
-	//initializeParams.presetGUID = NV_ENC_PRESET_P5_GUID;
+	initializeParams.presetGUID = NV_ENC_PRESET_P4_GUID;
 	//initializeParams.encodeConfig->profileGUID = NV_ENC_H264_PROFILE_HIGH_444_GUID;
 	initializeParams.frameRateDen = 1;
 	initializeParams.enablePTD = 1;
 	initializeParams.reportSliceOffsets = 0;
 	initializeParams.enableSubFrameWrite = 0;
 	
-	initializeParams.tuningInfo = NV_ENC_TUNING_INFO_HIGH_QUALITY;
+	initializeParams.tuningInfo = NV_ENC_TUNING_INFO_ULTRA_LOW_LATENCY;
 	initializeParams.frameRateNum = g_cfg.get_int32(ECI_RtcFrames);
 
 
@@ -740,7 +740,7 @@ int nvenc_encode_handle(void *nvenc_data, HANDLE handle, int lock_key, int unloc
 		int ready;
 		void * handler;
 	};
-	// 
+	//  
 	//video_data * video_data_ptr = (video_data*)handle;
 	//NORMAL_EX_LOG("");
 	struct nvenc_data *enc = (struct nvenc_data *)nvenc_data;
