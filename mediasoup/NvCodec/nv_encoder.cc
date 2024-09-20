@@ -740,7 +740,7 @@ bool NvEncoder::EncodeFrame(int index, const VideoFrame& input_frame, cnv_frame_
 		 }
 		 else*/ 
 		
-		// if ( 0 != g_gpu_index  )
+		  if ( 0 != g_gpu_index  )
 		 {
 			// NORMAL_EX_LOG("");
 			 D3D11_MAPPED_SUBRESOURCE dsec = { 0 };
@@ -765,21 +765,21 @@ bool NvEncoder::EncodeFrame(int index, const VideoFrame& input_frame, cnv_frame_
 			 }
 			 
 		 }
-		 //else if (input_frame.video_frame_buffer()->ToI420()->get_texture())
-		 //{
-			//// NORMAL_EX_LOG("");
-			// int frame_size = nvenc_info.encode_handle((void*)nv_encoders_[index], (HANDLE)input_frame.video_frame_buffer()->ToI420()->get_texture(), 0, 0, frame_packet.frame.get(), max_buffer_size); ;
-			// frame_packet.use_size = frame_size;
-			// if (frame_packet.use_size < 1)
-			// {
-			//	 ERROR_EX_LOG("encoder texture  frame_size = %d !!!!", frame_size);
-			//	 return false;
-			// }
-		 //}
-		 //else
-		 //{
-			// WARNING_EX_LOG("encoder texture type error !!!");
-		 //}
+		 else if (input_frame.video_frame_buffer()->ToI420()->get_texture())
+		 {
+			// NORMAL_EX_LOG("");
+			 int frame_size = nvenc_info.encode_handle((void*)nv_encoders_[index], (HANDLE)input_frame.video_frame_buffer()->ToI420()->get_texture(), 0, 0, frame_packet.frame.get(), max_buffer_size); ;
+			 frame_packet.use_size = frame_size;
+			 if (frame_packet.use_size < 1)
+			 {
+				 ERROR_EX_LOG("encoder texture  frame_size = %d !!!!", frame_size);
+				 return false;
+			 }
+		 }
+		 else
+		 {
+			 WARNING_EX_LOG("encoder texture type error !!!");
+		 }
 	}
 	else
 	{
