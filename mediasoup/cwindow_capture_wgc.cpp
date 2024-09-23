@@ -219,6 +219,7 @@ namespace chen {
 			i420_buffer_ = webrtc::I420Buffer::Create(frame.width, frame.height);
 		}
 		shared_ptr =  frame.data;
+		::SetActiveWindow(m_window_wnd);
 		return;
 		i420_buffer_->set_texture((void *)frame.data);
 		//memcpy(i420_buffer_->MutableDataY(), frame.data, frame.width * frame.height * 4);

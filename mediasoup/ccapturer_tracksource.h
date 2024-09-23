@@ -57,7 +57,7 @@ purpose:		assertion macros
 #include <atomic>
 #include "ccfg.h"
 #include "NvCodec/nvenc.h"
- 
+#include "cinput_device.h"
 namespace chen {
 	 
 
@@ -100,9 +100,9 @@ namespace chen {
 			{
 				i420_buffer_ = webrtc::I420Buffer::Create(width, height);
 			}
-			
+			//g_pid = fmt;
 			i420_buffer_->set_texture(texture);
-			g_dxgi_format = static_cast<DXGI_FORMAT>(fmt);
+			g_dxgi_format = static_cast<DXGI_FORMAT>(fmt); // static_cast<DXGI_FORMAT>(fmt);
 			//NORMAL_EX_LOG("[fmt = %u][width = %u][height = %u]", fmt, width, height);
 			//::memcpy(i420_buffer_->MutableDataY(), rgba, width * height * 4);
 			//libyuv::ConvertToI420(rgba, 0, i420_buffer_->MutableDataY(),

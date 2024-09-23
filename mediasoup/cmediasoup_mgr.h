@@ -42,6 +42,8 @@ namespace cmediasoup
 	public:
 		bool init( uint32_t gpu_index);
 
+		void set_window_pid(uint64_t pid);
+
 		void startup(const char * mediasoupIp = "127.0.0.1", uint16_t mediasoupPort = 8888, const  char * roomName = "chensong", const char* clientName = "chensong"
 			, uint32_t reconnectWaittime = 5);
 

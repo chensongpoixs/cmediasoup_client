@@ -34,7 +34,7 @@ purpose:		input_device
 #include <WinUser.h>
 #include <UserEnv.h>
 #include <mutex>
-#include <detours.h>
+//#include <detours.h>
 #include "cint2str.h"
 #include <shellapi.h>
 uint64_t g_pid = 0;
@@ -614,31 +614,31 @@ namespace chen {
 		m_init = true;
 		//g_hrawinput.resize(RAW_INPUT_SIZE);
 		 // win
-		char system_path[MAX_PATH] = {0};
-		 
-		UINT ret = GetSystemDirectoryA(system_path, MAX_PATH);
-		if (!ret)
-		{
-			ERROR_EX_LOG("Failed to get windows system path: %lu\n", GetLastError());
-			//return false;
-		}
-		SYSTEM_LOG("[system_path = %s] ok ", system_path);
-		// hook mouse move  GetRawInputData
-		user32dll = get_system_module(system_path, "user32.dll");
-		if (!user32dll)
-		{
-			WARNING_EX_LOG(" REGISTER mouse  failed !!!");
-			//return false;
-		}
-		SYSTEM_LOG("REGISTER  mouse ok !!!");
-		void* get_raw_input_data_proc = GetProcAddress(user32dll, "GetRawInputData");
-		void* get_cursor_pos_proc = GetProcAddress(user32dll, "GetCursorPos");
-		void* set_cursor_pos_proc = GetProcAddress(user32dll, "SetCursorPos");
-		void * get_key_state_proc = GetProcAddress(user32dll, "GetKeyState"); //hook_RealGetKeyState
-		void* get_async_key_state_proc = GetProcAddress(user32dll, "GetAsyncKeyState");
-		void* get_RealRegisterHotKey = GetProcAddress(user32dll, "RegisterHotKey");
-		void* get_RealGetMessageW = GetProcAddress(user32dll, "GetMessageW");
-		void* get_RealGetMessageA = GetProcAddress(user32dll, "GetMessageA");
+		//char system_path[MAX_PATH] = {0};
+		// 
+		//UINT ret = GetSystemDirectoryA(system_path, MAX_PATH);
+		//if (!ret)
+		//{
+		//	ERROR_EX_LOG("Failed to get windows system path: %lu\n", GetLastError());
+		//	//return false;
+		//}
+		//SYSTEM_LOG("[system_path = %s] ok ", system_path);
+		//// hook mouse move  GetRawInputData
+		//user32dll = get_system_module(system_path, "user32.dll");
+		//if (!user32dll)
+		//{
+		//	WARNING_EX_LOG(" REGISTER mouse  failed !!!");
+		//	//return false;
+		//}
+		//SYSTEM_LOG("REGISTER  mouse ok !!!");
+		//void* get_raw_input_data_proc = GetProcAddress(user32dll, "GetRawInputData");
+		//void* get_cursor_pos_proc = GetProcAddress(user32dll, "GetCursorPos");
+		//void* set_cursor_pos_proc = GetProcAddress(user32dll, "SetCursorPos");
+		//void * get_key_state_proc = GetProcAddress(user32dll, "GetKeyState"); //hook_RealGetKeyState
+		//void* get_async_key_state_proc = GetProcAddress(user32dll, "GetAsyncKeyState");
+		//void* get_RealRegisterHotKey = GetProcAddress(user32dll, "RegisterHotKey");
+		//void* get_RealGetMessageW = GetProcAddress(user32dll, "GetMessageW");
+		//void* get_RealGetMessageA = GetProcAddress(user32dll, "GetMessageA");
 		 
 
 		//void* EnumDisplaySettingsA_proc = GetProcAddress(user32dll, "EnumDisplaySettingsA");
@@ -657,7 +657,7 @@ namespace chen {
 		}
 		else*/
 		{
-			SYSTEM_LOG("    input device  begin ... ");
+		/*	SYSTEM_LOG("    input device  begin ... ");
 			DetourTransactionBegin();
 
 			
@@ -711,7 +711,7 @@ namespace chen {
 				RealGetMessageW = (PFN_GetMessageW)get_RealGetMessageW;
 				DetourAttach((PVOID*)&RealGetMessageW,
 					hook_GetMessageW);
-			}
+			}*/
 
 			 /*if (EnumDisplaySettingsA_proc)
 			{
@@ -739,52 +739,52 @@ namespace chen {
 					hook_RegisterClassW);
 			}*/
 
-			SYSTEM_LOG("   input end  ... ");
-			const LONG error = DetourTransactionCommit();
-			const bool success = error == NO_ERROR;
-			if (success)
-			{
-				NORMAL_EX_LOG("  input device");
-				if (get_raw_input_data_proc)
-				{
-					NORMAL_EX_LOG("  input device");
-				}
-				if (get_cursor_pos_proc)
-				{
-					NORMAL_EX_LOG("  input device");
-				}
-				if (set_cursor_pos_proc)
-				{
-					NORMAL_EX_LOG("  input device");
-				}
-				if (get_async_key_state_proc)
-				{
-					NORMAL_EX_LOG("input key ");
-				}
-				if (get_key_state_proc)
-				{
-					NORMAL_EX_LOG("input key state");
-				}
-				/*if (register_class_a_proc)
-				{
-					NORMAL_EX_LOG(" input device");
-				}
-				if (register_class_w_proc)
-				{
-					NORMAL_EX_LOG(" input device");
-				}*/
-				NORMAL_EX_LOG("  input device ");
-			}
-			else
-			{
-				RealGetRawInputData = NULL;
-				RealGetCursorPos = NULL;
-				RealSetCursorPos = NULL;
-				RealGetAsyncKeyState = NULL;
-				/*RealRegisterClassA = NULL;
-				RealRegisterClassW = NULL;*/
-				ERROR_EX_LOG("Failed to attach  mouse  : %ld", error);
-			}
+			//SYSTEM_LOG("   input end  ... ");
+			//const LONG error = DetourTransactionCommit();
+			//const bool success = error == NO_ERROR;
+			//if (success)
+			//{
+			//	NORMAL_EX_LOG("  input device");
+			//	if (get_raw_input_data_proc)
+			//	{
+			//		NORMAL_EX_LOG("  input device");
+			//	}
+			//	if (get_cursor_pos_proc)
+			//	{
+			//		NORMAL_EX_LOG("  input device");
+			//	}
+			//	if (set_cursor_pos_proc)
+			//	{
+			//		NORMAL_EX_LOG("  input device");
+			//	}
+			//	if (get_async_key_state_proc)
+			//	{
+			//		NORMAL_EX_LOG("input key ");
+			//	}
+			//	if (get_key_state_proc)
+			//	{
+			//		NORMAL_EX_LOG("input key state");
+			//	}
+			//	/*if (register_class_a_proc)
+			//	{
+			//		NORMAL_EX_LOG(" input device");
+			//	}
+			//	if (register_class_w_proc)
+			//	{
+			//		NORMAL_EX_LOG(" input device");
+			//	}*/
+			//	NORMAL_EX_LOG("  input device ");
+			//}
+			//else
+			//{
+			//	RealGetRawInputData = NULL;
+			//	RealGetCursorPos = NULL;
+			//	RealSetCursorPos = NULL;
+			//	RealGetAsyncKeyState = NULL;
+			//	/*RealRegisterClassA = NULL;
+			//	RealRegisterClassW = NULL;*/
+			//	ERROR_EX_LOG("Failed to attach  mouse  : %ld", error);
+			//}
 		}
 
 		
@@ -2079,6 +2079,7 @@ namespace chen {
 		#if defined(_MSC_VER)
 
 		WINDOW_MAIN();
+		NORMAL_EX_LOG("pid === %u", g_pid);
 		//MOUSE_INPUT(mwin);
 		/*registerinputdevice(mwin);
 		SetForegroundWindow(mwin);

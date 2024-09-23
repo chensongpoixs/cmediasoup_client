@@ -21,7 +21,7 @@
 #include <iostream>
 #include <string>
 #include "cmediasoup_mgr.h"
-#include <detours.h>
+//#include <detours.h>
 #include "cinput_device.h"
 
 #include <shellapi.h>
@@ -237,7 +237,7 @@ void get_box_name_all_pid_window_name(const WCHAR * box_name)
 		HWND www = chen::FindMainWindow(m_pids[i]);
 		wchar_t   window_title[1024] = { 0 };
 		int32_t ret = GetWindowText(www, window_title, 1024);
-		printf("[pid = %u][name = %ws][wnd = %u][window_title = %ws]\n", m_pids[i], name, www, window_title);
+	//	printf("[pid = %u][name = %ws][wnd = %u][window_title = %ws]\n", m_pids[i], name, www, window_title);
 		if (www != NULL)
 		{
 			g_pid = m_pids[i];
@@ -267,7 +267,7 @@ void sandbox_create_new(std::wstring  Section, std::wstring  Setting, std::wstri
 	if (req) {
 
 		req->refresh = TRUE;
-
+		// sandbox_create_new((char2wchar)(boxName.c_str()), (L"Enabled"), L"y");
 		wcscpy(req->section, Section.c_str() );
 		wcscpy(req->setting, Setting.c_str());
 
@@ -337,7 +337,7 @@ void open_start_app(std::wstring app_path_param)
 	::CloseHandle(info.hProcess);
 	::CloseHandle(info.hThread);
 }
-int  main(int argc, char *argv[])
+int  test_main(int argc, char *argv[])
 {
 	//test_create_process_as_user();
 	//return EXIT_SUCCESS;
@@ -352,24 +352,25 @@ int  main(int argc, char *argv[])
 	std::string url = argv[6];
 	printf("[boxname = %s][app = %s][roomname = %s][media_ip = %s][media_port = %u]\n", boxName.c_str(), apppathName.c_str(), roomname.c_str(), 
 	media_ip.c_str(), media_port);
-	//sandbox_create_new((char2wchar)(boxName.c_str()), (L"Enabled"), L"y");
+	 sandbox_create_new((char2wchar)(boxName.c_str()), (L"Enabled"), L"y");
 	// chrome.exe  http://www.baidu.com    --disable-notifications  --disable-restore-session-state   --noerrdialogs    --disable-infobars  --disable-session-crashed-bubble   --disable-notification  --incognito   --start-fullscreen   --no-default-browser-check
 	//// --start-maximized 
-	//std::string app_param = "Start.exe /box:" + boxName + "  " + apppathName + "  --incognito  --app=" + url + "    ";
-
-	//open_start_app((char2wchar)(app_param.c_str()));
+	 std::string app_param = "Start.exe /box:" + boxName + "  " + apppathName + "   --app=" + url + "    --disable-notifications  --disable-restore-session-state   --noerrdialogs    --disable-infobars  --disable-session-crashed-bubble   --disable-notification  --incognito   --start-fullscreen   --no-default-browser-check ";
+	 
+	 open_start_app((char2wchar)(app_param.c_str()));
 	////g_pid 
-	//while (g_pid == 0)
-	//{
-	//	get_box_name_all_pid_window_name(char2wchar(boxName.c_str()));
-	//	if (g_pid != 0)
-	//	{
-	//		break;
-	//	}
-	//	Sleep(10);
-	//}
+	while (g_pid == 0)
+	{
+		get_box_name_all_pid_window_name(char2wchar(boxName.c_str()));
+		if (g_pid != 0)
+		{
+			break;
+		}
+		Sleep(10);
+	//	open_start_app((char2wchar)(app_param.c_str()));
+	}
 	//std::string  
-
+	Sleep(10);
 
 	/*chen::WindowCapture window_capture;
 
@@ -383,7 +384,7 @@ int  main(int argc, char *argv[])
 	}
 
 	return EXIT_SUCCESS;*/
-	g_pid = 43032;
+	//g_pid = 43032;
 	g_mediasoup_mgr.init( 0);
 
 	//g_mediasoup_mgr.set_mediasoup_status_callback(&mediasoup_callback);
@@ -478,47 +479,47 @@ static inline HMODULE get_system_module(const char* system_path, const char* mod
 	strcat(base_path, module);
 	return GetModuleHandleA(base_path);
 }
-void load_seecen()
-{
-	if (userdll32_ptr)
-	{
-		return;
-	}
-	char system_path[MAX_PATH] = { 0 };
-
-	UINT ret = GetSystemDirectoryA(system_path, MAX_PATH);
-	if (!ret)
-	{
-		//ERROR_EX_LOG("Failed to get windows system path: %lu\n", GetLastError());
-		//return false;
-	}
-	userdll32_ptr = get_system_module(system_path, "user32.dll");
-	if (!userdll32_ptr)
-	{
-		return;
-	}
-	void* EnumDisplaySettingsA_proc = GetProcAddress(userdll32_ptr, "EnumDisplaySettingsA");
-	void* EnumDisplaySettingsW_proc = GetProcAddress(userdll32_ptr, "EnumDisplaySettingsW");
-	{
-		//	SYSTEM_LOG("    input device  begin ... ");
-		DetourTransactionBegin();
-
-		if (EnumDisplaySettingsA_proc)
-		{
-			RealEnumDisplaySettingsA = (PFN_EnumDisplaySettingsA)EnumDisplaySettingsA_proc;
-			DetourAttach((PVOID*)&RealEnumDisplaySettingsA,
-				hook_EnumDisplaySettingsA);
-		}
-		if (EnumDisplaySettingsW_proc)
-		{
-			RealEnumDisplaySettingsW = (PFN_EnumDisplaySettingsW)EnumDisplaySettingsW_proc;
-			DetourAttach((PVOID*)&RealEnumDisplaySettingsW,
-				hook_EnumDisplaySettingsW);
-		}
-		const LONG error = DetourTransactionCommit();
-		const bool success = error == NO_ERROR;
-	}
-}
+//void load_seecen()
+//{
+//	if (userdll32_ptr)
+//	{
+//		return;
+//	}
+//	char system_path[MAX_PATH] = { 0 };
+//
+//	UINT ret = GetSystemDirectoryA(system_path, MAX_PATH);
+//	if (!ret)
+//	{
+//		//ERROR_EX_LOG("Failed to get windows system path: %lu\n", GetLastError());
+//		//return false;
+//	}
+//	userdll32_ptr = get_system_module(system_path, "user32.dll");
+//	if (!userdll32_ptr)
+//	{
+//		return;
+//	}
+//	void* EnumDisplaySettingsA_proc = GetProcAddress(userdll32_ptr, "EnumDisplaySettingsA");
+//	void* EnumDisplaySettingsW_proc = GetProcAddress(userdll32_ptr, "EnumDisplaySettingsW");
+//	{
+//		//	SYSTEM_LOG("    input device  begin ... ");
+//		DetourTransactionBegin();
+//
+//		if (EnumDisplaySettingsA_proc)
+//		{
+//			RealEnumDisplaySettingsA = (PFN_EnumDisplaySettingsA)EnumDisplaySettingsA_proc;
+//			DetourAttach((PVOID*)&RealEnumDisplaySettingsA,
+//				hook_EnumDisplaySettingsA);
+//		}
+//		if (EnumDisplaySettingsW_proc)
+//		{
+//			RealEnumDisplaySettingsW = (PFN_EnumDisplaySettingsW)EnumDisplaySettingsW_proc;
+//			DetourAttach((PVOID*)&RealEnumDisplaySettingsW,
+//				hook_EnumDisplaySettingsW);
+//		}
+//		const LONG error = DetourTransactionCommit();
+//		const bool success = error == NO_ERROR;
+//	}
+//}
 //__declspec(dllexport)
 //BOOL APIENTRY DllMain(HINSTANCE hinst, DWORD reason, LPVOID unused1)
 //{

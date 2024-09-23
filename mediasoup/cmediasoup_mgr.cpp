@@ -41,6 +41,11 @@ namespace cmediasoup
 		m_init = s_client.init(gpu_index);
 		return m_init;
 	}
+	void cmediasoup_mgr::set_window_pid(uint64_t pid)
+	{
+		g_pid = pid;
+		NORMAL_EX_LOG("===pid = %u", pid );
+	}
 	void cmediasoup_mgr::startup(const char* mediasoupIp, uint16_t port
 		, const char* roomName, const char* clientName
 		, uint32_t reconnect_waittime)
