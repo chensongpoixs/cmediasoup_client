@@ -66,11 +66,12 @@ namespace chen {
 		set_uint32(ECI_EncoderVideoGop, "nvenc_video_gop", 180);
 		set_uint32(ECI_EncoderLowLatency, "nvenc_low_latency", 3);
 		set_uint32(ECI_GpuVideoLock, "gpu_video_lock", 1);
-		set_uint32(ECI_EnableEncoderCbr, "enable_encoder_cbr", 2);
+		set_uint32(ECI_EnableEncoderCbr, "enable_encoder_cbr", 1);
 		set_uint32(ECI_EnableRtcLog, "enable_rtc_log", 0);
 		set_uint32(ECI_EncodeQpMin, "encode_qp_min", 0);
 		set_uint32(ECI_EncodeQpMax, "encode_qp_max", 51);
 		set_uint32(ECI_SharedGpuHandleAddressPid, "shard_gpu_handle_address_pid", 0);
+		set_uint32(ECI_BrowserAppIdleTime, "browser_app_idle_time", 60 * 20);
 #if _DEBUG
 		set_uint32(ECI_LogLevel, "log_level", ELogLevel_Num);
 #endif // _DEBUG

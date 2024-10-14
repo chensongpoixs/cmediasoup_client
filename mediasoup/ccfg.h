@@ -57,6 +57,7 @@ namespace chen {
 		ECI_EncodeQpMin,
 		ECI_EncodeQpMax,
 		ECI_SharedGpuHandleAddressPid,
+		ECI_BrowserAppIdleTime,
 		 
 		 
 	//	ECI_Time_Zone,

@@ -27,6 +27,7 @@ purpose:		input_device
 #include "cinput_device_event.h"
 #include "rtc_base/logging.h"
 #include "clog.h"
+#include "ccfg.h"
 #if defined(_MSC_VER)
 // TODO@chensong 20220711  UE 鼠标控制权问题
 #define _WIN32_WINNT 0x0400 
@@ -37,7 +38,7 @@ purpose:		input_device
 //#include <detours.h>
 #include "cint2str.h"
 #include <shellapi.h>
-uint64_t g_pid = 0;
+uint64_t g_pid = 0; 
 //void CallMessage(HWND hwnd, int nMsgId, int wParam, int lParam)
 //
 //{
@@ -192,6 +193,8 @@ namespace chen {
 #if defined(_MSC_VER)
 		, m_main_win(NULL)
 #endif //#if defined(_MSC_VER)
+		, m_app_events(0)
+		, m_app_event_time(::time(NULL))
 	{}
 	cinput_device::~cinput_device() {}
 
@@ -822,6 +825,19 @@ namespace chen {
 		m_thread.swap(td);
 		return true;
 	}
+	void cinput_device::update()
+	{
+		if (std::time(NULL) - m_app_event_time > g_cfg.get_uint32(ECI_BrowserAppIdleTime))
+		{
+			if (m_app_events <= 0)
+			{
+				WARNING_EX_LOG("app event time out !!! ");
+				::abort();
+			}
+			m_app_event_time = std::time(NULL);
+			m_app_events = 0;
+		}
+	}
 	void cinput_device::Destroy()
 	{
 		m_stoped = true;
@@ -856,7 +872,7 @@ namespace chen {
 		uint32 Size = static_cast<uint32>(Buffer.data.size());
 
 		GET(EToStreamMsg, MsgType);
-		
+		++m_app_events;
 		M_INPUT_DEVICE_MAP::iterator iter =  m_input_device.find(MsgType);
 		if (iter == m_input_device.end())
 		{
@@ -1799,7 +1815,7 @@ namespace chen {
 
 		MouseDownEvent.GetMouseClick(active_type, PosX, PosY);
 		//ProcessEvent(MouseDownEvent);
-		
+		//PosY += 24;
 		g_width = PosX;
 		g_height = PosY;
 		
@@ -1927,7 +1943,7 @@ namespace chen {
 		MouseDownEvent.SetMouseClick(Button, PosX, PosY);
 		uint32  active_type;
 		MouseDownEvent.GetMouseClick(active_type, PosX, PosY);
-		
+		//PosY += 24;
 		g_width = PosX;
 		g_height = PosY;
 		/*
@@ -2069,6 +2085,7 @@ namespace chen {
 		MouseMoveEvent.SetMouseDelta(PosX, PosY, DeltaX, DeltaY);
 		int32_t width = g_width;
 		int32_t height = g_height;
+		//PosY += 24;
 		g_width = PosX;
 		g_height = PosY;
 
@@ -2500,6 +2517,7 @@ namespace chen {
 		uint32 active_type;
 
 		MouseDownEvent.GetMouseClick(active_type, PosX, PosY);
+		//PosY += 24;
 		g_width = PosX;
 		g_height = PosY;
 		/*
@@ -2561,6 +2579,7 @@ namespace chen {
 		FEvent MouseWheelEvent(EventType::MOUSE_WHEEL);
 		MouseWheelEvent.SetMouseWheel(Delta, PosX, PosY);
 		//ProcessEvent(MouseWheelEvent);
+		//PosY += 24;
 		g_width = PosX;
 		g_height = PosY;
 		/*PosX = g_width;
@@ -2568,11 +2587,17 @@ namespace chen {
 		#if defined(_MSC_VER)
 		WINDOW_MAIN();
 		NORMAL_EX_LOG(" PosX = %d, PoxY = %d", PosX, PosY);
+
 		if (mwin)
 		{
 			MOUSE_INPUT(mwin);
+
+			//POINT pos;
+			//GetCursorPos(&pos);
+			//WindowFromPoint(pos);
 			//CliENTTOSCREENPOINT(mwin, PosX, PosY);
 			//::PostMessage(mwin, WM_MOUSEWHEEL, MAKEWPARAM(0, Delta) /* ascii码 */, MAKELPARAM(PosX, PosY));
+			MESSAGE(mwin, WM_KILLFOCUS, MAKEWPARAM(0, Delta) /* ascii码 */, MAKELPARAM(PosX, PosY));
 			MESSAGE(mwin, WM_MOUSEWHEEL, MAKEWPARAM(0, Delta) /* ascii码 */, MAKELPARAM(PosX, PosY));
 		}
 		else

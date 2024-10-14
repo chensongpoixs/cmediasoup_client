@@ -36,6 +36,7 @@ purpose:		input_device
 #include <list>
 #include <mutex>
 extern uint64_t g_pid;
+//extern HWND   g_wind_id;
 namespace chen {
 	 
 
@@ -65,7 +66,7 @@ namespace chen {
 
 	public:
 		bool init();
-
+		void update();
 		bool set_point(uint32 x, uint32 y);
 		void Destroy();
 		void startup();
@@ -170,6 +171,8 @@ namespace chen {
 #endif // #if defined(_MSC_VER)
 
 
+		uint32								m_app_events;
+		time_t								m_app_event_time;
 		
 	};
 	//extern cinput_device   g_input_device_mgr;

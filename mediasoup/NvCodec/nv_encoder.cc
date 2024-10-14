@@ -471,16 +471,16 @@ int32_t NvEncoder::Encode(const VideoFrame& input_frame,
 	 
 	
 
-	cnt++;
-	auto timestamp_curr = std::chrono::duration_cast<std::chrono::milliseconds>(
-		std::chrono::system_clock::now().time_since_epoch())
-		.count();
-	if (timestamp_curr - timestamp > 1000) {
-		//RTC_LOG(LS_INFO) <<   << cnt;
-		NORMAL_EX_LOG("===============>> encode --> FPS: %u ", cnt);
-		cnt = 0;
-		timestamp = timestamp_curr;
-	}
+	//cnt++;
+	//auto timestamp_curr = std::chrono::duration_cast<std::chrono::milliseconds>(
+	//	std::chrono::system_clock::now().time_since_epoch())
+	//	.count();
+	//if (timestamp_curr - timestamp > 1000) {
+	//	//RTC_LOG(LS_INFO) <<   << cnt;
+	//	NORMAL_EX_LOG("===============>> encode --> FPS: %u ", cnt);
+	//	cnt = 0;
+	//	timestamp = timestamp_curr;
+	//}
 	std::chrono::steady_clock::time_point cur_time_ms;
 	std::chrono::steady_clock::time_point pre_time = std::chrono::steady_clock::now();
 	std::chrono::steady_clock::duration dur;
