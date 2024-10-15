@@ -1062,7 +1062,7 @@ namespace chen {
 		KeyDownEvent.SetKeyDown(KeyCode, Repeat != 0);
 		NORMAL_LOG("OnKeyDown==KeyCode = %u, Repeat = %u", KeyCode, Repeat);
 		#if defined(_MSC_VER)
-		if (KeyCode == 122)
+		if (KeyCode == 122 || KeyCode == 123)
 		{
 			return false;
 		}
@@ -1377,7 +1377,7 @@ namespace chen {
 		KeyUpEvent.SetKeyUp(KeyCode);
 		NORMAL_LOG("OnKeyUp==KeyCode = %u", KeyCode);
 		#if defined(_MSC_VER)
-		if (KeyCode == 122)
+		if (KeyCode == 122 || KeyCode == 123)
 		{
 			return false;
 		}
@@ -1612,7 +1612,7 @@ namespace chen {
 		FEvent KeyUpEvent(EventType::KEY_PRESS);
 		KeyUpEvent.SetKeyUp(Character);
 		NORMAL_LOG("OnKeyPress==KeyCode = %u", Character);
-		if (Character == 122)
+		if (Character == 122 || Character == 123)
 		{
 			return false;
 		}
