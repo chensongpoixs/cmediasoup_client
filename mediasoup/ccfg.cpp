@@ -71,7 +71,7 @@ namespace chen {
 		set_uint32(ECI_EncodeQpMin, "encode_qp_min", 0);
 		set_uint32(ECI_EncodeQpMax, "encode_qp_max", 51);
 		set_uint32(ECI_SharedGpuHandleAddressPid, "shard_gpu_handle_address_pid", 0);
-		set_uint32(ECI_BrowserAppIdleTime, "browser_app_idle_time", 60 * 20);
+		set_uint32(ECI_BrowserAppIdleTime, "browser_app_idle_time", 60 * 3);
 #if _DEBUG
 		set_uint32(ECI_LogLevel, "log_level", ELogLevel_Num);
 #endif // _DEBUG

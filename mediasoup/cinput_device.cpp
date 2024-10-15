@@ -827,15 +827,22 @@ namespace chen {
 	}
 	void cinput_device::update()
 	{
+
 		if (std::time(NULL) - m_app_event_time > g_cfg.get_uint32(ECI_BrowserAppIdleTime))
 		{
-			if (m_app_events <= 0)
+			//NORMAL_EX_LOG("app_event = %u", m_app_events);
+			//if (m_app_events <= 0)
 			{
 				WARNING_EX_LOG("app event time out !!! ");
 				::abort();
 			}
-			m_app_event_time = std::time(NULL);
-			m_app_events = 0;
+			//m_app_event_time = std::time(NULL);
+			//m_app_events = 0;
+		}
+		else
+		{
+			//m_app_event_time = std::time(NULL);;
+			NORMAL_EX_LOG("app_event = %u", m_app_events);
 		}
 	}
 	void cinput_device::Destroy()
@@ -872,7 +879,8 @@ namespace chen {
 		uint32 Size = static_cast<uint32>(Buffer.data.size());
 
 		GET(EToStreamMsg, MsgType);
-		++m_app_events;
+		m_app_event_time = std::time(NULL);
+
 		M_INPUT_DEVICE_MAP::iterator iter =  m_input_device.find(MsgType);
 		if (iter == m_input_device.end())
 		{
@@ -1054,6 +1062,10 @@ namespace chen {
 		KeyDownEvent.SetKeyDown(KeyCode, Repeat != 0);
 		NORMAL_LOG("OnKeyDown==KeyCode = %u, Repeat = %u", KeyCode, Repeat);
 		#if defined(_MSC_VER)
+		if (KeyCode == 122)
+		{
+			return false;
+		}
 		// TODO@chensong 20240509  win11电脑按下win键 只发送一个键盘事件
 		if (KeyCode == 91)
 		{
@@ -1365,6 +1377,10 @@ namespace chen {
 		KeyUpEvent.SetKeyUp(KeyCode);
 		NORMAL_LOG("OnKeyUp==KeyCode = %u", KeyCode);
 		#if defined(_MSC_VER)
+		if (KeyCode == 122)
+		{
+			return false;
+		}
 		if (KeyCode == 91)
 		{
 			return true;
@@ -1596,6 +1612,10 @@ namespace chen {
 		FEvent KeyUpEvent(EventType::KEY_PRESS);
 		KeyUpEvent.SetKeyUp(Character);
 		NORMAL_LOG("OnKeyPress==KeyCode = %u", Character);
+		if (Character == 122)
+		{
+			return false;
+		}
 		if (Character == 10 && g_ctrl != 0)
 		{
 			Character = 109;
@@ -1815,7 +1835,7 @@ namespace chen {
 
 		MouseDownEvent.GetMouseClick(active_type, PosX, PosY);
 		//ProcessEvent(MouseDownEvent);
-		//PosY += 24;
+		PosY += 24;
 		g_width = PosX;
 		g_height = PosY;
 		
@@ -1943,7 +1963,7 @@ namespace chen {
 		MouseDownEvent.SetMouseClick(Button, PosX, PosY);
 		uint32  active_type;
 		MouseDownEvent.GetMouseClick(active_type, PosX, PosY);
-		//PosY += 24;
+		PosY += 24;
 		g_width = PosX;
 		g_height = PosY;
 		/*
@@ -2085,7 +2105,7 @@ namespace chen {
 		MouseMoveEvent.SetMouseDelta(PosX, PosY, DeltaX, DeltaY);
 		int32_t width = g_width;
 		int32_t height = g_height;
-		//PosY += 24;
+		PosY += 24;
 		g_width = PosX;
 		g_height = PosY;
 
@@ -2517,7 +2537,7 @@ namespace chen {
 		uint32 active_type;
 
 		MouseDownEvent.GetMouseClick(active_type, PosX, PosY);
-		//PosY += 24;
+		PosY += 24;
 		g_width = PosX;
 		g_height = PosY;
 		/*
@@ -2579,7 +2599,7 @@ namespace chen {
 		FEvent MouseWheelEvent(EventType::MOUSE_WHEEL);
 		MouseWheelEvent.SetMouseWheel(Delta, PosX, PosY);
 		//ProcessEvent(MouseWheelEvent);
-		//PosY += 24;
+		PosY += 24;
 		g_width = PosX;
 		g_height = PosY;
 		/*PosX = g_width;
