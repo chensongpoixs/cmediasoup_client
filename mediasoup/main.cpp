@@ -52,7 +52,7 @@ int  fffmain(int argc, char *argv[])
 		, const char* roomName, const char* clientName
 	
 	*/
-	g_mediasoup_mgr.startup("192.168.2.202", 8888, "93sdfds2_C1", "93sdfds2_C1");
+	g_mediasoup_mgr.startup("192.168.1.207", 10507, "932b9c2eee_C1", "932b9c2eee_C1");
 	while (!stoped)
 	{
 		std::this_thread::sleep_for(std::chrono::milliseconds(100));

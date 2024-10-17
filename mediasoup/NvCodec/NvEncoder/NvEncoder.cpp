@@ -278,10 +278,10 @@ void NvEncoder::CreateEncoder(const NV_ENC_INITIALIZE_PARAMS* pEncoderParams)
     /// </summary>
     /// <param name="pEncoderParams"></param>
     // m_initializeParams.encodeConfig->encodeCodecConfig.h264Config.qpPrimeYZeroTransformBypassFlag = 1; //
-    m_initializeParams.encodeConfig->encodeCodecConfig.h264Config.useConstrainedIntraPred = 1;
-    m_initializeParams.encodeConfig->encodeCodecConfig.h264Config.h264VUIParameters = vuiParams;
-    m_initializeParams.encodeConfig->encodeCodecConfig.h264Config.fmoMode = NV_ENC_H264_FMO_DISABLE;
-    m_initializeParams.encodeConfig->encodeCodecConfig.h264Config.chromaFormatIDC = 3;//
+   // m_initializeParams.encodeConfig->encodeCodecConfig.h264Config.useConstrainedIntraPred = 1;
+   // m_initializeParams.encodeConfig->encodeCodecConfig.h264Config.h264VUIParameters = vuiParams;
+   // m_initializeParams.encodeConfig->encodeCodecConfig.h264Config.fmoMode = NV_ENC_H264_FMO_DISABLE;
+    //m_initializeParams.encodeConfig->encodeCodecConfig.h264Config.chromaFormatIDC = 3;//
     //m_initializeParams.encodeConfig->encodeCodecConfig.h264Config.level = 
    /* m_initializeParams.encodeConfig->encodeCodecConfig.h264Config.h264VUIParameters.colourPrimaries = 1;
     m_initializeParams.encodeConfig->encodeCodecConfig.h264Config.h264VUIParameters.transferCharacteristics = 1;

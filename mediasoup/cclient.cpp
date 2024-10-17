@@ -173,7 +173,7 @@ namespace chen {
 			return false;
 		}
 		const std::string field_trials = "WebRTC-FrameDropper/Disabled/";
-		 webrtc::field_trial::InitFieldTrialsFromString(field_trials.c_str());
+		// webrtc::field_trial::InitFieldTrialsFromString(field_trials.c_str());
 		// rtc::register_log_callback();
 		
 		show_work_dir();
@@ -199,6 +199,7 @@ namespace chen {
 
 		if (g_cfg.get_uint32(ECI_EnableRtcLog))
 		{
+			rtc::LogMessage::LogToDebug(rtc::LS_INFO);
 			rtc::register_log_callback(&rtc_log_file);
 		}
 		if (!s_input_device.init())

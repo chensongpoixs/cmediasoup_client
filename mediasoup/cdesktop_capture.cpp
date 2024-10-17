@@ -102,7 +102,8 @@ namespace chen {
             std::chrono::system_clock::now().time_since_epoch())
             .count();
         if (timestamp_curr - timestamp > 1000) {
-            RTC_LOG(LS_INFO) << "FPS: " << cnt;
+            //RTC_LOG(LS_INFO) << "FPS: " << cnt;
+            NORMAL_EX_LOG("capture fps = %u", cnt);
             cnt = 0;
             timestamp = timestamp_curr;
         }
@@ -121,13 +122,13 @@ namespace chen {
             i420_buffer_->width() * i420_buffer_->height() < width * height) {
             i420_buffer_ = webrtc::I420Buffer::Create(width, height);
         }
-		//i420_buffer_->set_text();
-		memcpy(i420_buffer_->MutableDataY(), frame->data(), width * height * 4);
-      //libyuv::ConvertToI420(frame->data(), 0, i420_buffer_->MutableDataY(),
-      //      i420_buffer_->StrideY(), i420_buffer_->MutableDataU(),
-      //      i420_buffer_->StrideU(), i420_buffer_->MutableDataV(),
-      //      i420_buffer_->StrideV(), 0, 0, width, height, width,
-      //      height, libyuv::kRotate0, libyuv::FOURCC_ARGB);
+		i420_buffer_->set_texture(NULL);
+		//memcpy(i420_buffer_->MutableDataY(), frame->data(), width * height * 4);
+      libyuv::ConvertToI420(frame->data(), 0, i420_buffer_->MutableDataY(),
+            i420_buffer_->StrideY(), i420_buffer_->MutableDataU(),
+            i420_buffer_->StrideU(), i420_buffer_->MutableDataV(),
+            i420_buffer_->StrideV(), 0, 0, width, height, width,
+            height, libyuv::kRotate0, libyuv::FOURCC_ARGB);  
 
 
         // seting ÂíÁ÷µÄÐÅÏ¢

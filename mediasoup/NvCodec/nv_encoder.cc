@@ -740,8 +740,8 @@ bool NvEncoder::EncodeFrame(int index, const VideoFrame& input_frame, cnv_frame_
 		 }
 		 else*/ 
 		
-		  if ( 0 != g_gpu_index  )
-		 {
+		   if ( 0 != g_gpu_index  )
+		 { 
 			// NORMAL_EX_LOG("");
 			 D3D11_MAPPED_SUBRESOURCE dsec = { 0 };
 			 HRESULT hr = context->Map(texture, D3D11CalcSubresource(0, 0, 0), D3D11_MAP_WRITE, 0, &dsec);
