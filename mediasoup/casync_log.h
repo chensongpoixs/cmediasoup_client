@@ -61,7 +61,7 @@ namespace chen
 	public:
 		explicit casync_log();
 		~casync_log();
-		bool init(ELogStorageType storage_type , const   std::string  & host, uint32 port);
+		bool init(ELogStorageType storage_type , const   std::string  & host, uint32 port, uint32 day = 3);
 		void destroy();
 	public:
 		void append_var(ELogLevelType level, const char* format, va_list ap);
@@ -76,6 +76,7 @@ namespace chen
 		void			_handler_log_item(const std::shared_ptr<clog_item> log_item_ptr);
 		
 		void			_handler_check_log_file();
+		void			_check_expired_log_file();
 	private: 
 		std::string				m_host;
 		uint32					m_port;
@@ -89,6 +90,7 @@ namespace chen
 		int32_t					m_date_time;
 		std::string				m_path;
 		std::list<std::shared_ptr<clog_item>>	m_log_item;
+		uint32					m_expired_log_day;
 	};
 }
 

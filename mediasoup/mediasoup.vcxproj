@@ -53,6 +53,7 @@
     <ClInclude Include="ctime_api.h" />
     <ClInclude Include="ctime_const.h" />
     <ClInclude Include="ctransport.h" />
+    <ClInclude Include="cutil.h" />
     <ClInclude Include="cwebscoket_connection.h" />
     <ClInclude Include="cwebsocket_mgr.h" />
     <ClInclude Include="cwebsocket_protoo.h" />
@@ -108,6 +109,7 @@
     <ClCompile Include="csession_description.cpp" />
     <ClCompile Include="ctime_api.cpp" />
     <ClCompile Include="ctransport.cpp" />
+    <ClCompile Include="cutil.cpp" />
     <ClCompile Include="cwebscoket_connection.cpp" />
     <ClCompile Include="cwebsocket_mgr.cpp" />
     <ClCompile Include="cwebsocket_protoo.cpp" />
@@ -202,8 +204,8 @@
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|x64'">
     <IntDir>..\vsout\$(Platform)\$(Configuration)\</IntDir>
-    <IncludePath>D:\dep\webrtc\include;D:\dep\webrtc\include\third_party\abseil-cpp;D:\dep\webrtc\include\third_party\libyuv\include;D:\Work\cabroad_server\Server\cd3d10_d3d11_d3d12_dxgi_opengl\OpenGL_Hook\capture_window\include;C:\Program Files\CUDA\cuda_cudart\cudart\include;.\NvCodec;$(IncludePath)</IncludePath>
-    <LibraryPath>D:\dep\webrtc\lib\x64\release;$(LibraryPath)</LibraryPath>
+    <IncludePath>D:\dep\boost\include;D:\dep\webrtc\include;D:\dep\webrtc\include\third_party\abseil-cpp;D:\dep\webrtc\include\third_party\libyuv\include;D:\Work\cabroad_server\Server\cd3d10_d3d11_d3d12_dxgi_opengl\OpenGL_Hook\capture_window\include;C:\Program Files\CUDA\cuda_cudart\cudart\include;.\NvCodec;$(IncludePath)</IncludePath>
+    <LibraryPath>D:\dep\boost\lib\x64;D:\dep\webrtc\lib\x64\release;$(LibraryPath)</LibraryPath>
     <OutDir>$(SolutionDir)bin\$(Platform)\$(Configuration)\</OutDir>
     <TargetName>rtc</TargetName>
   </PropertyGroup>
@@ -266,7 +268,7 @@
       <SubSystem>Console</SubSystem>
       <EnableCOMDATFolding>true</EnableCOMDATFolding>
       <OptimizeReferences>true</OptimizeReferences>
-      <AdditionalDependencies>NvCodec\Lib\x64\nvencodeapi.lib;D:\Work\cabroad_server\Server\cd3d10_d3d11_d3d12_dxgi_opengl\OpenGL_Hook\capture_window\lib\detours.lib;gdiplus.lib;webrtc.lib;advapi32.lib;comdlg32.lib;dbghelp.lib;dnsapi.lib;gdi32.lib;msimg32.lib;odbc32.lib;odbccp32.lib;oleaut32.lib;shell32.lib;shlwapi.lib;user32.lib;usp10.lib;uuid.lib;version.lib;wininet.lib;winmm.lib;winspool.lib;ws2_32.lib;delayimp.lib;kernel32.lib;ole32.lib;crypt32.lib;iphlpapi.lib;secur32.lib;dmoguids.lib;wmcodecdspuuid.lib;amstrmid.lib;msdmo.lib;strmiids.lib;d3d11.lib;dxgi.lib;%(AdditionalDependencies)</AdditionalDependencies>
+      <AdditionalDependencies>libboost_filesystem-vc140-mt-1_60.lib;NvCodec\Lib\x64\nvencodeapi.lib;D:\Work\cabroad_server\Server\cd3d10_d3d11_d3d12_dxgi_opengl\OpenGL_Hook\capture_window\lib\detours.lib;gdiplus.lib;webrtc.lib;advapi32.lib;comdlg32.lib;dbghelp.lib;dnsapi.lib;gdi32.lib;msimg32.lib;odbc32.lib;odbccp32.lib;oleaut32.lib;shell32.lib;shlwapi.lib;user32.lib;usp10.lib;uuid.lib;version.lib;wininet.lib;winmm.lib;winspool.lib;ws2_32.lib;delayimp.lib;kernel32.lib;ole32.lib;crypt32.lib;iphlpapi.lib;secur32.lib;dmoguids.lib;wmcodecdspuuid.lib;amstrmid.lib;msdmo.lib;strmiids.lib;d3d11.lib;dxgi.lib;%(AdditionalDependencies)</AdditionalDependencies>
       <GenerateDebugInformation>false</GenerateDebugInformation>
     </Link>
     <PreBuildEvent>
