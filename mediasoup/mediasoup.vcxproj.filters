@@ -84,6 +84,7 @@
     <ClInclude Include="cdata_channel.h" />
     <ClInclude Include="cwindow_capture_wgc.h" />
     <ClInclude Include="ComPtr.hpp" />
+    <ClInclude Include="cutil.h" />
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="casync_log.cpp" />
@@ -143,6 +144,7 @@
     <ClCompile Include="crtc_media_mgr.cpp" />
     <ClCompile Include="cdata_channel.cpp" />
     <ClCompile Include="cwindow_capture_wgc.cpp" />
+    <ClCompile Include="cutil.cpp" />
   </ItemGroup>
   <ItemGroup>
     <None Include="client.cfg" />

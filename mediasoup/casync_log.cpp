@@ -43,6 +43,11 @@
 // 其他不支持的编译器需要自己实现这个方法
 #error unexpected c complier (msc/gcc), Need to implement this method for demangle
 #endif
+#include <vector>
+#include "cutil.h"
+#include <boost/filesystem.hpp>
+
+
 namespace chen {
 
 #pragma pack(push,1)
@@ -110,7 +115,7 @@ namespace chen {
 		sprintf(p, "%s_%s%s", dateTime, name.c_str(), ext.c_str());
 	}
 	 
-	casync_log::casync_log()
+	/*casync_log::casync_log()
 		: m_host("127.0.0.1")
 		, m_port(80)  
 		, m_level_log(ELogLevel_Num)
@@ -118,14 +123,15 @@ namespace chen {
 		, m_stoped(false)
 		, m_date_time(0)
 		, m_path("./log")
+		, m_expired_log_day(3)
 	{ 
-	}
+	}*/
 
 	casync_log::~casync_log()
 	{
 		
 	}
-	bool casync_log::init(ELogStorageType storagetype, const   std::string  & host, uint32 port)
+	bool casync_log::init(ELogStorageType storagetype, const   std::string  & host, uint32 port, uint32 day)
 	{ 
 		//NORMAL_EX_LOG("host = %s, port = %d, show_screen = %d", host.c_str(), port, show_screen);
 
@@ -160,7 +166,7 @@ namespace chen {
 		m_host = host;
 		m_port = port;
 		m_storage_type = storagetype;
-		
+		m_expired_log_day = day > 0 ? day : 1;
 		std::thread td(&casync_log::_work_pthread, this);
 		m_thread.swap(td);
 		//std::move(m_thread, td);
@@ -365,7 +371,32 @@ namespace chen {
 				//return false;
 			}
 		
+			_check_expired_log_file();
+		}
+	}
+	void casync_log::_check_expired_log_file()
+	{
+		std::vector<std::string>   filenames;
+		if (path_util::get_path_all_filenames(m_path, filenames) > 0)
+		{
 
+			std::time_t expired_date_time = m_date_time - (ETC_Day * (m_expired_log_day > 0 ? m_expired_log_day : 1));
+			for (const std::string& fname : filenames)
+			{
+				if (boost::filesystem::is_regular_file(fname))
+				{
+					std::time_t file_time = boost::filesystem::last_write_time(fname);
+					if (file_time < expired_date_time)
+					{
+						// delete file !!!
+						if (!boost::filesystem::remove(boost::filesystem::path(fname)))
+						{
+							WARNING_EX_LOG("delete file = %s failed !!!",  fname.c_str());
+							std::cerr << "delete file = " << fname << " !!! " << std::endl;
+						}
+					}
+				}
+			}
 		}
 	}
 	void casync_log::destroy()

@@ -32,7 +32,6 @@ purpose:		nvenc
 #include <dxgi1_2.h>
 #include "../clog.h"
 #include "../ccfg.h"
-#include "../ComPtr.hpp"
 //#include "Utils/AppEncUtils.h"
 //#include "Utils/AppEncUtils.h"
 namespace chen {
@@ -77,145 +76,145 @@ namespace chen {
 	}
 
 
-	//namespace gpu_encode_info
-	//{
-	//	const char* szCodecNames = "h264 hevc";
-	//	static  const   std::vector<GUID> vCodec = {
-	//	  NV_ENC_CODEC_H264_GUID,
-	//	  NV_ENC_CODEC_HEVC_GUID
-	//	};
+	namespace gpu_encode_info
+	{
+		const char* szCodecNames = "h264 hevc";
+		static  const   std::vector<GUID> vCodec = {
+		  NV_ENC_CODEC_H264_GUID,
+		  NV_ENC_CODEC_HEVC_GUID
+		};
 
-	//	const char* szChromaNames = "yuv420 yuv444";
-	//	static  const  std::vector<uint32_t> vChroma =
-	//	{
-	//		1, 3
-	//	};
+		const char* szChromaNames = "yuv420 yuv444";
+		static  const  std::vector<uint32_t> vChroma =
+		{
+			1, 3
+		};
 
-	//	const char* szPresetNames = "default hp hq bd ll ll_hp ll_hq lossless lossless_hp";
-	//	const char* szLowLatencyPresetNames = "ll ll_hp ll_hq";
-	//	static  const  std::vector<GUID> vPreset = {
-	//	  NV_ENC_PRESET_DEFAULT_GUID,
-	//	  NV_ENC_PRESET_HP_GUID,
-	//	  NV_ENC_PRESET_HQ_GUID,
-	//	  NV_ENC_PRESET_BD_GUID,
-	//	  NV_ENC_PRESET_LOW_LATENCY_DEFAULT_GUID,
-	//	  NV_ENC_PRESET_LOW_LATENCY_HP_GUID,
-	//	  NV_ENC_PRESET_LOW_LATENCY_HQ_GUID,
-	//	  NV_ENC_PRESET_LOSSLESS_DEFAULT_GUID,
-	//	  NV_ENC_PRESET_LOSSLESS_HP_GUID
-	//	};
+		const char* szPresetNames = "default hp hq bd ll ll_hp ll_hq lossless lossless_hp";
+		const char* szLowLatencyPresetNames = "ll ll_hp ll_hq";
+		static  const  std::vector<GUID> vPreset = {
+		/*  NV_ENC_PRESET_DEFAULT_GUID,
+		  NV_ENC_PRESET_HP_GUID,
+		  NV_ENC_PRESET_HQ_GUID,
+		  NV_ENC_PRESET_BD_GUID,
+		  NV_ENC_PRESET_LOW_LATENCY_DEFAULT_GUID,
+		  NV_ENC_PRESET_LOW_LATENCY_HP_GUID,
+		  NV_ENC_PRESET_LOW_LATENCY_HQ_GUID,
+		  NV_ENC_PRESET_LOSSLESS_DEFAULT_GUID,
+		  NV_ENC_PRESET_LOSSLESS_HP_GUID*/
+		};
 
-	//	static  const  std::vector<GUID> vLowLatencyPreset = {
-	//		  NV_ENC_PRESET_LOW_LATENCY_DEFAULT_GUID,
-	//		  NV_ENC_PRESET_LOW_LATENCY_HP_GUID,
-	//		  NV_ENC_PRESET_LOW_LATENCY_HQ_GUID,
-	//	};
+		static  const  std::vector<GUID> vLowLatencyPreset = {
+			/*  NV_ENC_PRESET_LOW_LATENCY_DEFAULT_GUID,
+			  NV_ENC_PRESET_LOW_LATENCY_HP_GUID,
+			  NV_ENC_PRESET_LOW_LATENCY_HQ_GUID,*/
+		};
 
-	//	const char* szH264ProfileNames = "baseline main high high444";
-	//	static  const  std::vector<GUID> vH264Profile = {
-	//	  NV_ENC_H264_PROFILE_BASELINE_GUID,
-	//	  NV_ENC_H264_PROFILE_MAIN_GUID,
-	//	  NV_ENC_H264_PROFILE_HIGH_GUID,
-	//	  NV_ENC_H264_PROFILE_HIGH_444_GUID,
-	//	};
-	//	const char* szHevcProfileNames = "main main10 frext";
-	//	static  const   std::vector<GUID> vHevcProfile = {
-	//	  NV_ENC_HEVC_PROFILE_MAIN_GUID,
-	//	  NV_ENC_HEVC_PROFILE_MAIN10_GUID,
-	//	  NV_ENC_HEVC_PROFILE_FREXT_GUID,
-	//	};
-	//	const char* szProfileNames = "(default) auto baseline(h264) main(h264) high(h264) high444(h264)"
-	//		" stereo(h264) svc_temporal_scalability(h264) progressiv_high(h264) constrained_high(h264)"
-	//		" main(hevc) main10(hevc) frext(hevc)";
-	//	static  const   std::vector<GUID> vProfile = {
-	//		GUID{},
-	//		NV_ENC_CODEC_PROFILE_AUTOSELECT_GUID,
-	//		NV_ENC_H264_PROFILE_BASELINE_GUID,
-	//		NV_ENC_H264_PROFILE_MAIN_GUID,
-	//		NV_ENC_H264_PROFILE_HIGH_GUID,
-	//		NV_ENC_H264_PROFILE_HIGH_444_GUID,
-	//		NV_ENC_H264_PROFILE_STEREO_GUID,
-	//		/* NV_ENC_H264_PROFILE_SVC_TEMPORAL_SCALABILTY,*/
-	//		 NV_ENC_H264_PROFILE_PROGRESSIVE_HIGH_GUID,
-	//		 NV_ENC_H264_PROFILE_CONSTRAINED_HIGH_GUID,
-	//		 NV_ENC_HEVC_PROFILE_MAIN_GUID,
-	//		 NV_ENC_HEVC_PROFILE_MAIN10_GUID,
-	//		 NV_ENC_HEVC_PROFILE_FREXT_GUID,
-	//	};
+		const char* szH264ProfileNames = "baseline main high high444";
+		static  const  std::vector<GUID> vH264Profile = {
+		  NV_ENC_H264_PROFILE_BASELINE_GUID,
+		  NV_ENC_H264_PROFILE_MAIN_GUID,
+		  NV_ENC_H264_PROFILE_HIGH_GUID,
+		  NV_ENC_H264_PROFILE_HIGH_444_GUID,
+		};
+		const char* szHevcProfileNames = "main main10 frext";
+		static  const   std::vector<GUID> vHevcProfile = {
+		  NV_ENC_HEVC_PROFILE_MAIN_GUID,
+		  NV_ENC_HEVC_PROFILE_MAIN10_GUID,
+		  NV_ENC_HEVC_PROFILE_FREXT_GUID,
+		};
+		const char* szProfileNames = "(default) auto baseline(h264) main(h264) high(h264) high444(h264)"
+			" stereo(h264) svc_temporal_scalability(h264) progressiv_high(h264) constrained_high(h264)"
+			" main(hevc) main10(hevc) frext(hevc)";
+		static  const   std::vector<GUID> vProfile = {
+			GUID{},
+			NV_ENC_CODEC_PROFILE_AUTOSELECT_GUID,
+			NV_ENC_H264_PROFILE_BASELINE_GUID,
+			NV_ENC_H264_PROFILE_MAIN_GUID,
+			NV_ENC_H264_PROFILE_HIGH_GUID,
+			NV_ENC_H264_PROFILE_HIGH_444_GUID,
+			NV_ENC_H264_PROFILE_STEREO_GUID,
+			/* NV_ENC_H264_PROFILE_SVC_TEMPORAL_SCALABILTY,*/
+			 NV_ENC_H264_PROFILE_PROGRESSIVE_HIGH_GUID,
+			 NV_ENC_H264_PROFILE_CONSTRAINED_HIGH_GUID,
+			 NV_ENC_HEVC_PROFILE_MAIN_GUID,
+			 NV_ENC_HEVC_PROFILE_MAIN10_GUID,
+			 NV_ENC_HEVC_PROFILE_FREXT_GUID,
+		};
 
-	//	const char* szRcModeNames = "constqp vbr cbr cbr_ll_hq cbr_hq vbr_hq";
-	//	static  const   std::vector<NV_ENC_PARAMS_RC_MODE> vRcMode = {
-	//	  NV_ENC_PARAMS_RC_CONSTQP,
-	//	  NV_ENC_PARAMS_RC_VBR,
-	//	  NV_ENC_PARAMS_RC_CBR,
-	//	  NV_ENC_PARAMS_RC_CBR_LOWDELAY_HQ,
-	//	  NV_ENC_PARAMS_RC_CBR_HQ,
-	//	  NV_ENC_PARAMS_RC_VBR_HQ,
-	//	};
+		const char* szRcModeNames = "constqp vbr cbr cbr_ll_hq cbr_hq vbr_hq";
+		static  const   std::vector<NV_ENC_PARAMS_RC_MODE> vRcMode = {
+		  NV_ENC_PARAMS_RC_CONSTQP,
+		  NV_ENC_PARAMS_RC_VBR,
+		  NV_ENC_PARAMS_RC_CBR,
+		  NV_ENC_PARAMS_RC_CBR_LOWDELAY_HQ,
+		  NV_ENC_PARAMS_RC_CBR_HQ,
+		  NV_ENC_PARAMS_RC_VBR_HQ,
+		};
 
-	//	const char* szQpMapModeNames = "disabled emphasis_level_map delta_qp_map qp_map";
-	//	static  const   std::vector<NV_ENC_QP_MAP_MODE> vQpMapMode = {
-	//	  NV_ENC_QP_MAP_DISABLED,
-	//	  NV_ENC_QP_MAP_EMPHASIS,
-	//	  NV_ENC_QP_MAP_DELTA,
-	//	  NV_ENC_QP_MAP,
-	//	};
-	//	inline std::vector<std::string> split(const std::string& s, char delimiter)
-	//	{
-	//		std::vector<std::string> tokens;
-	//		std::string token;
-	//		std::istringstream tokenStream(s);
-	//		while (std::getline(tokenStream, token, delimiter))
-	//		{
-	//			tokens.push_back(token);
-	//		}
-	//		return tokens;
-	//	}
-	//	template<typename T>
-	//	std::string ConvertValueToString(const std::vector<T>& vValue, const std::string& strValueNames, T value) {
-	//		auto it = std::find(vValue.begin(), vValue.end(), value);
-	//		if (it == vValue.end()) {
-	//			//LOG(ERROR) << "Invalid value. Can't convert to one of " << strValueNames;
-	//			ERROR_EX_LOG("Invalid value. Can't convert to one of  %s", strValueNames.c_str());
-	//			return std::string();
-	//		}
-	//		return split(strValueNames, ' ')[it - vValue.begin()];
-	//	}
-	//	static 	std::string g_MainParamToString(const NV_ENC_INITIALIZE_PARAMS* pParams) {
-	//		std::ostringstream os;
-	//		os
-	//			<< "Encoding Parameters:"
-	//			<< std::endl << "\tcodec        : " << ConvertValueToString(vCodec, szCodecNames, pParams->encodeGUID)
-	//			<< std::endl << "\tpreset       : " << ConvertValueToString(vPreset, szPresetNames, pParams->presetGUID)
-	//			<< std::endl << "\tprofile      : " << ConvertValueToString(vProfile, szProfileNames, pParams->encodeConfig->profileGUID)
-	//			<< std::endl << "\tchroma       : " << ConvertValueToString(vChroma, szChromaNames, (pParams->encodeGUID == NV_ENC_CODEC_H264_GUID) ? pParams->encodeConfig->encodeCodecConfig.h264Config.chromaFormatIDC : pParams->encodeConfig->encodeCodecConfig.hevcConfig.chromaFormatIDC)
-	//			<< std::endl << "\tbitdepth     : " << ((pParams->encodeGUID == NV_ENC_CODEC_H264_GUID) ? 0 : pParams->encodeConfig->encodeCodecConfig.hevcConfig.pixelBitDepthMinus8) + 8
-	//			<< std::endl << "\trc           : " << ConvertValueToString(vRcMode, szRcModeNames, pParams->encodeConfig->rcParams.rateControlMode)
-	//			;
-	//		if (pParams->encodeConfig->rcParams.rateControlMode == NV_ENC_PARAMS_RC_CONSTQP) {
-	//			os << " (P,B,I=" << pParams->encodeConfig->rcParams.constQP.qpInterP << "," << pParams->encodeConfig->rcParams.constQP.qpInterB << "," << pParams->encodeConfig->rcParams.constQP.qpIntra << ")";
-	//		}
-	//		os
-	//			<< std::endl << "\tfps          : " << pParams->frameRateNum << "/" << pParams->frameRateDen
-	//			<< std::endl << "\tgop          : " << (pParams->encodeConfig->gopLength == NVENC_INFINITE_GOPLENGTH ? "INF" : std::to_string(pParams->encodeConfig->gopLength))
-	//			<< std::endl << "\tbf           : " << pParams->encodeConfig->frameIntervalP - 1
-	//			<< std::endl << "\tsize         : " << pParams->encodeWidth << "x" << pParams->encodeHeight
-	//			<< std::endl << "\tbitrate      : " << pParams->encodeConfig->rcParams.averageBitRate
-	//			<< std::endl << "\tmaxbitrate   : " << pParams->encodeConfig->rcParams.maxBitRate
-	//			<< std::endl << "\tvbvbufsize   : " << pParams->encodeConfig->rcParams.vbvBufferSize
-	//			<< std::endl << "\tvbvinit      : " << pParams->encodeConfig->rcParams.vbvInitialDelay
-	//			<< std::endl << "\taq           : " << (pParams->encodeConfig->rcParams.enableAQ ? (pParams->encodeConfig->rcParams.aqStrength ? std::to_string(pParams->encodeConfig->rcParams.aqStrength) : "auto") : "disabled")
-	//			<< std::endl << "\ttemporalaq   : " << (pParams->encodeConfig->rcParams.enableTemporalAQ ? "enabled" : "disabled")
-	//			<< std::endl << "\tlookahead    : " << (pParams->encodeConfig->rcParams.enableLookahead ? std::to_string(pParams->encodeConfig->rcParams.lookaheadDepth) : "disabled")
-	//			<< std::endl << "\tcq           : " << pParams->encodeConfig->rcParams.targetQuality
-	//			<< std::endl << "\tqmin         : P,B,I=" << pParams->encodeConfig->rcParams.minQP.qpInterP << "," << pParams->encodeConfig->rcParams.minQP.qpInterB << "," << pParams->encodeConfig->rcParams.minQP.qpIntra
-	//			<< std::endl << "\tqmax         : P,B,I=" << pParams->encodeConfig->rcParams.maxQP.qpInterP << "," << pParams->encodeConfig->rcParams.maxQP.qpInterB << "," << pParams->encodeConfig->rcParams.maxQP.qpIntra
-	//			<< std::endl << "\tinitqp       : P,B,I=" << pParams->encodeConfig->rcParams.initialRCQP.qpInterP << "," << pParams->encodeConfig->rcParams.initialRCQP.qpInterB << "," << pParams->encodeConfig->rcParams.initialRCQP.qpIntra
-	//			;
-	//		return os.str();
-	//	}
+		const char* szQpMapModeNames = "disabled emphasis_level_map delta_qp_map qp_map";
+		static  const   std::vector<NV_ENC_QP_MAP_MODE> vQpMapMode = {
+		  NV_ENC_QP_MAP_DISABLED,
+		  NV_ENC_QP_MAP_EMPHASIS,
+		  NV_ENC_QP_MAP_DELTA,
+		  NV_ENC_QP_MAP,
+		};
+		inline std::vector<std::string> split(const std::string& s, char delimiter)
+		{
+			std::vector<std::string> tokens;
+			std::string token;
+			std::istringstream tokenStream(s);
+			while (std::getline(tokenStream, token, delimiter))
+			{
+				tokens.push_back(token);
+			}
+			return tokens;
+		}
+		template<typename T>
+		std::string ConvertValueToString(const std::vector<T>& vValue, const std::string& strValueNames, T value) {
+			auto it = std::find(vValue.begin(), vValue.end(), value);
+			if (it == vValue.end()) {
+				//LOG(ERROR) << "Invalid value. Can't convert to one of " << strValueNames;
+				ERROR_EX_LOG("Invalid value. Can't convert to one of  %s", strValueNames.c_str());
+				return std::string();
+			}
+			return split(strValueNames, ' ')[it - vValue.begin()];
+		}
+		static 	std::string g_MainParamToString(const NV_ENC_INITIALIZE_PARAMS* pParams) {
+			std::ostringstream os;
+			os
+				<< "Encoding Parameters:"
+				<< std::endl << "\tcodec        : " << ConvertValueToString(vCodec, szCodecNames, pParams->encodeGUID)
+				<< std::endl << "\tpreset       : " << ConvertValueToString(vPreset, szPresetNames, pParams->presetGUID)
+				<< std::endl << "\tprofile      : " << ConvertValueToString(vProfile, szProfileNames, pParams->encodeConfig->profileGUID)
+				<< std::endl << "\tchroma       : " << ConvertValueToString(vChroma, szChromaNames, (pParams->encodeGUID == NV_ENC_CODEC_H264_GUID) ? pParams->encodeConfig->encodeCodecConfig.h264Config.chromaFormatIDC : pParams->encodeConfig->encodeCodecConfig.hevcConfig.chromaFormatIDC)
+				<< std::endl << "\tbitdepth     : " << ((pParams->encodeGUID == NV_ENC_CODEC_H264_GUID) ? 0 : pParams->encodeConfig->encodeCodecConfig.hevcConfig.pixelBitDepthMinus8) + 8
+				<< std::endl << "\trc           : " << ConvertValueToString(vRcMode, szRcModeNames, pParams->encodeConfig->rcParams.rateControlMode)
+				;
+			if (pParams->encodeConfig->rcParams.rateControlMode == NV_ENC_PARAMS_RC_CONSTQP) {
+				os << " (P,B,I=" << pParams->encodeConfig->rcParams.constQP.qpInterP << "," << pParams->encodeConfig->rcParams.constQP.qpInterB << "," << pParams->encodeConfig->rcParams.constQP.qpIntra << ")";
+			}
+			os
+				<< std::endl << "\tfps          : " << pParams->frameRateNum << "/" << pParams->frameRateDen
+				<< std::endl << "\tgop          : " << (pParams->encodeConfig->gopLength == NVENC_INFINITE_GOPLENGTH ? "INF" : std::to_string(pParams->encodeConfig->gopLength))
+				<< std::endl << "\tbf           : " << pParams->encodeConfig->frameIntervalP - 1
+				<< std::endl << "\tsize         : " << pParams->encodeWidth << "x" << pParams->encodeHeight
+				<< std::endl << "\tbitrate      : " << pParams->encodeConfig->rcParams.averageBitRate
+				<< std::endl << "\tmaxbitrate   : " << pParams->encodeConfig->rcParams.maxBitRate
+				<< std::endl << "\tvbvbufsize   : " << pParams->encodeConfig->rcParams.vbvBufferSize
+				<< std::endl << "\tvbvinit      : " << pParams->encodeConfig->rcParams.vbvInitialDelay
+				<< std::endl << "\taq           : " << (pParams->encodeConfig->rcParams.enableAQ ? (pParams->encodeConfig->rcParams.aqStrength ? std::to_string(pParams->encodeConfig->rcParams.aqStrength) : "auto") : "disabled")
+				<< std::endl << "\ttemporalaq   : " << (pParams->encodeConfig->rcParams.enableTemporalAQ ? "enabled" : "disabled")
+				<< std::endl << "\tlookahead    : " << (pParams->encodeConfig->rcParams.enableLookahead ? std::to_string(pParams->encodeConfig->rcParams.lookaheadDepth) : "disabled")
+				<< std::endl << "\tcq           : " << pParams->encodeConfig->rcParams.targetQuality
+				<< std::endl << "\tqmin         : P,B,I=" << pParams->encodeConfig->rcParams.minQP.qpInterP << "," << pParams->encodeConfig->rcParams.minQP.qpInterB << "," << pParams->encodeConfig->rcParams.minQP.qpIntra
+				<< std::endl << "\tqmax         : P,B,I=" << pParams->encodeConfig->rcParams.maxQP.qpInterP << "," << pParams->encodeConfig->rcParams.maxQP.qpInterB << "," << pParams->encodeConfig->rcParams.maxQP.qpIntra
+				<< std::endl << "\tinitqp       : P,B,I=" << pParams->encodeConfig->rcParams.initialRCQP.qpInterP << "," << pParams->encodeConfig->rcParams.initialRCQP.qpInterB << "," << pParams->encodeConfig->rcParams.initialRCQP.qpIntra
+				;
+			return os.str();
+		}
 
-	//}
+	}
 struct nvenc_data
 {
 	ID3D11Device*        d3d11_device  = nullptr;
@@ -226,7 +225,6 @@ struct nvenc_data
 
 	HANDLE           input_handle  = nullptr;
 	ID3D11Texture2D* input_texture = nullptr;;
-	ID3D11Resource* input_resource = nullptr;
 	IDXGIKeyedMutex* keyed_mutex   = nullptr;
 
 	std::mutex mutex;
@@ -238,8 +236,6 @@ struct nvenc_data
 	std::string codec;
 	DXGI_FORMAT format = DXGI_FORMAT_UNKNOWN;
 	NvEncoderD3D11 *nvenc = nullptr;
-	uint64_t lock_key = 0;
-	bool     acquired = false;
 };
 
 static bool is_supported(void)
@@ -299,9 +295,7 @@ static void* nvenc_create()
 	
 	SYSTEM_LOG(" start  gpu info [g_gpu_index = %u] ....", g_gpu_index);
 
-	uint32 DeviceFlags = 0;
-	D3D_FEATURE_LEVEL FeatureLevel = D3D_FEATURE_LEVEL_11_0;
-	D3D_FEATURE_LEVEL ActualFeatureLevel;
+
 	hr = enc->factory->EnumAdapters(g_gpu_index, &enc->adapter);
 	if (FAILED(hr)) 
 	{
@@ -311,14 +305,13 @@ static void* nvenc_create()
 	else
 	{
 		char desc[128] = { 0 };
-		
 		DXGI_ADAPTER_DESC adapterDesc;
 		enc->adapter->GetDesc(&adapterDesc);
 		wcstombs(desc, adapterDesc.Description, sizeof(desc));
 		if (strstr(desc, "NVIDIA") != NULL) 
 		{
-			hr = D3D11CreateDevice(enc->adapter, D3D_DRIVER_TYPE_UNKNOWN, NULL, DeviceFlags, &FeatureLevel, 1, D3D11_SDK_VERSION,
-				&enc->d3d11_device, &ActualFeatureLevel, &enc->d3d11_context);
+			hr = D3D11CreateDevice(enc->adapter, D3D_DRIVER_TYPE_UNKNOWN, NULL, 0, NULL, 0, D3D11_SDK_VERSION,
+				&enc->d3d11_device, nullptr, &enc->d3d11_context);
 			enc->adapter->Release();
 			enc->adapter = nullptr;
 			if (SUCCEEDED(hr)) 
@@ -353,8 +346,8 @@ gpuadapter:
 			}
 		}
 		index = gpuIndex;
-		hr = D3D11CreateDevice(enc->adapter, D3D_DRIVER_TYPE_UNKNOWN, NULL, DeviceFlags, &FeatureLevel, 1, D3D11_SDK_VERSION,
-							   &enc->d3d11_device, &ActualFeatureLevel, &enc->d3d11_context);
+		hr = D3D11CreateDevice(enc->adapter, D3D_DRIVER_TYPE_UNKNOWN, NULL, 0, NULL, 0, D3D11_SDK_VERSION,
+							   &enc->d3d11_device, nullptr, &enc->d3d11_context);
 		enc->adapter->Release();
 		enc->adapter = nullptr;
 		if (SUCCEEDED(hr)) {
@@ -532,75 +525,59 @@ static bool nvenc_init(void *nvenc_data, void *encoder_config)
 	initializeParams.encodeHeight = enc->height;
 	initializeParams.version = NV_ENC_INITIALIZE_PARAMS_VER;
 	initializeParams.encodeGUID = NV_ENC_CODEC_H264_GUID;
-
-	//initializeParams.presetGUID = NV_ENC_PRESET_P5_GUID;
+	initializeParams.presetGUID = NV_ENC_PRESET_P4_GUID;
+	 
 	//initializeParams.encodeConfig->profileGUID = NV_ENC_H264_PROFILE_HIGH_444_GUID;
-	initializeParams.frameRateNum = g_cfg.get_int32(ECI_RtcFrames);
 	initializeParams.frameRateDen = 1;
 	initializeParams.enablePTD = 1;
 	initializeParams.reportSliceOffsets = 0;
 	initializeParams.enableSubFrameWrite = 0;
-	//initializeParams.maxEncodeWidth = 4096;
-	//initializeParams.maxEncodeHeight = 4096;
-	initializeParams.tuningInfo = NV_ENC_TUNING_INFO_ULTRA_LOW_LATENCY;
-	//initializeParams.tuningInfo = NV_ENC_TUNING_INFO_HIGH_QUALITY;
 	
-
+	 initializeParams.tuningInfo = NV_ENC_TUNING_INFO_ULTRA_LOW_LATENCY;
+	initializeParams.frameRateNum = g_cfg.get_int32(ECI_RtcFrames);
+	//initializeParams.encodeGUID = NV_ENC_H264_PROFILE_BASELINE_GUID;
 
 	///////////////
 	// H.264 specific settings
 	///
-
-	initializeParams.encodeConfig->encodeCodecConfig.h264Config.h264VUIParameters.colourPrimaries = 1;
-	initializeParams.encodeConfig->encodeCodecConfig.h264Config.h264VUIParameters.transferCharacteristics = 1;
+	//initializeParams.encodeConfig->encodeCodecConfig.h264Config.h264VUIParameters.colourPrimaries = 1;
 	//initializeParams.encodeConfig->encodeCodecConfig.h264Config.h264VUIParameters.transferCharacteristics = 1;
-	int32 IntraRefreshPeriodFrames = 1; //CVarNVENCIntraRefreshPeriodFrames.GetValueOnAnyThread();
-	int32 IntraRefreshCountFrames = 1; // CVarNVENCIntraRefreshCountFrames.GetValueOnAnyThread();
-	bool bIntraRefreshSupported = enc->nvenc->GetCapabilityValue(NV_ENC_CODEC_H264_GUID, NV_ENC_CAPS_SUPPORT_INTRA_REFRESH);// GetEncoderCapability(NVENC, NVEncoder, NV_ENC_CAPS_SUPPORT_INTRA_REFRESH) > 0;
-	bool bIntraRefreshEnabled = IntraRefreshPeriodFrames > 0;
+	//initializeParams.encodeConfig->encodeCodecConfig.h264Config.h264VUIParameters.transferCharacteristics = 1;
 
-	if (bIntraRefreshEnabled && bIntraRefreshSupported)
-	{
-		initializeParams.encodeConfig->encodeCodecConfig.h264Config.enableIntraRefresh = 1;
-		// TODO@chensong 20240903
-		// 每次帧内刷新之间的总帧数。较小的值将导致更频繁的帧内刷新。默认值：0。值<=0将禁用帧内刷新。
-		initializeParams.encodeConfig->encodeCodecConfig.h264Config.intraRefreshPeriod = 180; // 180;
-		// TODO@chensong 20240903
-		// 应用作“帧内刷新”帧的帧内刷新周期内的总帧数。较小的值使流恢复更快，但代价是占用了更多的带宽。默认值：0。
-		initializeParams.encodeConfig->encodeCodecConfig.h264Config.intraRefreshCnt =  1;
-		NORMAL_EX_LOG("NVENC intra refresh enabled.");
-		NORMAL_EX_LOG("NVENC intra refresh period set to = %d", IntraRefreshPeriodFrames);
-		NORMAL_EX_LOG("NVENC intra refresh count = %d", IntraRefreshCountFrames);
-	}
-	else
-	{
-		WARNING_EX_LOG("NVENC intra refresh capability is not supported on this device, cannot use this feature");
-	}
-
-
-
-	// TODO@chensong 202409-06 
-	// 每N帧发送一个IDR帧。默认值：300。注意：值<=0将禁用在间隔上发送IDR帧。
-	initializeParams.encodeConfig->encodeCodecConfig.h264Config.idrPeriod = 300;
-
+	//initializeParams.encodeConfig->encodeCodecConfig.h264Config.enableIntraRefresh = 1;
+	//initializeParams.encodeConfig->encodeCodecConfig.h264Config.intraRefreshPeriod = 180;
+	//initializeParams.encodeConfig->encodeCodecConfig.h264Config.intraRefreshCnt = 180;
+	//initializeParams.encodeConfig->encodeCodecConfig.h264Config.idrPeriod = 
+	//initializeParams.encodeConfig->encodeCodecConfig.h264Config.repeatSPSPPS = 1;
+	//initializeParams.encodeConfig->encodeCodecConfig.h264Config.chromaFormatIDC = 3;
+	initializeParams.encodeConfig->encodeCodecConfig.h264Config.enableIntraRefresh = 1;
+	initializeParams.encodeConfig->encodeCodecConfig.h264Config.intraRefreshPeriod = 180;
+	initializeParams.encodeConfig->encodeCodecConfig.h264Config.intraRefreshCnt = 180;
 	//initializeParams.encodeConfig->encodeCodecConfig.h264Config.idrPeriod = 
 	initializeParams.encodeConfig->encodeCodecConfig.h264Config.repeatSPSPPS = 1;
-	initializeParams.encodeConfig->encodeCodecConfig.h264Config.chromaFormatIDC = 3;
 	/*
 	* Slice mode - set the slice mode to "entire frame as a single slice" because WebRTC implementation doesn't work well with slicing. The default slicing mode
 	* produces (rarely, but especially under packet loss) grey full screen or just top half of it.
 	*/
 	initializeParams.encodeConfig->encodeCodecConfig.h264Config.sliceMode = 0;
 	initializeParams.encodeConfig->encodeCodecConfig.h264Config.sliceModeData = 0;
-	// `outputPictureTimingSEI` is used in CBR mode to fill video frame with data to match the requested bitrate.
-	initializeParams.encodeConfig->encodeCodecConfig.h264Config.outputPictureTimingSEI = 1;
-	initializeParams.encodeConfig->encodeCodecConfig.h264Config.outputRecoveryPointSEI = 1;
-	
-	//initializeParams.encodeConfig->gopLength =  g_cfg.get_uint32(ECI_EncoderVideoGop);//NVENC_INFINITE_GOPLENGTH;//
+	//initializeParams.encodeConfig->gopLength = 180;
+	//initializeParams.encodeConfig->frameIntervalP = 6;
+	//initializeParams.encodeConfig->encodeCodecConfig.h264Config.sliceMode = 0;
+	//initializeParams.encodeConfig->encodeCodecConfig.h264Config.sliceModeData = 0;
+	//// `outputPictureTimingSEI` is used in CBR mode to fill video frame with data to match the requested bitrate.
+	//initializeParams.encodeConfig->encodeCodecConfig.h264Config.outputPictureTimingSEI = 1;
+	// 有averageBitRate需要并用作速率控制算法的目标输出比特率。客户端可以使用NV_ENC_RC_PARAMS::lowDelayKeyFrameScale来控制 I 帧与 P 帧的比率，如果 I 帧最终生成大量比特，这对于避免信道拥塞很有用。设置NV_ENC_CONFIG_H264/ NV_ENC_CONFIG_HEVC::enableFillerDataInsertion = 1以防需要严格遵守比特率
+
+	 
+	//initializeParams.encodeConfig->encodeCodecConfig.h264Config.enableFillerDataInsertion = 1;
+	 //initializeParams.encodeConfig->gopLength =  g_cfg.get_uint32(ECI_EncoderVideoGop);//NVENC_INFINITE_GOPLENGTH;//
 	//initializeParams.encodeConfig->rcParams.averageBitRate = g_cfg.get_uint32(ECI_RtcAvgRate) * 1000 ;
 	//initializeParams.encodeConfig->rcParams.maxBitRate = g_cfg.get_uint32(ECI_RtcMaxRate) * 1000;
 	//initializeParams.encodeConfig->rcParams.rateControlMode = NV_ENC_PARAMS_RC_VBR;// NV_ENC_PARAMS_RC_VBR_HQ;// NV_ENC_PARAMS_RC_CBR_LOWDELAY_HQ;
-	//initializeParams.encodeConfig->rcParams.qpMapMode = NV_ENC_QP_MAP_DELTA;
+	 initializeParams.encodeConfig->rcParams.qpMapMode = NV_ENC_QP_MAP_DELTA;
+	 initializeParams.encodeConfig->encodeCodecConfig.h264Config.outputPictureTimingSEI = 1;
+	 initializeParams.encodeConfig->encodeCodecConfig.h264Config.enableFillerDataInsertion = 1;
 	NV_ENC_RC_PARAMS& RateControlParams = initializeParams.encodeConfig->rcParams;
 #define DEFAULT_BITRATE (1000000u)
 	uint32_t const MinQP = static_cast<uint32_t>(g_cfg.get_uint32(ECI_EncodeQpMin));
@@ -613,9 +590,6 @@ static bool nvenc_init(void *nvenc_data, void *encoder_config)
 	else if (g_cfg.get_uint32(ECI_EnableEncoderCbr) == 1)
 	{
 		RateControlParams.rateControlMode = NV_ENC_PARAMS_RC_CBR;
-		// TODO@chensong 20240903 
-		// `outputPictureTimingSEI`在CBR模式下用于用数据填充视频帧，以匹配请求的比特率。
-		 initializeParams.encodeConfig->encodeCodecConfig.h264Config.enableFillerDataInsertion = 1;
 	}
 	else
 	{
@@ -632,6 +606,18 @@ static bool nvenc_init(void *nvenc_data, void *encoder_config)
 		RateControlParams.enableMaxQP = 1; 
 		NORMAL_EX_LOG("QP min = %u, max = %u", MinQP, MaxQP);
 	}   
+	else
+	{
+		/*initializeParams.encodeConfig->rcParams.disableBadapt = 1;
+		initializeParams.encodeConfig->rcParams.vbvBufferSize = initializeParams.encodeConfig->rcParams.averageBitRate * 60 / 1;
+		initializeParams.encodeConfig->rcParams.vbvInitialDelay = initializeParams.encodeConfig->rcParams.vbvBufferSize;
+		initializeParams.encodeConfig->frameIntervalP = 1;
+		initializeParams.encodeConfig->rcParams.enableAQ = 1;
+		initializeParams.encodeConfig->encodeCodecConfig.h264Config.idrPeriod = NVENC_INFINITE_GOPLENGTH;
+		initializeParams.encodeConfig->encodeCodecConfig.h264Config.repeatSPSPPS = 1;
+		initializeParams.encodeConfig->encodeCodecConfig.h264Config.sliceMode = 0;
+		initializeParams.encodeConfig->encodeCodecConfig.h264Config.sliceModeData = 0;*/
+	}
 
 	// If we have QP ranges turned on use the last encoded QP to guide the max QP for an i-frame, so the i-frame doesn't look too blocky
 	// Note: this does nothing if we have i-frames turned off.
@@ -639,7 +625,7 @@ static bool nvenc_init(void *nvenc_data, void *encoder_config)
 	{
 		RateControlParams.maxQP.qpIntra = LastEncodedQP;
 	}*/
-	//NORMAL_EX_LOG("====>>>>%s", gpu_encode_info::g_MainParamToString(&initializeParams).c_str());
+	NORMAL_EX_LOG("====>>>>%s", gpu_encode_info::g_MainParamToString(&initializeParams).c_str());
 	
 	enc->nvenc->CreateEncoder(&initializeParams);
 	NORMAL_EX_LOG("------------->encoder create ok !!!");
@@ -704,64 +690,6 @@ int nvenc_encode_texture(void *nvenc_data, ID3D11Texture2D *texture,int * ready,
 
 
 
-
-static int device_texture_acquire_sync(struct nvenc_data* enc, uint32_t ms)
-{
-	/*gs_texture_2d* tex2d = reinterpret_cast<gs_texture_2d*>(tex);
-	if (tex->type != GS_TEXTURE_2D)
-		return -1;*/
-
-	if (enc->acquired)
-	{
-		WARNING_EX_LOG("");
-		return 0;
-	}
-
-	ComQIPtr<IDXGIKeyedMutex> keyedMutex(enc->input_texture);
-	if (!keyedMutex)
-	{
-		WARNING_EX_LOG("");
-		return -1;
-	}
-
-	HRESULT hr = keyedMutex->AcquireSync(enc->lock_key, ms);
-	if (hr == S_OK) {
-		enc->acquired = true;
-		return 0;
-	}
-	else if (hr == WAIT_TIMEOUT) 
-	{
-		WARNING_EX_LOG("");
-		return ETIMEDOUT;
-	}
-
-	return -1;
-}
-
-int device_texture_release_sync(struct nvenc_data* enc)
-{
-	if (!enc->acquired)
-	{
-		WARNING_EX_LOG("");
-		return 0;
-	}
-
-	ComQIPtr<IDXGIKeyedMutex> keyedMutex(enc->input_texture);
-	if (!keyedMutex)
-	{
-		WARNING_EX_LOG("");
-		return -1;
-	}
-
-	HRESULT hr = keyedMutex->ReleaseSync(++enc->lock_key);
-	if (hr == S_OK) {
-		enc->acquired = false;
-		return 0;
-	}
-
-	return -1;
-}
-
 int nvenc_encode_texture_unlock_lock(void *nvenc_data, ID3D11Texture2D *texture , uint8_t* out_buf, uint32_t out_buf_size, int lock_key, int unlock_key, IDXGIKeyedMutex* keyed_mutex)
 {
 	using namespace chen;
@@ -789,31 +717,19 @@ int nvenc_encode_texture_unlock_lock(void *nvenc_data, ID3D11Texture2D *texture 
 	ID3D11Texture2D *encoder_texture = reinterpret_cast<ID3D11Texture2D*>(input_frame->inputPtr);
 	//*ready = 1;
 	//NORMAL_EX_LOG("");
-	//if (lock_key >= 0 && unlock_key >= 0 && keyed_mutex)
+	if (lock_key >= 0 && unlock_key >= 0 && keyed_mutex)
 	{
-#define GS_WAIT_INFINITE (uint32_t) - 1
-		//HRESULT hr = keyed_mutex->AcquireSync(enc->lock_key, GS_WAIT_INFINITE);
-		//if (hr != S_OK)
-		/*if (device_texture_acquire_sync(enc, GS_WAIT_INFINITE)!= 0)
+		HRESULT hr = keyed_mutex->AcquireSync(lock_key, 3);
+		if (hr != S_OK)
 		{
 			NORMAL_EX_LOG("AcquireSync time out !!!");
 			return -1;
-		}*/
+		}
 	}
 	enc->d3d11_context->CopyResource(encoder_texture, texture);
-	//D3D11_BOX srcBox;
-	//srcBox.left = 0;
-	//srcBox.right = 1920;
-	//srcBox.bottom = 1040;
-	//srcBox.top = 0;
-	//srcBox.front = 0;
-	//srcBox.back = 1;
-	//  enc->d3d11_context->CopySubresourceRegion(encoder_texture, 0, 0, 0, 0,
-	//	  texture, 0, &srcBox);
-	//if (lock_key >= 0 && unlock_key >= 0 && keyed_mutex)
+	if (lock_key >= 0 && unlock_key >= 0 && keyed_mutex)
 	{
-		//device_texture_release_sync(enc);
-		//keyed_mutex->ReleaseSync(enc->lock_key++);
+		keyed_mutex->ReleaseSync(unlock_key);
 	}
 	//*ready = 0;
 	//NORMAL_EX_LOG("");
@@ -842,23 +758,6 @@ int nvenc_encode_texture_unlock_lock(void *nvenc_data, ID3D11Texture2D *texture 
 	return packet_size;
 }
 
-static void  GetSharedHandle(struct nvenc_data*  enc, IDXGIResource* dxgi_res)
-{
-	HANDLE handle;
-	HRESULT hr;
-
-	hr = dxgi_res->GetSharedHandle(&handle);
-	if (FAILED(hr)) {
-		WARNING_EX_LOG(
-			"GetSharedHandle: Failed to "
-			"get shared handle: %08lX",
-			hr);
-	}
-	else {
-		enc->input_handle = handle;
-	}
-}
-
 int nvenc_encode_handle(void *nvenc_data, HANDLE handle, int lock_key, int unlock_key, 
 	uint8_t* out_buf, uint32_t out_buf_size)
 {
@@ -868,7 +767,7 @@ int nvenc_encode_handle(void *nvenc_data, HANDLE handle, int lock_key, int unloc
 		int ready;
 		void * handler;
 	};
-	// 
+	//  
 	//video_data * video_data_ptr = (video_data*)handle;
 	//NORMAL_EX_LOG("");
 	struct nvenc_data *enc = (struct nvenc_data *)nvenc_data;
@@ -900,46 +799,28 @@ int nvenc_encode_handle(void *nvenc_data, HANDLE handle, int lock_key, int unloc
 			WARNING_EX_LOG("[handle = %p]OpenSharedResource  failed !!!", handle);
 			return -1;
 		}
-	/*	enc->input_resource->QueryInterface(__uuidof(ID3D11Texture2D), (void**)(&enc->input_texture));
-		enc->input_resource->Release();
-		enc->input_resource = NULL;
-		enc->input_texture->AddRef();*/
 	//	NORMAL_EX_LOG("");
 		input_texture = enc->input_texture;
-		D3D11_TEXTURE2D_DESC  desc_p;
-		enc->acquired = false;
-		input_texture->GetDesc(&desc_p);
-		if ((desc_p.MiscFlags & D3D11_RESOURCE_MISC_SHARED_KEYEDMUTEX) != 0)
-		{
-			ComQIPtr<IDXGIResource> dxgi_res(enc->input_texture);
-			if (dxgi_res)
-			{
-				GetSharedHandle(enc, dxgi_res);
-			}
-			device_texture_acquire_sync(enc, INFINITE);
-		}
 		//NORMAL_EX_LOG("");
 		//if (g_cfg.get_uint32(ECI_GpuVideoLock) > 0)
 		{
 			//if (lock_key >= 0 && unlock_key >= 0)
 			//{
-				//hr = input_texture->QueryInterface(_uuidof(IDXGIKeyedMutex), reinterpret_cast<void**>(&enc->keyed_mutex));
-				////NORMAL_EX_LOG("hr = %u", hr);
-				//if (FAILED(hr))
-				//{
-				//	enc->input_texture->Release();
-				//	enc->input_texture = nullptr;
-				//	return -1;
-				//}
-				////NORMAL_EX_LOG("");
-				//keyed_mutex = enc->keyed_mutex;
+			//	hr = input_texture->QueryInterface(_uuidof(IDXGIKeyedMutex), reinterpret_cast<void**>(&enc->keyed_mutex));
+			//	//NORMAL_EX_LOG("hr = %u", hr);
+			//	if (FAILED(hr))
+			//	{
+			//		enc->input_texture->Release();
+			//		enc->input_texture = nullptr;
+			//		return -1;
+			//	}
+			//	//NORMAL_EX_LOG("");
+			//	keyed_mutex = enc->keyed_mutex;
 			//}
-			
 		}
 		
 		//NORMAL_EX_LOG("");
 		enc->input_handle = handle;
-		//device_texture_acquire_sync(enc, INFINITE);
 	}
 	//NORMAL_EX_LOG("");
 	if (input_texture != nullptr)
@@ -982,11 +863,11 @@ int nvenc_set_bitrate(void *nvenc_data, uint32_t bitrate_bps)
 	}
 	using namespace chen;
 	NORMAL_EX_LOG("------bitrate_bps = %u----->", bitrate_bps);
-	/*if (g_cfg.get_uint32(ECI_EnableEncoderCbr) > 0)
+	 if (g_cfg.get_uint32(ECI_EnableEncoderCbr) > 0)
 	{ 
 		return 0;
-	}*/
-	
+	} 
+	 
 	if ((bitrate_bps / 1000) > g_cfg.get_uint32(ECI_RtcMaxRate))
 	{
 		NORMAL_EX_LOG("[bitrate_bps = %u ]too big [defalut max bitrate = %u]", bitrate_bps/ 1000, g_cfg.get_uint32(ECI_RtcMaxRate));
@@ -1036,11 +917,10 @@ int nvenc_set_framerate(void *nvenc_data, uint32_t framerate)
 	{
 		NORMAL_EX_LOG("framerate = %u", framerate);
 	}
-	if (g_cfg.get_uint32(ECI_EnableEncoderCbr) > 0)
+	 if (g_cfg.get_uint32(ECI_EnableEncoderCbr) > 0)
 	{
 		return 0;
-	}
-	return 0;
+	} 
  	//NORMAL_EX_LOG("----------->");
 	//return 0;
 	struct nvenc_data *enc = (struct nvenc_data *)nvenc_data;
