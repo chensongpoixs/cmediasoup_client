@@ -115,7 +115,7 @@ namespace chen {
 		sprintf(p, "%s_%s%s", dateTime, name.c_str(), ext.c_str());
 	}
 	 
-	casync_log::casync_log()
+	/*casync_log::casync_log()
 		: m_host("127.0.0.1")
 		, m_port(80)  
 		, m_level_log(ELogLevel_Num)
@@ -125,7 +125,7 @@ namespace chen {
 		, m_path("./log")
 		, m_expired_log_day(3)
 	{ 
-	}
+	}*/
 
 	casync_log::~casync_log()
 	{
@@ -391,6 +391,7 @@ namespace chen {
 						// delete file !!!
 						if (!boost::filesystem::remove(boost::filesystem::path(fname)))
 						{
+							WARNING_EX_LOG("delete file = %s failed !!!",  fname.c_str());
 							std::cerr << "delete file = " << fname << " !!! " << std::endl;
 						}
 					}

@@ -59,7 +59,18 @@ namespace chen
 		typedef std::condition_variable					ccond;
 		typedef std::atomic_bool						catomic_bool;
 	public:
-		explicit casync_log();
+		explicit casync_log()
+			: m_host("127.0.0.1")
+			, m_port(80)
+			, m_level_log(ELogLevel_Num)
+			, m_storage_type(ELogStorageScreenFilePost)
+			, m_stoped(false)
+			, m_date_time(0)
+			, m_path("./log")
+			, m_log_item()
+			, m_expired_log_day(3)
+		{
+		}
 		~casync_log();
 		bool init(ELogStorageType storage_type , const   std::string  & host, uint32 port, uint32 day = 3);
 		void destroy();
