@@ -783,9 +783,12 @@ namespace chen {
 		
 		if (EMediasoup_Request_Create_Send_Webrtc_Transport == m_status)
 		{
+
+
+			bool  tcp = g_cfg.get_uint32(ECI_EnableSendRtcTcp) > 0 ? true : false;
 			nlohmann::json data =
 			{
-				{"forceTcp",false},
+				{"forceTcp",tcp},
 			{"producing",true},
 			{"consuming" , false},
 			{	"sctpCapabilities", m_sctpCapabilities }
@@ -800,9 +803,10 @@ namespace chen {
 		}
 		else
 		{
+			bool  tcp = g_cfg.get_uint32(ECI_EnableRecvRtcTcp) > 0 ? true : false;
 			nlohmann::json data =
 			{
-				{"forceTcp",false},
+				{"forceTcp",tcp},
 				{"producing",false},
 				{"consuming" , true},
 				{	"sctpCapabilities", m_sctpCapabilities }

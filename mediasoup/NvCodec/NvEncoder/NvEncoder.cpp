@@ -115,7 +115,7 @@ void NvEncoder::CreateDefaultEncoderParams(NV_ENC_INITIALIZE_PARAMS* pIntializeP
     pIntializeParams->enableMEOnlyMode = m_bMotionEstimationOnly;
     pIntializeParams->enableOutputInVidmem = m_bOutputInVideoMemory;
 #if defined(_WIN32)
-    //if (!m_bOutputInVideoMemory)
+    if (!m_bOutputInVideoMemory)
     {
 		pIntializeParams->enableEncodeAsync = GetCapabilityValue(codecGuid, NV_ENC_CAPS_ASYNC_ENCODE_SUPPORT);
     }
@@ -251,20 +251,20 @@ void NvEncoder::CreateEncoder(const NV_ENC_INITIALIZE_PARAMS* pEncoderParams)
     m_initializeParams.encodeConfig = &m_encodeConfig;
   //  m_initializeParams.presetGUID = NV_ENC_PRESET_P7_GUID;
     // 初始化 NV_ENC_CONFIG_H264_VUI_PARAMETERS 结构体
-    NV_ENC_CONFIG_H264_VUI_PARAMETERS vuiParams = { 0 };
+    //NV_ENC_CONFIG_H264_VUI_PARAMETERS vuiParams = { 0 };
 
-    // 设置 BT.709 色彩原理
-    vuiParams.colourPrimaries = 1; // 值为 1
+    //// 设置 BT.709 色彩原理
+    //vuiParams.colourPrimaries = 1; // 值为 1
 
-    // 设置 BT.709 传输特性
-    vuiParams.transferCharacteristics = 1; // 值为 1
+    //// 设置 BT.709 传输特性
+    //vuiParams.transferCharacteristics = 1; // 值为 1
 
-    // 设置 BT.709 色彩矩阵系数
-    vuiParams.colourMatrix = 1; // 值为 1
+    //// 设置 BT.709 色彩矩阵系数
+    //vuiParams.colourMatrix = 1; // 值为 1
 
-    vuiParams.videoFullRangeFlag = 1;
-    vuiParams.colourDescriptionPresentFlag = 1; //
-    vuiParams.videoSignalTypePresentFlag = 1; //
+    //vuiParams.videoFullRangeFlag = 1;
+    //vuiParams.colourDescriptionPresentFlag = 1; //
+    //vuiParams.videoSignalTypePresentFlag = 1; //
     /// <summary>
     /// 
     /*m_initializeParams.encodeConfig->encodeCodecConfig.h264Config.outputBufferingPeriodSEI = 0;

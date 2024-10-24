@@ -58,7 +58,8 @@ namespace chen {
 		ECI_EncodeQpMax,
 		ECI_SharedGpuHandleAddressPid,
 		ECI_BrowserAppIdleTime,
-		 
+		ECI_EnableSendRtcTcp,
+		ECI_EnableRecvRtcTcp,
 		 
 	//	ECI_Time_Zone,
 	//	ECI_Time_Adjust,
