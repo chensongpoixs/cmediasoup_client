@@ -337,7 +337,62 @@ void open_start_app(std::wstring app_path_param)
 	::CloseHandle(info.hProcess);
 	::CloseHandle(info.hThread);
 }
-int  test_main(int argc, char *argv[])
+
+
+void fffmain()
+{
+	wchar_t name[256] = L"398e45lpd0";
+	ULONG m_pids[512] = { 0 };
+	//wcscpy(name, m_name);
+	 wchar_t namefff[1024] = { 0 };
+	SbieApi_EnumProcess(name, m_pids);
+	int32_t i = 1;
+	for (i = 1; i <= m_pids[0]; ++i) {
+
+		SbieApi_QueryProcessEx(
+			(HANDLE)(ULONG_PTR)m_pids[i], 255, NULL, namefff, NULL, NULL);
+
+		if (namefff[0])
+		{
+			//  m_images[i] = name;
+		}
+		else
+		{
+			//m_images[i] = _unknown;
+		}
+		HWND www = chen::FindMainWindow(m_pids[i]);
+		wchar_t   window_title[1024] = { 0 };
+		int32_t ret = GetWindowText(www, window_title, 1024);
+			printf("[pid = %u][name = %ws][wnd = %u][window_title = %ws]\n", m_pids[i], name, www, window_title);
+		if (www != NULL)
+		{
+			g_pid = m_pids[i];
+			for (int i = 0; i < 10; ++i)
+			{
+				PostMessage(www, WM_SYSKEYDOWN, 38, 0);
+				PostMessage(www, WM_SYSCHAR, 38, 0);
+				PostMessage(www, WM_SYSKEYUP, 38, 0);
+
+
+				printf("send--> \n");
+			}
+			//break;
+		}
+		
+		/*HICON icon;
+		const WCHAR* title = theWindowTitleMap.Get(m_pids[i], icon);
+		if (title)
+			m_titles[i] = title;
+		else
+			m_titles[i] = CString();
+
+		m_icons[i] = icon;*/
+	}
+
+}
+
+
+int  temain(int argc, char *argv[])
 {
 	//test_create_process_as_user();
 	//return EXIT_SUCCESS;

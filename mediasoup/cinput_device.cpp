@@ -99,9 +99,9 @@ namespace chen {
 
 	//if (GetCapture() != g_wnd)
 #define MOUSE_INPUT(g_wnd)		 { \
-								SetForegroundWindow(g_wnd);  \
+								SetFocus(g_wnd);  \
 								SetCapture(g_wnd);           \
-								SetFocus(g_wnd); }
+								 SetForegroundWindow(g_wnd); }
 
 #define CliENTTOSCREENPOINT(hwnd, xx, yy) POINT CursorPoint; \
 	CursorPoint.x = xx; \
@@ -2610,6 +2610,9 @@ namespace chen {
 
 		if (mwin)
 		{
+								
+			::SetActiveWindow(mwin);
+			
 			MOUSE_INPUT(mwin);
 
 			//POINT pos;
