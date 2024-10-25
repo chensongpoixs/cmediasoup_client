@@ -502,7 +502,22 @@ int32_t NvEncoder::Encode(const VideoFrame& input_frame,
 	}
 	RTC_DCHECK_EQ(configurations_[0].width, frame_buffer->width());
 	RTC_DCHECK_EQ(configurations_[0].height, frame_buffer->height());
-
+	static auto timestamp =
+		std::chrono::duration_cast<std::chrono::milliseconds>(
+			std::chrono::system_clock::now().time_since_epoch())
+		.count();
+	static  size_t cnt = 0;
+	auto timestamp_curr = std::chrono::duration_cast<std::chrono::milliseconds>(
+		std::chrono::system_clock::now().time_since_epoch())
+		.count();
+	++cnt;
+	if (timestamp_curr - timestamp > 1000) {
+		//RTC_LOG(LS_INFO) << "FPS: " << cnt;
+		NORMAL_EX_LOG("chiled fps = %u", cnt);
+		cnt = 0;
+		timestamp = timestamp_curr;
+	}
+	//return WEBRTC_VIDEO_CODEC_OK;
 	// Encode image for each layer.
 	for (size_t i = 0; i < nv_encoders_.size(); ++i) {
 		if (!configurations_[i].sending) {

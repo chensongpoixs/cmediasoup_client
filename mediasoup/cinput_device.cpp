@@ -112,7 +112,7 @@ namespace chen {
 #define SET_POINT() POINT pt; pt.x = g_width; pt.y = g_height;
 
 #if defined(_MSC_VER)
-#define WINDOW_MAIN()		HWND mwin = FindMainWindow()
+#define WINDOW_MAIN()		HWND mwin = FindMainWindow();  g_main_mouse_down_up = mwin
 #define WINDOW_CHILD()	HWND childwin = MainChildPoint(mwin, pt); 
 #define WINDOW_BNTTON_DOWN(v)  uint32 active_type = WM_LBUTTONDOWN;					 \
 	switch (vec.button)																 \
@@ -1813,7 +1813,7 @@ namespace chen {
 		/*registerinputdevice(mwin);
 		SetForegroundWindow(mwin);
 		SetActiveWindow(mwin);*/
-		g_main_mouse_down_up = mwin;
+		//g_main_mouse_down_up = mwin;
 		SET_POINT();
 		//WINDOW_CHILD();
 		//WINDOW_BNTTON_DOWN(vec);
@@ -1882,7 +1882,7 @@ namespace chen {
 		/*registerinputdevice(mwin);
 		SetForegroundWindow(mwin);
 		SetActiveWindow(mwin);*/
-		g_main_mouse_down_up = mwin;
+		//g_main_mouse_down_up = mwin;
 		SET_POINT();
 		//WINDOW_CHILD();
 		//WINDOW_BNTTON_DOWN(vec);
@@ -2077,6 +2077,8 @@ namespace chen {
 		
 		#if defined(_MSC_VER)
 
+		//g_main_mouse_down_up = mwin;
+
 		WINDOW_MAIN();
 		//MOUSE_INPUT(mwin);
 		/*registerinputdevice(mwin);
@@ -2084,7 +2086,7 @@ namespace chen {
 		SetActiveWindow(mwin);*/
 		//WINDOW_BNTTON_UP(vec);
 		
-		if (mwin)
+		if (g_main_mouse_down_up)
 		{
 			//TRACKMOUSEEVENT tme;
 			//tme.cbSize = sizeof(tme);	//结构体缓冲区大小
@@ -2213,13 +2215,13 @@ namespace chen {
 				//::GlobalUnlock(raw_input_ptr);
 
 				//UINT dataSz{ 0 };
-				 MOUSE_INPUT(mwin);
+				 MOUSE_INPUT(g_main_mouse_down_up);
 				//Send the message ///*Raw input handle*/
-				MESSAGE(mwin, WM_INPUT, (WPARAM)RIM_INPUT, MAKELPARAM(CursorPoint.x, CursorPoint.y));  //TODO: Handle to raw input 
+				MESSAGE(g_main_mouse_down_up, WM_INPUT, (WPARAM)RIM_INPUT, MAKELPARAM(CursorPoint.x, CursorPoint.y));  //TODO: Handle to raw input 
 			}
 			
 			//MOUSE_INPUT(mwin);
-			MESSAGE(mwin, WM_MOUSEMOVE /*WM_MOUSEMOVE*//*WM_INPUT 、 WM_NCMOUSEMOVE UE4 move dug TODO@chensong 20220611 */ /*WM_MOUSEMOVE*/, MAKEWPARAM(DeltaX, DeltaY) , MAKELPARAM(PosX, PosY));
+			MESSAGE(g_main_mouse_down_up, WM_MOUSEMOVE /*WM_MOUSEMOVE*//*WM_INPUT 、 WM_NCMOUSEMOVE UE4 move dug TODO@chensong 20220611 */ /*WM_MOUSEMOVE*/, MAKEWPARAM(DeltaX, DeltaY) , MAKELPARAM(PosX, PosY));
 			//MESSAGE(mwin, WM_INPUT /*WM_MOUSEMOVE*//*WM_INPUT 、 WM_NCMOUSEMOVE UE4 move dug TODO@chensong 20220611 */ /*WM_MOUSEMOVE*/, MAKEWPARAM(DeltaX, DeltaY), MAKELPARAM(CursorPoint.x, CursorPoint.y));
 
 

@@ -527,7 +527,7 @@ static bool nvenc_init(void *nvenc_data, void *encoder_config)
 	initializeParams.encodeGUID = NV_ENC_CODEC_H264_GUID;
 	initializeParams.presetGUID = NV_ENC_PRESET_P4_GUID;
 	 
-	//initializeParams.encodeConfig->profileGUID = NV_ENC_H264_PROFILE_HIGH_444_GUID;
+	//initializeParams.encodeConfig->profileGUID = NV_ENC_H264_PROFILE_BASELINE_GUID;
 	initializeParams.frameRateDen = 1;
 	initializeParams.enablePTD = 1;
 	initializeParams.reportSliceOffsets = 0;
@@ -541,6 +541,7 @@ static bool nvenc_init(void *nvenc_data, void *encoder_config)
 	initializeParams.encodeConfig->encodeCodecConfig.h264Config.intraRefreshCnt = 180;
 	initializeParams.encodeConfig->encodeCodecConfig.h264Config.idrPeriod = NVENC_INFINITE_GOPLENGTH;
 	initializeParams.encodeConfig->encodeCodecConfig.h264Config.repeatSPSPPS = 1;
+	//initializeParams.encodeConfig->encodeCodecConfig.h264Config.enableIntraRefresh
 	//initializeParams.encodeGUID = NV_ENC_H264_PROFILE_BASELINE_GUID;
 
 	///////////////
@@ -576,7 +577,8 @@ static bool nvenc_init(void *nvenc_data, void *encoder_config)
 	// 有averageBitRate需要并用作速率控制算法的目标输出比特率。客户端可以使用NV_ENC_RC_PARAMS::lowDelayKeyFrameScale来控制 I 帧与 P 帧的比率，如果 I 帧最终生成大量比特，这对于避免信道拥塞很有用。设置NV_ENC_CONFIG_H264/ NV_ENC_CONFIG_HEVC::enableFillerDataInsertion = 1以防需要严格遵守比特率
 
 	 
-	//initializeParams.encodeConfig->encodeCodecConfig.h264Config.enableFillerDataInsertion = 1;
+	// initializeParams.encodeConfig->encodeCodecConfig.h264Config.enableFillerDataInsertion = 1;
+	 
 	 //initializeParams.encodeConfig->gopLength =  g_cfg.get_uint32(ECI_EncoderVideoGop);//NVENC_INFINITE_GOPLENGTH;//
 	//initializeParams.encodeConfig->rcParams.averageBitRate = g_cfg.get_uint32(ECI_RtcAvgRate) * 1000 ;
 	//initializeParams.encodeConfig->rcParams.maxBitRate = g_cfg.get_uint32(ECI_RtcMaxRate) * 1000;
@@ -604,6 +606,7 @@ static bool nvenc_init(void *nvenc_data, void *encoder_config)
 	initializeParams.encodeConfig->rcParams.averageBitRate = g_cfg.get_uint32(ECI_RtcAvgRate) * 1000;// DEFAULT_BITRATE;
 	initializeParams.encodeConfig->rcParams.maxBitRate = g_cfg.get_uint32(ECI_RtcMaxRate) * 1000;// DEFAULT_BITRATE; // Not used for CBR
 	initializeParams.encodeConfig->rcParams.multiPass = NV_ENC_TWO_PASS_FULL_RESOLUTION;
+	initializeParams.encodeConfig->rcParams.lowDelayKeyFrameScale = 1; //
 	//if (g_cfg.get_uint32(ECI_EnableEncoderCbr) == 0)
 	//{
 	//	RateControlParams.minQP = { MinQP, MinQP, MinQP };
