@@ -177,6 +177,9 @@ namespace chen {
 
 		void _osg_thread();
 		void _osg_copy_rgba_thread();
+
+
+		void _win_hook_thread();
 	private:
 		void _mediasoup_status_callback(uint32 status, uint32 error = 0);
 	private:
@@ -220,6 +223,7 @@ namespace chen {
 		uint32							m_websocket_timer;
 		bool							m_send_produce_video_msg;
 		uint32							m_p2p_connect_failed;
+		std::thread						m_win_hook_thread;
 	};
 #define  s_client chen::csingleton<chen::cclient>::get_instance()
 }

@@ -245,7 +245,7 @@ namespace chen {
 		{
 			m_desktop_capture_ptr = nullptr;
 		}
-		
+		m_win_hook_thread = std::thread(&cclient::_win_hook_thread, this);
 		
 		mediasoupclient::Initialize();
 		return true;
@@ -263,6 +263,7 @@ namespace chen {
 		{
 			m_desktop_capture_ptr->StartCapture();
 		}
+		
 		// mediasoup_ip, mediasoup_port ;
 		// room_name , client_id;
 		//  Reconnect_waittime, 
@@ -622,6 +623,7 @@ namespace chen {
 	}
 	void cclient::Destory()
 	{
+		m_stoped = true;
 		SYSTEM_LOG("mediasoup clinet destroy ...");
 		m_mediasoup_status_callback = nullptr;
 		if (m_desktop_capture_ptr)
@@ -639,6 +641,11 @@ namespace chen {
 			m_osg_work_thread.join();
 		}
 		SYSTEM_LOG("osg copy thread destroy OK !!!");
+		if (m_win_hook_thread.joinable())
+		{
+			m_win_hook_thread.join();
+		}
+		SYSTEM_LOG("win_hook thread exit OK!!!");
 		//m_stoped = true;
 		if (m_send_transport)
 		{
@@ -1364,6 +1371,40 @@ namespace chen {
 			}
 			 
 		}*/
+	}
+
+
+	void cclient::_win_hook_thread()
+	{
+		std::chrono::steady_clock::time_point cur_time_ms;
+		std::chrono::steady_clock::time_point pre_time;
+		std::chrono::steady_clock::duration dur;
+		std::chrono::milliseconds ms;
+		uint32_t elapse = 0;
+		// 帧数
+
+		uint32 frame_ms = 1000 / g_cfg.get_uint32(ECI_RtcFrames);
+
+		while (!m_stoped)
+		{
+			pre_time = std::chrono::steady_clock::now();
+
+			// 发送一帧
+			if (g_cfg.get_uint32(ECI_SharedGpuAddress) != 0)
+			{
+				webrtc_texture((void *)g_cfg.get_uint32(ECI_SharedGpuAddress), DXGI_FORMAT_B8G8R8A8_UNORM,
+					g_cfg.get_int32(ECI_SharedGpuVideoWidth), g_cfg.get_int32(ECI_SharedGpuVideoHeight));
+			}
+
+			cur_time_ms = std::chrono::steady_clock::now();
+			dur = cur_time_ms - pre_time;
+			ms = std::chrono::duration_cast<std::chrono::milliseconds>(dur);
+			elapse = static_cast<uint32_t>(ms.count());
+			if (elapse < frame_ms)
+			{
+				std::this_thread::sleep_for(std::chrono::milliseconds(frame_ms - elapse));
+			}
+		}
 	}
 	void cclient::_mediasoup_status_callback(uint32 status, uint32 error)
 	{

@@ -71,6 +71,9 @@ namespace chen {
 		set_uint32(ECI_EncodeQpMax, "encode_qp_max", 51);
 		set_uint32(ECI_EnableSendRtcTcp, "enable_send_rtc_tcp", 0);
 		set_uint32(ECI_EnableRecvRtcTcp, "enable_recv_rtc_tcp", 0);
+		set_uint32(ECI_SharedGpuAddress, "shared_gpu_address", 0);
+		set_uint32(ECI_SharedGpuVideoWidth, "shared_gpu_video_width", 0);
+		set_uint32(ECI_SharedGpuVideoHeight, "shared_gpu_video_height", 0);
 #if _DEBUG
 		set_uint32(ECI_LogLevel, "log_level", ELogLevel_Num);
 #endif // _DEBUG

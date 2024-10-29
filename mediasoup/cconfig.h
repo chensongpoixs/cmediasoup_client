@@ -74,12 +74,18 @@ namespace chen {
 		void set_string(int32 index, int32, const char * key, const char * value);
 		void set_int32(int32 index, const char * key, int32 value);
 		void set_uint32(int32 index, const char * key, uint32 value);
+		void set_int64(int32 index, const std::string key, int64 value);
+		void set_uint64(int32 index, const std::string key, uint64 value);
+		void set_int64(int32 index, const char* key, int64 value);
+		void set_uint64(int32 index, const char* key, uint64 value);
 		void show();
 
 	public:
 		std::string get_string(int64 index) const ;
 		int32 get_int32(int64 index) const;
 		uint32 get_uint32(int64 index)const;
+		int64 get_int64(int64 index) const;
+		uint64 get_uint64(int64 index)const;
 	public:
 		void load_cfg_file();
 	private:
@@ -90,6 +96,8 @@ namespace chen {
 			EDataTypeNULL = 1,
 			EDataTypeint,
 			EDataTypeuint32,
+			EDataTypeint64,
+			EDataTypeuint64,
 			EDataTypeString,
 		};
 		typedef struct cnode {
@@ -99,6 +107,12 @@ namespace chen {
 			{
 				int32	m_int32;
 				uint32	m_uint32;
+				
+			};
+			union
+			{
+				int64   m_int64;
+				uint64  m_uint64;
 			};
 			std::string m_data;
 

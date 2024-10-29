@@ -156,6 +156,51 @@ namespace chen {
 		m_configs[index].m_uint32 = value;
 	}
 
+
+	void cconfig::set_int64(int32 index, const std::string key, int64 value)
+	{
+		if (m_values_size < index)
+		{
+			//	ERROR_EX_LOG("set_uint32 index = %ld, num = %ld, key = %s, value = %ld", m_values_size, index, key, value);
+			RTC_LOG(LS_ERROR) << "set_int64 index = " << m_values_size << ", num = " << index << ", key = " << key << ", value = " << value;
+			return;
+		}
+		m_configs[index].init(key, EDataTypeint64);
+		m_configs[index].m_int64 = value;
+	}
+	void cconfig::set_uint64(int32 index, const std::string key, uint64 value)
+	{
+		if (m_values_size < index)
+		{
+			//	ERROR_EX_LOG("set_uint32 index = %ld, num = %ld, key = %s, value = %ld", m_values_size, index, key, value);
+			RTC_LOG(LS_ERROR) << "set_uint64 index = " << m_values_size << ", num = " << index << ", key = " << key << ", value = " << value;
+			return;
+		}
+		m_configs[index].init(key, EDataTypeuint64);
+		m_configs[index].m_uint64 = value;
+	}
+	void cconfig::set_int64(int32 index, const char* key, int64 value)
+	{
+		if (m_values_size < index)
+		{
+			//	ERROR_EX_LOG("set_uint32 index = %ld, num = %ld, key = %s, value = %ld", m_values_size, index, key, value);
+			RTC_LOG(LS_ERROR) << "set_int64 index = " << m_values_size << ", num = " << index << ", key = " << key << ", value = " << value;
+			return;
+		}
+		m_configs[index].init(key, EDataTypeint64);
+		m_configs[index].m_int64 = value;
+	}
+	void cconfig::set_uint64(int32 index, const char* key, uint64 value)
+	{
+		if (m_values_size < index)
+		{
+			//	ERROR_EX_LOG("set_uint32 index = %ld, num = %ld, key = %s, value = %ld", m_values_size, index, key, value);
+			RTC_LOG(LS_ERROR) << "set_uint64 index = " << m_values_size << ", num = " << index << ", key = " << key << ", value = " << value;
+			return;
+		}
+		m_configs[index].init(key, EDataTypeuint64);
+		m_configs[index].m_uint64 = value;
+	}
 	std::string cconfig::get_string(int64 index)const
 	{
 		if (m_values_size < index)
@@ -188,7 +233,26 @@ namespace chen {
 		}
 		return m_configs[index].m_uint32;
 	}
-
+	int64 cconfig::get_int64(int64 index) const
+	{
+		if (m_values_size < index)
+		{
+			//ERROR_EX_LOG("get_int32 index = %ld, num = %ld", m_values_size, index);
+			RTC_LOG(LS_ERROR) << "get_int64 index = " << m_values_size << ", num= " << index;
+			return 0;
+		}
+		return m_configs[index].m_int64;
+	}
+	uint64 cconfig::get_uint64(int64 index)const
+	{
+		if (m_values_size < index)
+		{
+			//ERROR_EX_LOG("get_int32 index = %ld, num = %ld", m_values_size, index);
+			RTC_LOG(LS_ERROR) << "get_uint64 index = " << m_values_size << ", num= " << index;
+			return 0;
+		}
+		return m_configs[index].m_uint64;
+	}
 	void cconfig::load_cfg_file()
 	{
 		for (int64 i = 0; i < m_values_size; ++i)
@@ -211,6 +275,14 @@ namespace chen {
 				else if (m_configs[i].m_type == EDataTypeuint32)
 				{
 					m_configs[i].m_uint32 = std::atol(m_cfg_file.get_value(m_configs[i].m_name).c_str());
+				}
+				else if (m_configs[i].m_type == EDataTypeuint64)
+				{
+					m_configs[i].m_uint64 = std::atoll(m_cfg_file.get_value(m_configs[i].m_name).c_str());
+				}
+				else if (m_configs[i].m_type == EDataTypeint64)
+				{
+					m_configs[i].m_int64 = std::atoll(m_cfg_file.get_value(m_configs[i].m_name).c_str());
 				}
 				else
 				{
