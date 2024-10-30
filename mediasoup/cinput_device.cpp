@@ -1062,7 +1062,7 @@ namespace chen {
 			::PostMessageW(mwin, WM_KEYDOWN, KeyCode, Repeat != 0);
 		}*/
 		
-		
+		MOUSE_INPUT(mwin);
 		SET_POINT();
 		WINDOW_CHILD();
 		if (VK_CONTROL == KeyCode)
@@ -1369,7 +1369,7 @@ namespace chen {
 		
 		SET_POINT();
 		WINDOW_CHILD();
-		
+		MOUSE_INPUT(mwin);
 		if (childwin)
 		{
 			//if (VK_CONTROL == KeyCode)
@@ -1603,6 +1603,7 @@ namespace chen {
 		
 		SET_POINT();
 		WINDOW_CHILD();
+		MOUSE_INPUT(mwin);
 		if (childwin)
 		{
 			MOUSE_INPUT(childwin);

@@ -37,6 +37,7 @@ namespace chen {
 
 	class csend_transport;
 	class crecv_transport;
+	extern uint64		g_gpu_address;
 	enum EMediasoup_Type
 	{
 		EMediasoup_None = 0,

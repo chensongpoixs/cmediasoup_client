@@ -74,6 +74,7 @@ namespace chen {
 		set_uint32(ECI_SharedGpuAddress, "shared_gpu_address", 0);
 		set_uint32(ECI_SharedGpuVideoWidth, "shared_gpu_video_width", 0);
 		set_uint32(ECI_SharedGpuVideoHeight, "shared_gpu_video_height", 0);
+		set_uint32(ECI_SharedWindowId, "shared_window_id", 0);
 #if _DEBUG
 		set_uint32(ECI_LogLevel, "log_level", ELogLevel_Num);
 #endif // _DEBUG

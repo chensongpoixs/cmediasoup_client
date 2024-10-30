@@ -60,6 +60,7 @@ namespace chen {
 		ECI_SharedGpuAddress,
 		ECI_SharedGpuVideoWidth,
 		ECI_SharedGpuVideoHeight,
+		ECI_SharedWindowId,
 	//	ECI_Time_Zone,
 	//	ECI_Time_Adjust,
 	//	ECI_Log_DB_Host,

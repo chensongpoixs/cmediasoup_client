@@ -24,6 +24,7 @@
 #include <detours.h>
 #include "cinput_device.h"
 #include <shellapi.h>
+#include "cclient.h"
  
 cmediasoup::cmediasoup_mgr g_mediasoup_mgr;
 
@@ -48,6 +49,8 @@ int  main(int argc, char *argv[])
 	uint32_t  media_port = std::atoi(argv[2]);
 	std::string room_name = argv[3];
 	std::string user_name = argv[4];
+
+	chen::g_gpu_address = std::atoll(argv[5]);
 
 	
 	g_mediasoup_mgr.init(0);

@@ -81,6 +81,10 @@ namespace chen {
 	static const  int32 OSG_RGBA_WIDTH = 3000;
 	static const  int32 OSG_RGBA_HEIGHT = 2000;
 
+
+
+
+	uint64		g_gpu_address = 0;
 	//////////////////////////////////////////////////////////////////////////////////////////////////////////////
 #define  WEBSOCKET_PROTOO_CHECK_RESPONSE()  if (msg.find(WEBSOCKET_PROTOO_OK) == msg.end())\
 	{\
@@ -1390,10 +1394,11 @@ namespace chen {
 			pre_time = std::chrono::steady_clock::now();
 
 			// 发送一帧
-			if (g_cfg.get_uint32(ECI_SharedGpuAddress) != 0)
+			if (g_gpu_address != 0)
 			{
-				webrtc_texture((void *)g_cfg.get_uint32(ECI_SharedGpuAddress), DXGI_FORMAT_B8G8R8A8_UNORM,
+				webrtc_texture((void *)g_gpu_address, DXGI_FORMAT_B8G8R8A8_UNORM,
 					g_cfg.get_int32(ECI_SharedGpuVideoWidth), g_cfg.get_int32(ECI_SharedGpuVideoHeight));
+				NORMAL_EX_LOG("gpu_address = %lu", g_gpu_address);
 			}
 
 			cur_time_ms = std::chrono::steady_clock::now();

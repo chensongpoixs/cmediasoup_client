@@ -26,7 +26,7 @@ purpose:		assertion macros
 #include <stdio.h>
 #include <tchar.h>
 #include <string.h>
-
+#include "ccfg.h"
 #include <thread>
 
 namespace chen {
@@ -96,11 +96,16 @@ namespace chen {
 
 	HWND FindMainWindow()
 	{ 
-		handle_data data;
+		/*handle_data data;
 		data.process_id = ::GetCurrentProcessId();
 		data.best_handle = 0;
 		EnumWindows(EnumWindowsCallback, (LPARAM)&data);
-		return data.best_handle;
+		return data.best_handle;*/
+
+		uint32 wid  = g_cfg.get_uint32(ECI_SharedWindowId);
+
+		return (HWND)wid;
+
 	}
 
 	HWND FindMainWindow(long long id)
