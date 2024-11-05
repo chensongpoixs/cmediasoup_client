@@ -525,7 +525,7 @@ static bool nvenc_init(void *nvenc_data, void *encoder_config)
 	initializeParams.encodeHeight = enc->height;
 	initializeParams.version = NV_ENC_INITIALIZE_PARAMS_VER;
 	initializeParams.encodeGUID = NV_ENC_CODEC_H264_GUID;
-	initializeParams.presetGUID = NV_ENC_PRESET_P4_GUID;
+	initializeParams.presetGUID = NV_ENC_PRESET_P5_GUID;
 	 
 	//initializeParams.encodeConfig->profileGUID = NV_ENC_H264_PROFILE_BASELINE_GUID;
 	initializeParams.frameRateDen = 1;
@@ -545,101 +545,17 @@ static bool nvenc_init(void *nvenc_data, void *encoder_config)
 	initializeParams.encodeConfig->encodeCodecConfig.h264Config.sliceModeData = 0;
  	initializeParams.encodeConfig->encodeCodecConfig.h264Config.outputPictureTimingSEI = 1;
  	initializeParams.encodeConfig->encodeCodecConfig.h264Config.enableFillerDataInsertion = 1;
-	//initializeParams.encodeConfig->encodeCodecConfig.h264Config.enableIntraRefresh
-	//initializeParams.encodeGUID = NV_ENC_H264_PROFILE_BASELINE_GUID;
-
-	///////////////
-	// H.264 specific settings
-	///
-	//initializeParams.encodeConfig->encodeCodecConfig.h264Config.h264VUIParameters.colourPrimaries = 1;
-	//initializeParams.encodeConfig->encodeCodecConfig.h264Config.h264VUIParameters.transferCharacteristics = 1;
-	//initializeParams.encodeConfig->encodeCodecConfig.h264Config.h264VUIParameters.transferCharacteristics = 1;
-
-	//initializeParams.encodeConfig->encodeCodecConfig.h264Config.enableIntraRefresh = 1;
-	//initializeParams.encodeConfig->encodeCodecConfig.h264Config.intraRefreshPeriod = 180;
-	//initializeParams.encodeConfig->encodeCodecConfig.h264Config.intraRefreshCnt = 180;
-	//initializeParams.encodeConfig->encodeCodecConfig.h264Config.idrPeriod = 
-	//initializeParams.encodeConfig->encodeCodecConfig.h264Config.repeatSPSPPS = 1;
-	//initializeParams.encodeConfig->encodeCodecConfig.h264Config.chromaFormatIDC = 3;
-	//initializeParams.encodeConfig->encodeCodecConfig.h264Config.enableIntraRefresh = 1;
-	//initializeParams.encodeConfig->encodeCodecConfig.h264Config.intraRefreshPeriod = 180;
-	//initializeParams.encodeConfig->encodeCodecConfig.h264Config.intraRefreshCnt = 180;
-	////initializeParams.encodeConfig->encodeCodecConfig.h264Config.idrPeriod = 
-	//initializeParams.encodeConfig->encodeCodecConfig.h264Config.repeatSPSPPS = 1;
-	/*
-	* Slice mode - set the slice mode to "entire frame as a single slice" because WebRTC implementation doesn't work well with slicing. The default slicing mode
-	* produces (rarely, but especially under packet loss) grey full screen or just top half of it.
-	*/
-	/*initializeParams.encodeConfig->encodeCodecConfig.h264Config.sliceMode = 0;
-	initializeParams.encodeConfig->encodeCodecConfig.h264Config.sliceModeData = 0;*/
-	//initializeParams.encodeConfig->gopLength = 180;
-	//initializeParams.encodeConfig->frameIntervalP = 6;
-	//initializeParams.encodeConfig->encodeCodecConfig.h264Config.sliceMode = 0;
-	//initializeParams.encodeConfig->encodeCodecConfig.h264Config.sliceModeData = 0;
-	//// `outputPictureTimingSEI` is used in CBR mode to fill video frame with data to match the requested bitrate.
-	//initializeParams.encodeConfig->encodeCodecConfig.h264Config.outputPictureTimingSEI = 1;
-	// 有averageBitRate需要并用作速率控制算法的目标输出比特率。客户端可以使用NV_ENC_RC_PARAMS::lowDelayKeyFrameScale来控制 I 帧与 P 帧的比率，如果 I 帧最终生成大量比特，这对于避免信道拥塞很有用。设置NV_ENC_CONFIG_H264/ NV_ENC_CONFIG_HEVC::enableFillerDataInsertion = 1以防需要严格遵守比特率
-
 	 
-	// initializeParams.encodeConfig->encodeCodecConfig.h264Config.enableFillerDataInsertion = 1;
-	 
-	 //initializeParams.encodeConfig->gopLength =  g_cfg.get_uint32(ECI_EncoderVideoGop);//NVENC_INFINITE_GOPLENGTH;//
-	//initializeParams.encodeConfig->rcParams.averageBitRate = g_cfg.get_uint32(ECI_RtcAvgRate) * 1000 ;
-	//initializeParams.encodeConfig->rcParams.maxBitRate = g_cfg.get_uint32(ECI_RtcMaxRate) * 1000;
-	//initializeParams.encodeConfig->rcParams.rateControlMode = NV_ENC_PARAMS_RC_VBR;// NV_ENC_PARAMS_RC_VBR_HQ;// NV_ENC_PARAMS_RC_CBR_LOWDELAY_HQ;
-//	 initializeParams.encodeConfig->rcParams.qpMapMode = NV_ENC_QP_MAP_DELTA;
-//	 initializeParams.encodeConfig->encodeCodecConfig.h264Config.outputPictureTimingSEI = 1;
-//	 initializeParams.encodeConfig->encodeCodecConfig.h264Config.enableFillerDataInsertion = 1;
-//	NV_ENC_RC_PARAMS& RateControlParams = initializeParams.encodeConfig->rcParams;
-//#define DEFAULT_BITRATE (1000000u)
-//	uint32_t const MinQP = static_cast<uint32_t>(g_cfg.get_uint32(ECI_EncodeQpMin));
-//	uint32_t const MaxQP = static_cast<uint32_t>(g_cfg.get_uint32(ECI_EncodeQpMax));
-	// = NV_ENC_PARAMS_RC_CONSTQP;// g_cfg.get_uint32(ECI_EnableEncoderCbr) > 0 ? NV_ENC_PARAMS_RC_CBR : NV_ENC_PARAMS_RC_VBR; // NV_ENC_PARAMS_RC_VBR; // NV_ENC_PARAMS_RC_CBR_LOWDELAY_HQ
-	//if (g_cfg.get_uint32(ECI_EnableEncoderCbr) > 1)
-	//{
-	//	RateControlParams.rateControlMode = NV_ENC_PARAMS_RC_CONSTQP;
-	//}
-	//else if (g_cfg.get_uint32(ECI_EnableEncoderCbr) == 1)
-	//{
 	initializeParams.encodeConfig->rcParams.rateControlMode = NV_ENC_PARAMS_RC_CBR;
 	initializeParams.encodeConfig->rcParams.enableMinQP = 0;
 	initializeParams.encodeConfig->rcParams.enableMaxQP = 0;
-	/*}
-	else
-	{
-		RateControlParams.rateControlMode = NV_ENC_PARAMS_RC_VBR;
-	}*/
+	 
 	initializeParams.encodeConfig->rcParams.averageBitRate = g_cfg.get_uint32(ECI_RtcAvgRate) * 1000;// DEFAULT_BITRATE;
 	initializeParams.encodeConfig->rcParams.maxBitRate = g_cfg.get_uint32(ECI_RtcMaxRate) * 1000;// DEFAULT_BITRATE; // Not used for CBR
 	initializeParams.encodeConfig->rcParams.multiPass = NV_ENC_TWO_PASS_FULL_RESOLUTION;
-	//initializeParams.encodeConfig->rcParams.lowDelayKeyFrameScale = 1; //
-	//if (g_cfg.get_uint32(ECI_EnableEncoderCbr) == 0)
-	//{
-	//	RateControlParams.minQP = { MinQP, MinQP, MinQP };
-	//	RateControlParams.maxQP = { MaxQP, MaxQP, MaxQP };
-	//	RateControlParams.enableMinQP = 1;
-	//	RateControlParams.enableMaxQP = 1; 
-	//	NORMAL_EX_LOG("QP min = %u, max = %u", MinQP, MaxQP);
-	//}   
-	//else
-	{
-		/*initializeParams.encodeConfig->rcParams.disableBadapt = 1;
-		initializeParams.encodeConfig->rcParams.vbvBufferSize = initializeParams.encodeConfig->rcParams.averageBitRate * 60 / 1;
-		initializeParams.encodeConfig->rcParams.vbvInitialDelay = initializeParams.encodeConfig->rcParams.vbvBufferSize;
-		initializeParams.encodeConfig->frameIntervalP = 1;
-		initializeParams.encodeConfig->rcParams.enableAQ = 1;
-		initializeParams.encodeConfig->encodeCodecConfig.h264Config.idrPeriod = NVENC_INFINITE_GOPLENGTH;
-		initializeParams.encodeConfig->encodeCodecConfig.h264Config.repeatSPSPPS = 1;
-		initializeParams.encodeConfig->encodeCodecConfig.h264Config.sliceMode = 0;
-		initializeParams.encodeConfig->encodeCodecConfig.h264Config.sliceModeData = 0;*/
-	}
-
-	// If we have QP ranges turned on use the last encoded QP to guide the max QP for an i-frame, so the i-frame doesn't look too blocky
-	// Note: this does nothing if we have i-frames turned off.
-	/*if (RateControlParams.enableMaxQP && LastEncodedQP > 0 && CVarKeyframeQPUseLastQP.GetValueOnAnyThread())
-	{
-		RateControlParams.maxQP.qpIntra = LastEncodedQP;
-	}*/
+	
+	initializeParams.encodeConfig->rcParams.lookaheadDepth = 10;
+	
 	NORMAL_EX_LOG("====>>>>%s", gpu_encode_info::g_MainParamToString(&initializeParams).c_str());
 	
 	enc->nvenc->CreateEncoder(&initializeParams);
