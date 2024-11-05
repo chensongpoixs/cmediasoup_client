@@ -321,6 +321,8 @@ namespace chen {
 
 
 	static uint64  g_hot_key = 0;
+
+	static bool   g_bug_z_f11 = false; // z键和F11冲突问题
 	
 	static std::unordered_map<uint64, std::unordered_map<uint64, uint64>>       g_app_hot;
 
@@ -1062,7 +1064,7 @@ namespace chen {
 		KeyDownEvent.SetKeyDown(KeyCode, Repeat != 0);
 		NORMAL_LOG("OnKeyDown==KeyCode = %u, Repeat = %u", KeyCode, Repeat);
 		#if defined(_MSC_VER)
-		if (/*KeyCode == 122 ||*/ KeyCode == 123)
+		if ( KeyCode == 122 ||  KeyCode == 123)
 		{
 			return false;
 		}
@@ -1079,7 +1081,10 @@ namespace chen {
 		{
 			return true;
 		}
-
+		if (KeyCode == 90)
+		{
+			g_bug_z_f11 = true;
+		}
 		/*if (KeyCode == 17 && g_ctrl != 0)
 		{
 			return true;
@@ -1377,10 +1382,14 @@ namespace chen {
 		KeyUpEvent.SetKeyUp(KeyCode);
 		NORMAL_LOG("OnKeyUp==KeyCode = %u", KeyCode);
 		#if defined(_MSC_VER)
-		 if (/*KeyCode == 122 ||*/ KeyCode == 123)
+		if (KeyCode == 90 && g_bug_z_f11)
+		{
+			g_bug_z_f11 = false;
+		}
+		else if (KeyCode == 122 || KeyCode == 123)
 		{
 			return false;
-		} 
+		}
 		 if (KeyCode == 91)
 		{
 			return true;
@@ -1612,7 +1621,11 @@ namespace chen {
 		FEvent KeyUpEvent(EventType::KEY_PRESS);
 		KeyUpEvent.SetKeyUp(Character);
 		NORMAL_LOG("OnKeyPress==KeyCode = %u", Character);
-		 if (/*Character == 122 ||*/ Character == 123)
+		if (Character == 122 && g_bug_z_f11)
+		{
+			//g_bug_z_f11 = false;
+		}
+		else if ( Character == 122 ||  Character == 123)
 		{
 			return false;
 		} 
