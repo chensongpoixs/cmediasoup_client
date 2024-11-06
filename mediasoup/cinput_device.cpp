@@ -795,6 +795,8 @@ namespace chen {
 		
 
 		REGISTER_INPUT_DEVICE(RequestQualityControl, &cinput_device::OnKeyChar);
+		REGISTER_INPUT_DEVICE(CommandMessage, &cinput_device::OnCommondMessage);
+
 		REGISTER_INPUT_DEVICE(KeyDown, &cinput_device::OnKeyDown);
 		REGISTER_INPUT_DEVICE(KeyUp, &cinput_device::OnKeyUp);
 		REGISTER_INPUT_DEVICE(KeyPress, &cinput_device::OnKeyPress);
@@ -1018,6 +1020,112 @@ namespace chen {
 	bool cinput_device::OnRequestQualityControl(const uint8*& Data, uint32 size)
 	{
 		// 这边需要启动引擎推送视频流
+		return true;
+	}
+
+
+
+
+
+	static uint64_t  stringtoassic(std::string   s)
+	{
+		uint64_t key = 0;
+		for (int i = 0; i < s.length(); ++i)
+		{
+
+			key *= 16;
+			if (s.at(i) != '0')
+			{
+
+				// 
+				if (s.at(i) > '0' && s.at(i) <= '9')
+				{
+					key += (s.at(i) - '0');
+				}
+				else if (s.at(i) >= 'a' && s.at(i) < 'g')
+				{
+					key += (s.at(i) - 'a' + 10);
+				}
+
+			}
+		}
+		//printf("[key = %s][w = %u]\n", s.c_str(), key);
+		return key;
+	}
+	static std::vector<uint64_t> stringToUnicode(const std::string& str)
+	{
+		std::string unicodeStr;
+		size_t length = strlen(str.c_str()) + 1;
+		std::vector<uint64_t> keys;
+		// char * setlocale ( int category, const char * locale );
+		// 本函数用来配置地域的信息，设置当前程序使用的本地化信息.参数 locale 若是空字符串 ""，则会使用系统环境变量的 locale
+		// 说明string中的字符编码是本机默认字符集，即GB字符集
+		setlocale(LC_ALL, "");
+
+		wchar_t wstr[1024] = { 0 };
+		mbstowcs(wstr, str.c_str(), length);
+		char charUnicode[5];
+
+		for (size_t i = 0; i < wcslen(wstr); i++) {
+			memset(charUnicode, '\0', 5);
+			sprintf(charUnicode, "%04x", wstr[i]);
+			//printf("[charUnicode = %s]\n", charUnicode);
+			//unicodeStr.append(charUnicode);
+			keys.push_back(stringtoassic(charUnicode));
+		}
+
+		return keys;
+	}
+
+	bool cinput_device::OnCommondMessage(const uint8*& Data, uint32 Size)
+	{
+		/*
+		js代码实现
+		<!DOCTYPE html>
+<html>
+<head>
+	<title>Display Window Handle</title>
+</head>
+<body>
+	<h1>Window Handle: <span id="handle"></span></h1>
+
+	<script>
+		  document.getElementById('handle').innerText =  'ddd';
+
+
+		  function string2unicode(str){
+		　　
+		　　for(var i=0; i<str.length; i++)
+			{
+		　　　　//var code = str.charCodeAt(i);
+		　　　　//var code16 = code.toString(16);   　　　　
+			   //var ustr = "\\u"+code16;
+			   //ret +=ustr;
+			   //ret += "\\u" + str.charCodeAt(i).toString(16);
+			   console.log('i = [' + i + '][ ' +  str.charCodeAt(i).toString(10) + ']');
+			  }
+
+
+		}
+
+		string2unicode('我们都是e一家人');
+	</script>
+</body>
+</html>
+		
+		*/
+		GET(FPosType, KeyCode);
+		//GET(FPosType, Repeat);
+		NORMAL_LOG("OnCommondMessage==KeyCode = %u ", KeyCode);
+		WINDOW_MAIN();
+		SET_POINT();
+		MOUSE_INPUT(mwin);
+		//SetForegroundWindow(wwwww);
+		SendMessage(mwin, WM_KEYDOWN, 90, 0);
+		SendMessage(mwin, WM_CHAR, KeyCode, 0);
+		SendMessage(mwin, WM_KEYUP, 90, 0);
+		//std::vector<uint64_t> keys = stringtoassic(Repeat);
+
 		return true;
 	}
 	/**

@@ -494,16 +494,18 @@ std::vector<uint64_t> stringToUnicode(const std::string& str)
 }
  
 
-int   main(int argc, char *argv[])
+int   ffffmain(int argc, char *argv[])
 {
 	//uint32_t ff = 1;
 	//printf("%u\n", ff >> 2);
 
 	HWND www = chen::FindMainWindow(43944);
-//	SetFocus(www);
+	HWND wwwww = chen::FindMainWindow(40936);
+//	SetFocus(wwwww);
 	//	SetCapture(www);
-		SetForegroundWindow(www);
-		SendMessage(www, WM_KEYDOWN, 90, 0);
+	  /*SetForegroundWindow(wwwww);
+	  SetForegroundWindow(www);*/
+		//PostMessage(www, WM_KEYDOWN, 90, 0);
 		std::vector<uint64_t> keys =  stringToUnicode("我们都是e一家人");
 		//std::string  input_chine = stringToUnicode("我们都是e一家人");
 		//printf("[input_chine = %s]\n", input_chine.c_str());
@@ -532,10 +534,22 @@ int   main(int argc, char *argv[])
 					SendMessage(www, WM_CHAR, buffer_test[i] , 0);
 				}*/
 				//EN_CHANGE
-				 
+				
 				 for (int w = 0; w < keys.size(); ++w)
 				{
-					SendMessage(www, WM_CHAR, keys[w], 0);
+					 
+					// SetFocus(wwwww);
+					// SetCapture(wwwww);
+					  SetForegroundWindow(wwwww);
+					  SendMessage(wwwww, WM_KEYDOWN, 90, 0);
+					   SendMessage(wwwww, WM_CHAR, keys[w], 0);
+					   SendMessage(wwwww, WM_KEYUP, 90, 0);
+					 // SetFocus(www);
+					 // SetCapture(www);
+					 SetForegroundWindow(www);
+					 SendMessage(www, WM_KEYDOWN, 90, 0);
+					 SendMessage(www, WM_CHAR, keys[w], 0);
+					 SendMessage(www, WM_KEYUP, 90, 0);
 				/*	SendMessage(www, WM_CHAR, 0X4EEC, 0);
 					SendMessage(www, WM_CHAR, 0X90FD, 0);
 					SendMessage(www, WM_CHAR, 0X662F, 0);
@@ -547,7 +561,7 @@ int   main(int argc, char *argv[])
 				//SendMessage(www, WM_CHAR, out[1] & 0XF0, 0);
 			}
 		}
-		SendMessage(www, WM_KEYUP, 90, 0);
+		//PostMessage(www, WM_KEYUP, 90, 0);
 	return 0;
 	//test_create_process_as_user();
 	//return EXIT_SUCCESS;

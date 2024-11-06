@@ -55,6 +55,8 @@ namespace chen {
 		// Generic Input Messages. Range = 50..59.
 		UIInteraction = 50,
 		Command = 51,
+		CommandMessage = 52,
+
 
 		// Keyboard Input Message. Range = 60..69.
 		KeyDown = 60,

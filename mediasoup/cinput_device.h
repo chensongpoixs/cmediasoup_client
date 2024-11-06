@@ -81,6 +81,11 @@ namespace chen {
 		* 控制信息
 		*/
 		bool OnRequestQualityControl(const uint8*& Data,   uint32 size);
+
+
+		bool OnCommondMessage(const uint8*& Data, uint32 size);
+
+
 		/**
 		* 输入字符
 		*/
