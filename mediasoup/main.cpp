@@ -392,8 +392,163 @@ void fffmain()
 }
 
 
-int  temain(int argc, char *argv[])
+boolean isChinese(char ch) {
+	return (ch < 0) ? true : false;
+}
+int MoveEnglish(const char* input, size_t input_len) {
+	int out_len = input_len;
+	for (int i = 0; i < input_len; i++)
+	{
+		if (isChinese(input[i]) == false) {
+			out_len++;
+		}
+	}
+	return (out_len > 0) ? out_len : 0;
+}
+
+void HalfChinese_GBK(const char* input, size_t input_len, char* output, size_t* output_len) {
+	char current = *(input + input_len);
+	if (isChinese(current) == false)
+	{
+		*output_len = input_len;
+		strncpy(output, input, *output_len);
+		return;
+	}
+	*output_len = input_len;
+	if (MoveEnglish(input, input_len) % 2 != 0) {
+		(*output_len)++;
+	}
+	strncpy(output, input, *output_len);
+}
+void HalfChinese_UTF8(const char* input, size_t input_len, char* output, size_t* output_len)
 {
+	char current = *(input + input_len);
+	if (isChinese(current) == false)
+	{
+		*output_len = input_len;
+		strncpy(output, input, *output_len);
+		return;
+	}
+	//汉字
+	*output_len = input_len;
+	//1110xxxx 10xxxxxx 10xxxxxx
+	//第二位和第三位的范围是10000000~10ffffff，转成十六进制是0x80~0xbf，在这个范围内都说明是汉字被截断
+	while ((current & 0xff) < 0xc0 && (current & 0xff) >= 0x80)
+	{
+		(*output_len)++;
+		current = *(input + *output_len);
+	}
+	strncpy(output, input, *output_len);
+}
+
+uint64_t  stringtoassic(  std::string   s)
+{
+	uint64_t key = 0;
+	for (int i = 0; i < s.length(); ++i)
+	{
+
+		key *= 16;
+		if (s.at(i) != '0')
+		{
+
+			// 
+			if (s.at(i)>'0' && s.at(i) <= '9')
+			{
+				  key += (s.at(i) - '0')  ;
+			}
+			else if (s.at(i) >= 'a' && s.at(i) < 'g')
+			{
+				key += (s.at(i) - 'a' + 10) ;
+			}
+
+		}
+	}
+	printf("[key = %s][w = %u]\n", s.c_str(), key);
+	return key;
+}
+
+
+std::vector<uint64_t> stringToUnicode(const std::string& str)
+{
+	std::string unicodeStr;
+	size_t length = strlen(str.c_str()) + 1;
+	std::vector<uint64_t> keys;
+	// char * setlocale ( int category, const char * locale );
+	// 本函数用来配置地域的信息，设置当前程序使用的本地化信息.参数 locale 若是空字符串 ""，则会使用系统环境变量的 locale
+	// 说明string中的字符编码是本机默认字符集，即GB字符集
+	setlocale(LC_ALL, "");
+
+	wchar_t wstr[1024] = {0};
+	mbstowcs(wstr, str.c_str(), length);
+	char charUnicode[5];
+
+	for (size_t i = 0; i < wcslen(wstr); i++) {
+		memset(charUnicode, '\0', 5);
+		sprintf(charUnicode, "%04x", wstr[i]);
+		printf("[charUnicode = %s]\n", charUnicode);
+		//unicodeStr.append(charUnicode);
+		keys.push_back(stringtoassic(charUnicode));
+	}
+
+	return keys;
+}
+ 
+
+int   main(int argc, char *argv[])
+{
+	//uint32_t ff = 1;
+	//printf("%u\n", ff >> 2);
+
+	HWND www = chen::FindMainWindow(43944);
+//	SetFocus(www);
+	//	SetCapture(www);
+		SetForegroundWindow(www);
+		SendMessage(www, WM_KEYDOWN, 90, 0);
+		std::vector<uint64_t> keys =  stringToUnicode("我们都是e一家人");
+		//std::string  input_chine = stringToUnicode("我们都是e一家人");
+		//printf("[input_chine = %s]\n", input_chine.c_str());
+	//PostMessage(www, WM_CHAR, buffer[0], 0);
+	//PostMessage(www, WM_CHAR, buffer[1]& 0XF0, 0);
+
+		 
+		//for (int i = 1; i <= strlen(in); i++)
+		{
+		//	HalfChinese_UTF8(in, strlen(in), out, &out_len);
+			//printf("[%s][%u][%u]\n", out, out[0] & 0XFF, out_len);
+			//uint32_t key = (out[0]& 0XFF) + ()
+			//for (int i = 0; i < out_len; i++)
+			{
+				// \u6c49
+				// 
+
+			
+				// 枫 ==> B7E0 
+				//SendMessage(www, WM_COMMAND, 67108865, 4327232);
+				//SendMessage(www, WM_COMMAND, 50331649, 4327232);
+				//char buffer_test[1024] = "6c49";
+				//uint32_t testff = i % 2 == 0 ? 0X0F : 0xFF;
+				/*for (int i = 0; i < 6; ++i)
+				{
+					SendMessage(www, WM_CHAR, buffer_test[i] , 0);
+				}*/
+				//EN_CHANGE
+				 
+				 for (int w = 0; w < keys.size(); ++w)
+				{
+					SendMessage(www, WM_CHAR, keys[w], 0);
+				/*	SendMessage(www, WM_CHAR, 0X4EEC, 0);
+					SendMessage(www, WM_CHAR, 0X90FD, 0);
+					SendMessage(www, WM_CHAR, 0X662F, 0);
+					SendMessage(www, WM_CHAR, 0X4E00, 0);
+					SendMessage(www, WM_CHAR, 0X5BB6, 0);
+					SendMessage(www, WM_CHAR, 0X4EBA, 0);*/
+					//SendMessage(www, WM_CHAR, 0X7A, 0);
+				}
+				//SendMessage(www, WM_CHAR, out[1] & 0XF0, 0);
+			}
+		}
+		SendMessage(www, WM_KEYUP, 90, 0);
+	return 0;
 	//test_create_process_as_user();
 	//return EXIT_SUCCESS;
 	signal(SIGINT, signalHandler);
