@@ -116,6 +116,7 @@ namespace chen {
 		, m_produce_consumer(true)
 		, m_ui_type(EUI_None)
 		, m_mediasoup_status_callback(nullptr)
+		, m_input_device_event_callback(NULL)
 		, m_websocket_timer(0)
 		, m_send_produce_video_msg(false)
 		, m_p2p_connect_failed(0){}
@@ -249,7 +250,7 @@ namespace chen {
 		{
 			m_desktop_capture_ptr = nullptr;
 		}
-		m_win_hook_thread = std::thread(&cclient::_win_hook_thread, this);
+		//m_win_hook_thread = std::thread(&cclient::_win_hook_thread, this);
 		
 		mediasoupclient::Initialize();
 		return true;
@@ -267,6 +268,9 @@ namespace chen {
 		{
 			m_desktop_capture_ptr->StartCapture();
 		}
+
+
+
 		
 		// mediasoup_ip, mediasoup_port ;
 		// room_name , client_id;
@@ -506,6 +510,13 @@ namespace chen {
 			
 		}
 		NORMAL_EX_LOG("mediasoup Loop exit !!!");
+	}
+	void cclient::input_device_callback(FEvent cevent)
+	{
+		if (m_input_device_event_callback)
+		{
+			m_input_device_event_callback(cevent);
+		}
 	}
 	void cclient::_presssmsg(std::list<std::string> & msgs)
 	{

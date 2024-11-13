@@ -28,12 +28,14 @@ purpose:		log
 #if defined(_MSC_VER)
 #include <Windows.h>
 #endif
-namespace cmediasoup
+#include "cprotocol.h"
+#include "cinput_device_event.h"
+namespace chen
 {
 	typedef std::function<void(uint32_t status, uint32_t error_info)>     mediasoup_status_update_cb;
 
 
-
+	typedef std::function<void(FEvent cevent)>          cinput_device_event_cb;
 	class   __declspec(dllimport)  cmediasoup_mgr
 	{
 	public:
@@ -73,6 +75,7 @@ namespace cmediasoup
 		void set_main_window(HWND win);
 #endif // #if defined(_MSC_VER)
 		void set_mediasoup_status_callback(mediasoup_status_update_cb callback);
+		void set_cinput_device_event_callback(cinput_device_event_cb callback);
 	private:
 		void _mediasoup_thread();
 	private:

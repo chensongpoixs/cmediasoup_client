@@ -25,7 +25,7 @@ purpose:		input_device_event
 #define _C_INPUT_DEVICE_EVENT_H_
 //#include <winnt.h>
 #include "cnet_types.h"
-#include "api/data_channel_interface.h"
+//#include "api/data_channel_interface.h"
 #include <map>
 #include "cprotocol.h"
 namespace chen {
@@ -168,7 +168,7 @@ namespace chen {
 		*/
 		void SetGamepadAnalog(uint8 InControllerIndex, uint8 InAxisIndex, float InAnalogValue)
 		{
-			check(Event == EventType::GAMEPAD_ANALOG);
+			//check(Event == EventType::GAMEPAD_ANALOG);
 			Data.GamepadAnalog.ControllerIndex = InControllerIndex;
 			Data.GamepadAnalog.AxisIndex = InAxisIndex;
 			Data.GamepadAnalog.AnalogValue = InAnalogValue;
@@ -182,7 +182,7 @@ namespace chen {
 		*/
 		void SetGamepadButtonPressed(uint8 InControllerIndex, uint8 InButtonIndex, bool InIsRepeat)
 		{
-			check(Event == EventType::GAMEPAD_PRESS);
+			//check(Event == EventType::GAMEPAD_PRESS);
 			Data.GamepadButton.ControllerIndex = InControllerIndex;
 			Data.GamepadButton.ButtonIndex = InButtonIndex;
 			Data.GamepadButton.bIsRepeat = InIsRepeat;
@@ -195,7 +195,7 @@ namespace chen {
 		*/
 		void SetGamepadButtonReleased(uint8 InControllerIndex, uint8 InButtonIndex)
 		{
-			check(Event == EventType::GAMEPAD_RELEASE);
+			//check(Event == EventType::GAMEPAD_RELEASE);
 			Data.GamepadButton.ControllerIndex = InControllerIndex;
 			Data.GamepadButton.ButtonIndex = InButtonIndex;
 		}
@@ -207,7 +207,7 @@ namespace chen {
 		*/
 		void SetKeyDown(uint8 InKeyCode, bool InIsRepeat)
 		{
-			check(Event == EventType::KEY_DOWN);
+			//check(Event == EventType::KEY_DOWN);
 			Data.KeyDown.KeyCode = InKeyCode;
 			Data.KeyDown.bIsRepeat = InIsRepeat;
 		}
@@ -218,7 +218,7 @@ namespace chen {
 		*/
 		void SetKeyUp(uint8 InKeyCode)
 		{
-			check(Event == EventType::KEY_UP);
+			//check(Event == EventType::KEY_UP);
 			Data.KeyUp.KeyCode = InKeyCode;
 		}
 
@@ -228,7 +228,7 @@ namespace chen {
 		*/
 		void SetCharCode(TCHAR InCharacter)
 		{
-			check(Event == EventType::KEY_PRESS);
+			//check(Event == EventType::KEY_PRESS);
 			Data.Character.Character = InCharacter;
 		}
 
@@ -241,7 +241,7 @@ namespace chen {
 		*/
 		void SetMouseDelta(uint16 InPosX, uint16 InPosY, int16 InDeltaX, int16 InDeltaY)
 		{
-			check(Event == EventType::MOUSE_MOVE);
+			//check(Event == EventType::MOUSE_MOVE);
 			Data.MouseMove.DeltaX = InDeltaX;
 			Data.MouseMove.DeltaY = InDeltaY;
 			Data.MouseMove.PosX = InPosX;
@@ -256,7 +256,7 @@ namespace chen {
 		*/
 		void SetMouseClick(uint8 InButton, uint16 InPosX, uint16 InPosY)
 		{
-			check(Event == EventType::MOUSE_DOWN || Event == EventType::MOUSE_UP);
+			//check(Event == EventType::MOUSE_DOWN || Event == EventType::MOUSE_UP);
 			Data.MouseButton.Button = InButton;
 			Data.MouseButton.PosX = InPosX;
 			Data.MouseButton.PosY = InPosY;
@@ -270,7 +270,7 @@ namespace chen {
 		*/
 		void SetMouseWheel(int16 InDelta, uint16 InPosX, uint16 InPosY)
 		{
-			check(Event == EventType::MOUSE_WHEEL);
+			//check(Event == EventType::MOUSE_WHEEL);
 			Data.MouseWheel.Delta = InDelta;
 			Data.MouseWheel.PosX = InPosX;
 			Data.MouseWheel.PosY = InPosY;
@@ -285,7 +285,7 @@ namespace chen {
 		*/
 		void SetTouch(uint8 InTouchIndex, uint16 InPosX, uint16 InPosY, uint8 InForce)
 		{
-			check(Event == EventType::TOUCH_START || Event == EventType::TOUCH_END || Event == EventType::TOUCH_MOVE);
+			//check(Event == EventType::TOUCH_START || Event == EventType::TOUCH_END || Event == EventType::TOUCH_MOVE);
 			Data.Touch.TouchIndex = InTouchIndex;
 			Data.Touch.PosX = InPosX;
 			Data.Touch.PosY = InPosY;
@@ -300,7 +300,7 @@ namespace chen {
 		*/
 		void GetGamepadAnalog(uint8& OutControllerIndex, uint8& OutAxisIndex, float& OutAnalogValue)
 		{
-			check(Event == EventType::GAMEPAD_ANALOG);
+			//check(Event == EventType::GAMEPAD_ANALOG);
 			OutControllerIndex = Data.GamepadAnalog.ControllerIndex;
 			OutAxisIndex = Data.GamepadAnalog.AxisIndex;
 			OutAnalogValue = Data.GamepadAnalog.AnalogValue;
@@ -314,7 +314,7 @@ namespace chen {
 		*/
 		void GetGamepadButtonPressed(uint8& OutControllerIndex, uint8& OutButtonIndex, bool& OutIsRepeat)
 		{
-			check(Event == EventType::GAMEPAD_PRESS);
+			//check(Event == EventType::GAMEPAD_PRESS);
 			OutControllerIndex = Data.GamepadButton.ControllerIndex;
 			OutButtonIndex = Data.GamepadButton.ButtonIndex;
 			OutIsRepeat = Data.GamepadButton.bIsRepeat;
@@ -327,7 +327,7 @@ namespace chen {
 		*/
 		void GetGamepadButtonReleased(uint8& OutControllerIndex, uint8& OutButtonIndex)
 		{
-			check(Event == EventType::GAMEPAD_RELEASE);
+			//check(Event == EventType::GAMEPAD_RELEASE);
 			OutControllerIndex = Data.GamepadButton.ControllerIndex;
 			OutButtonIndex = Data.GamepadButton.ButtonIndex;
 		}
@@ -339,7 +339,7 @@ namespace chen {
 		*/
 		void GetKeyDown(uint8& OutKeyCode, bool& OutIsRepeat)
 		{
-			check(Event == EventType::KEY_DOWN);
+			//check(Event == EventType::KEY_DOWN);
 			OutKeyCode = Data.KeyDown.KeyCode;
 			OutIsRepeat = Data.KeyDown.bIsRepeat;
 		}
@@ -350,7 +350,7 @@ namespace chen {
 		*/
 		void GetKeyUp(uint8& OutKeyCode)
 		{
-			check(Event == EventType::KEY_UP);
+			//check(Event == EventType::KEY_UP);
 			OutKeyCode = Data.KeyUp.KeyCode;
 		}
 
@@ -360,7 +360,7 @@ namespace chen {
 		*/
 		void GetCharacterCode(TCHAR& OutCharacter)
 		{
-			check(Event == EventType::KEY_PRESS);
+			//check(Event == EventType::KEY_PRESS);
 			OutCharacter = Data.Character.Character;
 		}
 
@@ -373,7 +373,7 @@ namespace chen {
 		*/
 		void GetMouseDelta(uint16& OutPosX, uint16& OutPosY, int16& OutDeltaX, int16& OutDeltaY)
 		{
-			check(Event == EventType::MOUSE_MOVE);
+		//	check(Event == EventType::MOUSE_MOVE);
 			OutPosX = Data.MouseMove.PosX;
 			OutPosY = Data.MouseMove.PosY;
 			OutDeltaX = Data.MouseMove.DeltaX;
@@ -388,7 +388,7 @@ namespace chen {
 		*/
 		void GetMouseClick(uint32 &OutButton/*EMouseButtons::Type& OutButton*/, uint16& OutPosX, uint16& OutPosY)
 		{
-			check(Event == EventType::MOUSE_DOWN || Event == EventType::MOUSE_UP);
+			//check(Event == EventType::MOUSE_DOWN || Event == EventType::MOUSE_UP);
 			// https://developer.mozilla.org/en-US/docs/Web/Events/mousedown
 			uint8 Button = Data.MouseButton.Button;
 			#if defined(_MSC_VER)
@@ -441,7 +441,7 @@ namespace chen {
 		*/
 		void GetMouseWheel(int16& OutDelta, uint16& OutPosX, uint16& OutPosY)
 		{
-			check(Event == EventType::MOUSE_WHEEL);
+		//	check(Event == EventType::MOUSE_WHEEL);
 			OutDelta = Data.MouseWheel.Delta;
 			OutPosX = Data.MouseWheel.PosX;
 			OutPosY = Data.MouseWheel.PosY;
@@ -456,7 +456,7 @@ namespace chen {
 		*/
 		void GetTouch(uint8& OutTouchIndex, uint16& OutPosX, uint16& OutPosY, uint8& OutForce)
 		{
-			check(Event == EventType::TOUCH_START || Event == EventType::TOUCH_END || Event == EventType::TOUCH_MOVE);
+		//	check(Event == EventType::TOUCH_START || Event == EventType::TOUCH_END || Event == EventType::TOUCH_MOVE);
 			OutTouchIndex = Data.Touch.TouchIndex;
 			OutPosX = Data.Touch.PosX;
 			OutPosY = Data.Touch.PosY;

@@ -261,8 +261,243 @@ void EncodeOutputInVidMem(ID3D11Device *pDevice, ID3D11DeviceContext *pContext, 
     std::cout << "Total frames encoded: " << nFrame << std::endl;
 }
 
-int main(int argc, char **argv)
+
+#include <locale.h>
+
+void test_utf8()
 {
+    setlocale(LC_ALL, "zh_CN.UTF-8");  // 设置区域
+
+
+    const char* ascii_str = "你好";  // UTF-8编码的汉字字符串
+
+
+    wchar_t wstr[100];
+
+
+    mbstowcs(wstr, ascii_str, sizeof(wstr) / sizeof(wstr[0]));
+
+
+    printf("宽字符字符串：%s\n", wstr);
+}
+
+//enum boolean { true, false };
+//typedef int boolean;
+
+boolean isChinese(char ch) {
+    return (ch < 0) ? true : false;
+}
+int MoveEnglish(const char* input, size_t input_len) {
+    int out_len = input_len;
+    for (int i = 0; i < input_len; i++)
+    {
+        if (isChinese(input[i]) == false) {
+            out_len++;
+        }
+    }
+    return (out_len > 0) ? out_len : 0;
+}
+
+void HalfChinese_GBK(const char* input, size_t input_len, char* output, size_t* output_len) {
+    char current = *(input + input_len);
+    if (isChinese(current) == false)
+    {
+        *output_len = input_len;
+        strncpy(output, input, *output_len);
+        return;
+    }
+    *output_len = input_len;
+    if (MoveEnglish(input, input_len) % 2 != 0) {
+        (*output_len)++;
+    }
+    strncpy(output, input, *output_len);
+}
+
+
+void test_chinese()
+{
+    char str[20];
+    memset(str, 0, sizeof(str));
+    strcpy(str, "汉字");
+
+
+
+    //int32_t fff = 
+
+
+
+     
+
+
+
+
+
+
+    for (int i = 0; i < strlen(str); i++) 
+    {
+        if (isChinese(str[i]) == true) 
+        {
+            printf("str[%d]: [%c][%u] Chinese\n", i, str[i], str[i]);
+        }
+        else {
+            printf("str[%d]: [%c][%u] English\n", i, str[i], str[i]);
+        }
+    }
+
+}
+
+void HalfChinese_UTF8(const char* input, size_t input_len, char* output, size_t* output_len)
+{
+    char current = *(input + input_len);
+    if (isChinese(current) == false)
+    {
+        *output_len = input_len;
+        strncpy(output, input, *output_len);
+        return;
+    }
+    //汉字
+    *output_len = input_len;
+    //1110xxxx 10xxxxxx 10xxxxxx
+    //第二位和第三位的范围是10000000~10ffffff，转成十六进制是0x80~0xbf，在这个范围内都说明是汉字被截断
+    while ((current & 0xff) < 0xc0 && (current & 0xff) >= 0x80)
+    {
+        (*output_len)++;
+        current = *(input + *output_len);
+    }
+    strncpy(output, input, *output_len);
+}
+void test02()
+{
+    char in[20], out[20];
+    memset(in, 0, sizeof(in));
+    memset(out, 0, sizeof(out));
+    strcpy(in, "hello汉字");
+    size_t out_len = 0;
+    for (int i = 1; i <= strlen(in); i++)
+    {
+        HalfChinese_GBK(in, i, out, &out_len);
+        printf("out: %s\n", out);
+    }
+}
+void ConvertUTF8ToANSI(const char* strUTF8, char ** strANSI)
+{
+
+    char* test = "测试东西";
+    int nLen = ::MultiByteToWideChar(CP_UTF8, MB_ERR_INVALID_CHARS, (LPCTSTR)test, -1, NULL, 0);
+    //返回需要的unicode长度
+    WCHAR* wszANSI = new WCHAR[nLen + 1];
+    memset(wszANSI, 0, nLen * 2 + 2);
+    nLen = MultiByteToWideChar(CP_UTF8, 0, (LPCTSTR)strUTF8, -1, wszANSI, nLen);//把utf8转成unicode
+
+    nLen = WideCharToMultiByte(CP_ACP, 0, wszANSI, -1, NULL, 0, NULL, NULL);//得到要的ansi长度
+    char* szANSI = new char[nLen + 1];
+    memset(szANSI, 0, nLen + 1);
+    WideCharToMultiByte(CP_ACP, 0, wszANSI, -1, szANSI, nLen, NULL, NULL);//把unicode转成ansi
+    for (size_t i = 0; i < nLen; ++i)
+    {
+        printf("[i = %u][%c][%u]\n", i, szANSI[i], szANSI[i]);
+    }
+    *strANSI = szANSI;
+    delete[] wszANSI;
+    delete[] szANSI;
+}
+
+
+
+
+#include <Windows.h>
+
+LRESULT CALLBACK WndPro(HWND hWnd, UINT msgID, WPARAM wParam, LPARAM lParam)
+{
+
+    //if (WM_KEYFIRST < msgID && WM_SYSDEADCHAR > msgID)    
+    static uint32_t count = 0;
+    {
+        char buffer[1024 * 2] = { 0 };
+        sprintf(buffer, "[%s][%u][count = %u][msgid = %u][wpa = %u][lp = %u]\n", __FUNCTION__, __LINE__, ++count, msgID, wParam, lParam);
+        OutputDebugString(buffer);
+    } 
+    switch (msgID)
+    {
+    case WM_DESTROY: //点击关闭按钮
+        PostQuitMessage(0); //使得GetMessage返回0
+        break;
+    default:
+        break;
+    }
+    return DefWindowProc(hWnd, msgID, wParam, lParam);
+}
+int WINAPI WinMain(HINSTANCE hinstance, HINSTANCE pHinstance, LPSTR lpCmdLine, int nShowLine)
+{
+    //注册主窗口类
+    WNDCLASS wc;
+    wc.cbClsExtra = 0;
+    wc.cbWndExtra = 0;
+    wc.hbrBackground = (HBRUSH)(COLOR_WINDOW + 1);
+    wc.hCursor = NULL;						//默认光标
+    wc.hIcon = NULL;						//默认图标 图标就是标题栏左上角那个东西
+    wc.hInstance = hinstance;
+    wc.lpfnWndProc = WndPro;				//窗口过程函数
+    wc.lpszClassName = "WinBase";			//窗口类名字，随便起也行
+    wc.lpszMenuName = NULL;					//无菜单
+    wc.style = CS_HREDRAW | CS_VREDRAW;		//窗口垂直水平变化时候，窗口自动重画
+    RegisterClass(&wc);						//向OS写入 wc变量
+
+
+    // 在内存中创建一个窗口
+    HWND hWnd = CreateWindow("WinBase", /*窗口的类名*/
+        "Windows",						/*窗口标题*/
+        WS_OVERLAPPEDWINDOW,			/*窗口样式*/
+        100, 100, 800, 800,				/*窗口x,y,width,height*/
+        NULL, NULL, hinstance, NULL);	/*父窗口：桌面 菜单：无 窗口是当前进程的 无附加参数*/
+
+
+
+    static HWND hEdit;
+    hEdit = CreateWindowEx(
+
+
+        0, "EDIT", "",
+
+
+        WS_CHILD | WS_VISIBLE | WS_BORDER | ES_LEFT,
+
+
+        10, 10, 200, 20,
+
+
+        hWnd, (HMENU)1, GetModuleHandle(NULL), NULL
+
+
+    );
+    //显示窗口
+    ShowWindow(hWnd, SW_SHOW);			//SW_SHOW按原样显示，也就是说Create设置的参数
+    //刷新窗口-->就是在此显示一次
+    UpdateWindow(hWnd);
+    //消息循环
+    MSG msg;
+    while (GetMessage(&msg, NULL, 0, 0))
+    {
+        TranslateMessage(&msg);
+        DispatchMessage(&msg);
+    }
+    return 0;
+}
+
+int fffmain(int argc, char **argv)
+{
+    // https://www.toolhelper.cn/Encoding/GB2312
+    test02();
+  //  char* ppp = "kdkk中午发我！！！";
+   // char* www = NULL;
+   // ConvertUTF8ToANSI(ppp, &www);
+  //  return 0;
+   // test_utf8();
+    //test_chinese();
+
+
+    return EXIT_SUCCESS;
+
     char szInFilePath[256] = "";
     char szOutFilePath[256] = "out.h264";
     int nWidth = 0, nHeight = 0;

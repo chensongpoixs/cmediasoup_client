@@ -24,9 +24,9 @@ purpose:		assertion macros
 #include "cclient.h"
 #include "clog.h"
 #include "cinput_device.h"
-namespace cmediasoup
+namespace chen
 {
-	using namespace chen;
+ 
 	cmediasoup_mgr::cmediasoup_mgr()
 		: m_init(false)
 		, m_webrtc_pause(false)
@@ -119,6 +119,10 @@ namespace cmediasoup
 	void cmediasoup_mgr::set_mediasoup_status_callback(mediasoup_status_update_cb callback)
 	{
 		s_client.set_mediasoup_status_callback(callback);
+	}
+	void cmediasoup_mgr::set_cinput_device_event_callback(cinput_device_event_cb callback)
+	{
+		s_client.set_input_device_event_callback(callback);
 	}
 	bool cmediasoup_mgr::mediasoup_run()
 	{

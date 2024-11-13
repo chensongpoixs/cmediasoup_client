@@ -29,6 +29,7 @@ purpose:		nvenc
 #include <string>
 #include <dxgi.h>
 #include <d3d11.h>
+#include <d3d11_1.h>
 #include <dxgi1_2.h>
 #include "../clog.h"
 #include "../ccfg.h"
@@ -218,6 +219,7 @@ namespace chen {
 struct nvenc_data
 {
 	ID3D11Device*        d3d11_device  = nullptr;
+	ID3D11Device1* d3d11_device1 = nullptr;
 	ID3D11DeviceContext* d3d11_context = nullptr;
 	ID3D11Texture2D*     copy_texture  = nullptr;
 	IDXGIAdapter*        adapter       = nullptr;
@@ -311,7 +313,7 @@ static void* nvenc_create()
 		if (strstr(desc, "NVIDIA") != NULL) 
 		{
 			hr = D3D11CreateDevice(enc->adapter, D3D_DRIVER_TYPE_UNKNOWN, NULL, 0, NULL, 0, D3D11_SDK_VERSION,
-				&enc->d3d11_device, nullptr, &enc->d3d11_context);
+				(ID3D11Device**)&enc->d3d11_device, nullptr, &enc->d3d11_context);
 			enc->adapter->Release();
 			enc->adapter = nullptr;
 			if (SUCCEEDED(hr)) 
@@ -347,7 +349,7 @@ gpuadapter:
 		}
 		index = gpuIndex;
 		hr = D3D11CreateDevice(enc->adapter, D3D_DRIVER_TYPE_UNKNOWN, NULL, 0, NULL, 0, D3D11_SDK_VERSION,
-							   &enc->d3d11_device, nullptr, &enc->d3d11_context);
+							   (ID3D11Device**)&enc->d3d11_device, nullptr, &enc->d3d11_context);
 		enc->adapter->Release();
 		enc->adapter = nullptr;
 		if (SUCCEEDED(hr)) {
@@ -806,12 +808,26 @@ int nvenc_encode_handle(void *nvenc_data, HANDLE handle, int lock_key, int unloc
 			enc->keyed_mutex->Release();
 			enc->keyed_mutex = nullptr;
 		}
+		/*if (enc->d3d11_device1)
+		{
+			enc->d3d11_device1->Release();
+		}
+		{
+			
+			enc->d3d11_device->QueryInterface(__uuidof(ID3D11Device1), (void**)&enc->d3d11_device1);
+		}
+		if (!enc->d3d11_device1)
+		{
+			WARNING_EX_LOG("[handle = %p]QueryInterface OpenSharedResource  failed !!!", handle);
+			return -1;
+		}*/
+		
 		//NORMAL_EX_LOG("");
 		HRESULT hr = enc->d3d11_device->OpenSharedResource((HANDLE)(uintptr_t)handle, __uuidof(ID3D11Texture2D),
 			reinterpret_cast<void **>(&enc->input_texture));
 		if (FAILED(hr)) 
 		{
-			WARNING_EX_LOG("[handle = %p]OpenSharedResource  failed !!!", handle);
+			WARNING_EX_LOG("[handle = %p][%u][enc->input_texture = %p]OpenSharedResource  failed !!!", handle, hr, enc->input_texture);
 			return -1;
 		}
 	//	NORMAL_EX_LOG("");

@@ -26,7 +26,7 @@
 #include <shellapi.h>
 #include "cclient.h"
  
-cmediasoup::cmediasoup_mgr g_mediasoup_mgr;
+chen::cmediasoup_mgr g_mediasoup_mgr;
 
 
 bool stoped = false;
@@ -39,36 +39,36 @@ void signalHandler(int signum)
 
 
 
-int  main(int argc, char *argv[])
-{
-	signal(SIGINT, signalHandler);
-	signal(SIGTERM, signalHandler);
-
-
-	std::string media_ip = argv[1];
-	uint32_t  media_port = std::atoi(argv[2]);
-	std::string room_name = argv[3];
-	std::string user_name = argv[4];
-
-	chen::g_gpu_address = std::atoll(argv[5]);
-
-	
-	g_mediasoup_mgr.init(0);
-
-	//g_mediasoup_mgr.set_mediasoup_status_callback(&mediasoup_callback);
-	/*
-	const char* mediasoupIp, uint16_t port
-		, const char* roomName, const char* clientName
-	
-	*/
-	g_mediasoup_mgr.startup(media_ip.c_str(), media_port, room_name.c_str(), user_name.c_str());
-	while (!stoped)
-	{
-		std::this_thread::sleep_for(std::chrono::milliseconds(100));
-	}
-	g_mediasoup_mgr.destroy();
-	return 0;
-}
+//int  main(int argc, char *argv[])
+//{
+//	signal(SIGINT, signalHandler);
+//	signal(SIGTERM, signalHandler);
+//
+//
+//	std::string media_ip = argv[1];
+//	uint32_t  media_port = std::atoi(argv[2]);
+//	std::string room_name = argv[3];
+//	std::string user_name = argv[4];
+//
+//	chen::g_gpu_address = std::atoll(argv[5]);
+//
+//	
+//	g_mediasoup_mgr.init(0);
+//
+//	//g_mediasoup_mgr.set_mediasoup_status_callback(&mediasoup_callback);
+//	/*
+//	const char* mediasoupIp, uint16_t port
+//		, const char* roomName, const char* clientName
+//	
+//	*/
+//	g_mediasoup_mgr.startup(media_ip.c_str(), media_port, room_name.c_str(), user_name.c_str());
+//	while (!stoped)
+//	{
+//		std::this_thread::sleep_for(std::chrono::milliseconds(100));
+//	}
+//	g_mediasoup_mgr.destroy();
+//	return 0;
+//}
 
 static  HMODULE  userdll32_ptr = NULL;
 

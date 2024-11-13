@@ -26,13 +26,17 @@ purpose:		input_device
 #include "cprotocol.h"
 #include "cinput_device_event.h"
 #include "rtc_base/logging.h"
+#include "api/data_channel_interface.h"
 #include "clog.h"
+#include "cassertion_macros.h"
 #if defined(_MSC_VER)
 // TODO@chensong 20220711  UE 鼠标控制权问题
 #define _WIN32_WINNT 0x0400 
 #include <Windows.h>
 #include <WinUser.h>
 #include <UserEnv.h>
+#include "cnet_types.h"
+#include "cclient.h"
 #include <mutex>
 #include <detours.h>
 #include "cint2str.h"
@@ -53,6 +57,37 @@ purpose:		input_device
 //
 //}
 #endif // WIN
+
+
+
+template<typename T>
+static const T& ParseBuffer(const uint8_t*& Data, uint32_t& Size)
+{
+	//checkf(sizeof(T) <= Size, TEXT("%d - %d"), sizeof(T), Size);
+	const T& Value = *reinterpret_cast<const T*>(Data);
+	Data += sizeof(T);
+	Size -= sizeof(T);
+	return Value;
+}
+
+static std::vector<TCHAR> ParseString(const webrtc::DataBuffer& Buffer, const size_t Offset = 0)
+{
+	std::vector<TCHAR> Res;
+	if (Buffer.data.size() > Offset) {
+		size_t StringLength = (Buffer.data.size() - Offset) / sizeof(TCHAR);
+		Res.reserve(StringLength + 1);
+		Res.shrink_to_fit();
+		memcpy(Res.data(), Buffer.data.data() + Offset, StringLength * sizeof(TCHAR));
+		Res[StringLength] = 0;
+	}
+	return Res;
+}
+
+
+// 序列化的操作
+#define GET(Type, Var) Type Var = ParseBuffer<Type>(Data, Size)
+
+
 namespace chen {
 	int32_t  g_width = 0;
 	int32_t  g_height = 0;
@@ -1036,6 +1071,11 @@ namespace chen {
 		FEvent KeyDownEvent(EventType::KEY_DOWN);
 		KeyDownEvent.SetKeyDown(KeyCode, Repeat != 0);
 		NORMAL_LOG("OnKeyDown==KeyCode = %u, Repeat = %u", KeyCode, Repeat);
+
+
+		s_client.input_device_callback(KeyDownEvent);
+
+		return true;
 		#if defined(_MSC_VER)
 		// TODO@chensong 20240509  win11电脑按下win键 只发送一个键盘事件
 		if (KeyCode == 91)
@@ -1347,6 +1387,10 @@ namespace chen {
 		FEvent KeyUpEvent(EventType::KEY_UP);
 		KeyUpEvent.SetKeyUp(KeyCode);
 		NORMAL_LOG("OnKeyUp==KeyCode = %u", KeyCode);
+
+
+		s_client.input_device_callback(KeyUpEvent);
+		return true;
 		#if defined(_MSC_VER)
 		if (KeyCode == 91)
 		{
@@ -1579,6 +1623,9 @@ namespace chen {
 		FEvent KeyUpEvent(EventType::KEY_PRESS);
 		KeyUpEvent.SetKeyUp(Character);
 		NORMAL_LOG("OnKeyPress==KeyCode = %u", Character);
+
+		s_client.input_device_callback(KeyUpEvent);
+		return true;
 		if (Character == 10 && g_ctrl != 0)
 		{
 			Character = 109;
@@ -1808,6 +1855,8 @@ namespace chen {
 		PosY = g_height;*/
 		NORMAL_EX_LOG("g_width = %d, g_height = %d, active_type = %d, PosX = %d, PoxY = %d", g_width, g_height, active_type, PosX, PosY );
 		//g_move_init = true;
+		s_client.input_device_callback(MouseDownEvent);
+		return true;
 		#if defined(_MSC_VER)
 		WINDOW_MAIN();
 		//MOUSE_INPUT(mwin);
@@ -1935,6 +1984,10 @@ namespace chen {
 		PosY = g_height;*/
 		NORMAL_EX_LOG("g_width = %d, g_height = %d, active_type = %d, PosX = %d, PoxY = %d", g_width, g_height,  active_type, PosX, PosY );
 		//ProcessEvent(MouseDownEvent);
+		// 
+		// 
+		s_client.input_device_callback(MouseDownEvent);
+		return true;
 		//g_move_init = false;
 		#if defined(_MSC_VER)
 		WINDOW_MAIN();
@@ -2067,11 +2120,15 @@ namespace chen {
 		
 		FEvent MouseMoveEvent(EventType::MOUSE_MOVE);
 		MouseMoveEvent.SetMouseDelta(PosX, PosY, DeltaX, DeltaY);
+
+
+		
 		int32_t width = g_width;
 		int32_t height = g_height;
 		g_width = PosX;
 		g_height = PosY;
-
+		s_client.input_device_callback(MouseMoveEvent);
+		return true;
 		/*
 		PosX = g_width;
 		PosY = g_height;*/
@@ -2502,6 +2559,8 @@ namespace chen {
 		MouseDownEvent.GetMouseClick(active_type, PosX, PosY);
 		g_width = PosX;
 		g_height = PosY;
+		//s_client.input_device_callback(MouseWheelEvent);
+		return true;
 		/*
 		PosX = g_width;
 		PosY = g_height;*/
@@ -2568,6 +2627,8 @@ namespace chen {
 		#if defined(_MSC_VER)
 		WINDOW_MAIN();
 		NORMAL_EX_LOG(" PosX = %d, PoxY = %d", PosX, PosY);
+		s_client.input_device_callback(MouseWheelEvent);
+		return true;
 		if (mwin)
 		{
 			MOUSE_INPUT(mwin);

@@ -39,7 +39,7 @@ using namespace chen;
 struct cnv_frame_packet
 {
     std::shared_ptr<uint8_t>   frame;
-    uint32_t                   use_size;
+    int32_t                   use_size;
     cnv_frame_packet()
         : frame()
         , use_size(0)

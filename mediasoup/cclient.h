@@ -118,8 +118,8 @@ namespace chen {
 		bool webrtc_video(const webrtc::VideoFrame& frame);
 		bool webrtc_run();
 
-		void set_mediasoup_status_callback(cmediasoup::mediasoup_status_update_cb callback) { m_mediasoup_status_callback = callback ; }
-
+		void set_mediasoup_status_callback(chen::mediasoup_status_update_cb callback) { m_mediasoup_status_callback = callback ; }
+		void set_input_device_event_callback(cinput_device_event_cb callback) { m_input_device_event_callback = callback; }
 
 		void transportofferasner(bool send, bool success);
 
@@ -166,6 +166,10 @@ namespace chen {
 		bool _default_replay(const nlohmann::json & reply);
 	public:
 		bool async_produce();
+
+
+	public:
+		void input_device_callback(FEvent cevent);
 	private:
 		void _presssmsg(std::list<std::string> & msgs);
 
@@ -220,7 +224,8 @@ namespace chen {
 
 		DesktopCapture*					m_desktop_capture_ptr;
 
-		cmediasoup::mediasoup_status_update_cb		m_mediasoup_status_callback;
+		chen::mediasoup_status_update_cb		m_mediasoup_status_callback;
+		cinput_device_event_cb					m_input_device_event_callback;
 		uint32							m_websocket_timer;
 		bool							m_send_produce_video_msg;
 		uint32							m_p2p_connect_failed;

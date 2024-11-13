@@ -23,8 +23,9 @@ purpose:		protocol
 #ifndef _C_PROTOCOL_H_
 #define _C_PROTOCOL_H_
 #include "cnet_types.h"
-#include "cassertion_macros.h"
-#include "api/data_channel_interface.h"
+#include <Windows.h>
+//#include "cassertion_macros.h"
+//#include "api/data_channel_interface.h"
 #include <vector>
 
 namespace chen {
@@ -103,32 +104,7 @@ namespace chen {
 
 
 
-	template<typename T>
-	static const T& ParseBuffer(const uint8*& Data, uint32& Size)
-	{
-		checkf(sizeof(T) <= Size, TEXT("%d - %d"), sizeof(T), Size);
-		const T& Value = *reinterpret_cast<const T*>(Data);
-		Data += sizeof(T);
-		Size -= sizeof(T);
-		return Value;
-	}
-
-	static std::vector<TCHAR> ParseString(const webrtc::DataBuffer& Buffer, const size_t Offset = 0)
-	{
-		std::vector<TCHAR> Res;
-		if (Buffer.data.size() > Offset) {
-			size_t StringLength = (Buffer.data.size() - Offset) / sizeof(TCHAR); 
-			Res.reserve(StringLength + 1);
-			Res.shrink_to_fit();
-			memcpy(Res.data(), Buffer.data.data() + Offset, StringLength * sizeof(TCHAR));
-			Res[StringLength] = 0;
-		}
-		return Res;
-	}
-
-
-	// 序列化的操作
-#define GET(Type, Var) Type Var = ParseBuffer<Type>(Data, Size)
+	
 
 }
 #endif // _C_PROTOCOL_H_
