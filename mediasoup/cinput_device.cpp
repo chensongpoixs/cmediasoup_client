@@ -1621,7 +1621,7 @@ namespace chen {
 		//UE_LOG(PixelStreamerInput, Verbose, TEXT("key up: %d"), KeyCode);
 		// log key up -> KeyCode
 		FEvent KeyUpEvent(EventType::KEY_PRESS);
-		KeyUpEvent.SetKeyUp(Character);
+		KeyUpEvent.SetCharCode(Character);
 		NORMAL_LOG("OnKeyPress==KeyCode = %u", Character);
 
 		s_client.input_device_callback(KeyUpEvent);
