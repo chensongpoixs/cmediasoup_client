@@ -121,6 +121,7 @@ namespace chen {
 		while (!m_stoped)
 		{
 			pre_time = std::chrono::steady_clock::now();
+			s_input_device.update();
 			switch (m_status)
 			{
 			case ERtc_WebSocket_Init: // None

@@ -41,6 +41,7 @@ purpose:		input_device
 #include <detours.h>
 #include "cint2str.h"
 #include <shellapi.h>
+#include "ccfg.h"
 //void CallMessage(HWND hwnd, int nMsgId, int wParam, int lParam)
 //
 //{
@@ -226,6 +227,7 @@ namespace chen {
 #if defined(_MSC_VER)
 		, m_main_win(NULL)
 #endif //#if defined(_MSC_VER)
+		, m_app_event_time(std::time(NULL))
 	{}
 	cinput_device::~cinput_device() {}
 
@@ -645,6 +647,7 @@ namespace chen {
 			return true;
 
 		}
+		m_app_event_time = std::time(NULL);
 		m_init = true;
 		//g_hrawinput.resize(RAW_INPUT_SIZE);
 		 // win
@@ -875,6 +878,25 @@ namespace chen {
 	void cinput_device::startup()
 	{
 		
+	}
+	void cinput_device::update()
+	{
+		if (std::time(NULL) - m_app_event_time > g_cfg.get_uint32(ECI_BrowserAppIdleTime))
+		{
+			//NORMAL_EX_LOG("app_event = %u", m_app_events);
+			//if (m_app_events <= 0)
+			{
+				WARNING_EX_LOG("app event time out !!! ");
+				::abort();
+			}
+			//m_app_event_time = std::time(NULL);
+			//m_app_events = 0;
+		}
+		else
+		{
+			//m_app_event_time = std::time(NULL);;
+			NORMAL_EX_LOG("app_event = %u", m_app_events);
+		}
 	}
 	bool cinput_device::set_point(uint32 x, uint32 y)
 	{

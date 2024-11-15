@@ -68,6 +68,7 @@ namespace chen {
 		bool set_point(uint32 x, uint32 y);
 		void Destroy();
 		void startup();
+		void update();
 	public:
 
 		bool OnMessage(const std::string & consumer_id, const webrtc::DataBuffer& Buffer);
@@ -167,6 +168,8 @@ namespace chen {
 #if defined(_MSC_VER)
 		HWND								m_main_win;
 #endif // #if defined(_MSC_VER)
+		uint32								m_app_events;
+		time_t								m_app_event_time;
 
 
 		
