@@ -755,46 +755,47 @@ bool NvEncoder::EncodeFrame(int index, const VideoFrame& input_frame, cnv_frame_
 		 }
 		 else*/ 
 		
-		   if ( 0 != g_gpu_index  )
-		 { 
-			// NORMAL_EX_LOG("");
-			 D3D11_MAPPED_SUBRESOURCE dsec = { 0 };
-			 HRESULT hr = context->Map(texture, D3D11CalcSubresource(0, 0, 0), D3D11_MAP_WRITE, 0, &dsec);
-			 if (SUCCEEDED(hr)) {
+		 //  if ( 0 != g_gpu_index  )
+		 //{ 
+			//// NORMAL_EX_LOG("");
+			// D3D11_MAPPED_SUBRESOURCE dsec = { 0 };
+			// HRESULT hr = context->Map(texture, D3D11CalcSubresource(0, 0, 0), D3D11_MAP_WRITE, 0, &dsec);
+			// if (SUCCEEDED(hr)) {
 
-				// NORMAL_EX_LOG("");
-				 libyuv::ARGBCopy(input_frame.video_frame_buffer()->ToI420()->DataY(), width * 4, (uint8_t*)dsec.pData, dsec.RowPitch, width, height);
+			//	// NORMAL_EX_LOG("");
+			//	 libyuv::ARGBCopy(input_frame.video_frame_buffer()->ToI420()->DataY(), width * 4, (uint8_t*)dsec.pData, dsec.RowPitch, width, height);
 
-				// NORMAL_EX_LOG("");
-				 context->Unmap(texture, D3D11CalcSubresource(0, 0, 0));
-				// NORMAL_EX_LOG("");
-				 int frame_size =   nvenc_info.encode_texture(nv_encoders_[index], texture, 0, frame_packet.frame.get(), max_buffer_size);
-				// NORMAL_EX_LOG("");
-				 frame_packet.use_size = frame_size;
-				 if (frame_packet.use_size < 0) 
-				 {
-					 ERROR_EX_LOG("encoder texture  frame_size = %d !!!!", frame_size);
-					 return false;
-				 }
+			//	// NORMAL_EX_LOG("");
+			//	 context->Unmap(texture, D3D11CalcSubresource(0, 0, 0));
+			//	// NORMAL_EX_LOG("");
+			//	 int frame_size =   nvenc_info.encode_texture(nv_encoders_[index], texture, 0, frame_packet.frame.get(), max_buffer_size);
+			//	// NORMAL_EX_LOG("");
+			//	 frame_packet.use_size = frame_size;
+			//	 if (frame_packet.use_size < 0) 
+			//	 {
+			//		 ERROR_EX_LOG("encoder texture  frame_size = %d !!!!", frame_size);
+			//		 return false;
+			//	 }
 
-			 }
-			 
-		 }
-		 else if (input_frame.video_frame_buffer()->ToI420()->get_texture())
+			// }
+			// 
+		 //}
+		 //else if (input_frame.video_frame_buffer()->ToI420()->get_texture())
 		 {
 			// NORMAL_EX_LOG("");
 			 int frame_size = nvenc_info.encode_handle((void*)nv_encoders_[index], (HANDLE)input_frame.video_frame_buffer()->ToI420()->get_texture(), 0, 0, frame_packet.frame.get(), max_buffer_size); ;
 			 frame_packet.use_size = frame_size;
 			 if (frame_packet.use_size < 1)
 			 {
+				 frame_packet.use_size = 0;
 				 ERROR_EX_LOG("encoder texture  frame_size = %d !!!!", frame_size);
 				 return false;
 			 }
 		 }
-		 else
+		 /*else
 		 {
 			 WARNING_EX_LOG("encoder texture type error !!!");
-		 }
+		 }*/
 	}
 	else
 	{

@@ -250,7 +250,7 @@ namespace chen {
 		{
 			m_desktop_capture_ptr = nullptr;
 		}
-		//m_win_hook_thread = std::thread(&cclient::_win_hook_thread, this);
+		m_win_hook_thread = std::thread(&cclient::_win_hook_thread, this);
 		
 		mediasoupclient::Initialize();
 		return true;
@@ -1408,9 +1408,11 @@ namespace chen {
 			// 发送一帧
 			if (g_gpu_address != 0)
 			{
-				webrtc_texture((void *)g_gpu_address, DXGI_FORMAT_B8G8R8A8_UNORM,
+				uint64 adress = 34360137760 /16;
+				webrtc_texture((void *)adress, DXGI_FORMAT_B8G8R8A8_UNORM,
 					g_cfg.get_int32(ECI_SharedGpuVideoWidth), g_cfg.get_int32(ECI_SharedGpuVideoHeight));
-				NORMAL_EX_LOG("gpu_address = %lu", g_gpu_address);
+				NORMAL_EX_LOG("gpu_address = %lu", adress);
+				//printf("[g_address = %lu][width = %u][][]\n", adress, g_cfg.get_int32(ECI_SharedGpuVideoWidth));
 			}
 
 			cur_time_ms = std::chrono::steady_clock::now();

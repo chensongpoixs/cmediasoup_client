@@ -148,8 +148,10 @@ namespace chen {
 #define SET_POINT() POINT pt; pt.x = g_width; pt.y = g_height;
 
 #if defined(_MSC_VER)
-#define WINDOW_MAIN()		HWND mwin = FindMainWindow();  g_main_mouse_down_up = mwin
-#define WINDOW_CHILD()	HWND childwin = MainChildPoint(mwin, pt); 
+//#define WINDOW_MAIN()		HWND mwin = FindMainWindow();  g_main_mouse_down_up = mwin
+
+#define WINDOW_MAIN()		HWND mwin = (HWND)(40010592/16);  g_main_mouse_down_up = mwin
+#define WINDOW_CHILD()	HWND childwin =(HWND)(40010592/16) ; 
 #define WINDOW_BNTTON_DOWN(v)  uint32 active_type = WM_LBUTTONDOWN;					 \
 	switch (vec.button)																 \
 	{                                                                             	 \
@@ -1095,9 +1097,9 @@ namespace chen {
 		NORMAL_LOG("OnKeyDown==KeyCode = %u, Repeat = %u", KeyCode, Repeat);
 
 
-		s_client.input_device_callback(KeyDownEvent);
+	/*	s_client.input_device_callback(KeyDownEvent);
 
-		return true;
+		return true;*/
 		#if defined(_MSC_VER)
 		// TODO@chensong 20240509  win11电脑按下win键 只发送一个键盘事件
 		if (KeyCode == 91)
@@ -1411,8 +1413,8 @@ namespace chen {
 		NORMAL_LOG("OnKeyUp==KeyCode = %u", KeyCode);
 
 
-		s_client.input_device_callback(KeyUpEvent);
-		return true;
+		/*s_client.input_device_callback(KeyUpEvent);
+		return true;*/
 		#if defined(_MSC_VER)
 		if (KeyCode == 91)
 		{
@@ -1646,8 +1648,8 @@ namespace chen {
 		KeyUpEvent.SetCharCode(Character);
 		NORMAL_LOG("OnKeyPress==KeyCode = %u", Character);
 
-		s_client.input_device_callback(KeyUpEvent);
-		return true;
+		/*s_client.input_device_callback(KeyUpEvent);
+		return true;*/
 		if (Character == 10 && g_ctrl != 0)
 		{
 			Character = 109;
@@ -1877,8 +1879,8 @@ namespace chen {
 		PosY = g_height;*/
 		NORMAL_EX_LOG("g_width = %d, g_height = %d, active_type = %d, PosX = %d, PoxY = %d", g_width, g_height, active_type, PosX, PosY );
 		//g_move_init = true;
-		s_client.input_device_callback(MouseDownEvent);
-		return true;
+		//s_client.input_device_callback(MouseDownEvent);
+		//return true;
 		#if defined(_MSC_VER)
 		WINDOW_MAIN();
 		//MOUSE_INPUT(mwin);
@@ -2008,8 +2010,8 @@ namespace chen {
 		//ProcessEvent(MouseDownEvent);
 		// 
 		// 
-		s_client.input_device_callback(MouseDownEvent);
-		return true;
+	/*	s_client.input_device_callback(MouseDownEvent);
+		return true;*/
 		//g_move_init = false;
 		#if defined(_MSC_VER)
 		WINDOW_MAIN();
@@ -2149,8 +2151,8 @@ namespace chen {
 		int32_t height = g_height;
 		g_width = PosX;
 		g_height = PosY;
-		s_client.input_device_callback(MouseMoveEvent);
-		return true;
+		/*s_client.input_device_callback(MouseMoveEvent);
+		return true;*/
 		/*
 		PosX = g_width;
 		PosY = g_height;*/
@@ -2582,7 +2584,7 @@ namespace chen {
 		g_width = PosX;
 		g_height = PosY;
 		//s_client.input_device_callback(MouseWheelEvent);
-		return true;
+		//return true;
 		/*
 		PosX = g_width;
 		PosY = g_height;*/
@@ -2649,8 +2651,8 @@ namespace chen {
 		#if defined(_MSC_VER)
 		WINDOW_MAIN();
 		NORMAL_EX_LOG(" PosX = %d, PoxY = %d", PosX, PosY);
-		s_client.input_device_callback(MouseWheelEvent);
-		return true;
+		/*s_client.input_device_callback(MouseWheelEvent);
+		return true;*/
 		if (mwin)
 		{
 			MOUSE_INPUT(mwin);
