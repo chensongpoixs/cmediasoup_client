@@ -33,6 +33,7 @@ purpose:		assertion macros
 #include "csingleton.h"
 #include "cdesktop_capture.h"
 #include "cmediasoup_mgr.h"
+
 namespace chen {
 
 	class csend_transport;

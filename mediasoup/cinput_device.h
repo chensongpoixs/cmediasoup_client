@@ -35,6 +35,7 @@ purpose:		input_device
 #include <unordered_map>
 #include <list>
 #include <mutex>
+extern uint64_t g_render_window;
 namespace chen {
 	 
 

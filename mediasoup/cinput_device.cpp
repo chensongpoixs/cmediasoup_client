@@ -59,7 +59,7 @@ purpose:		input_device
 //}
 #endif // WIN
 
-
+uint64_t   g_render_window = 0;
 
 template<typename T>
 static const T& ParseBuffer(const uint8_t*& Data, uint32_t& Size)
@@ -146,12 +146,12 @@ namespace chen {
 	// SetWindowLong(g_wnd, GWL_STYLE, GetWindowLong(g_wnd, GWL_STYLE) | WS_EX_TRANSPARENT | WS_EX_LAYERED);
 	//使用全局变量操作的哈 
 #define SET_POINT() POINT pt; pt.x = g_width; pt.y = g_height;
-
+	
 #if defined(_MSC_VER)
 //#define WINDOW_MAIN()		HWND mwin = FindMainWindow();  g_main_mouse_down_up = mwin
-
-#define WINDOW_MAIN()		HWND mwin = (HWND)(40010592/16);  g_main_mouse_down_up = mwin
-#define WINDOW_CHILD()	HWND childwin =(HWND)(40010592/16) ; 
+	 
+#define WINDOW_MAIN()		HWND mwin = (HWND)(g_render_window/16);  g_main_mouse_down_up = mwin
+#define WINDOW_CHILD()	HWND childwin =(HWND)(g_render_window/16) ; 
 #define WINDOW_BNTTON_DOWN(v)  uint32 active_type = WM_LBUTTONDOWN;					 \
 	switch (vec.button)																 \
 	{                                                                             	 \
@@ -883,6 +883,7 @@ namespace chen {
 	}
 	void cinput_device::update()
 	{
+		return;
 		if (std::time(NULL) - m_app_event_time > g_cfg.get_uint32(ECI_BrowserAppIdleTime))
 		{
 			//NORMAL_EX_LOG("app_event = %u", m_app_events);

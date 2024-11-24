@@ -1,7 +1,7 @@
 ﻿<?xml version="1.0" encoding="utf-8"?>
 <Project ToolsVersion="15.0" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|x64'">
-    <LocalDebuggerCommandArguments> 192.168.1.26  8888 192.168.1.133_C1   192.168.1.133_C1  80000342 </LocalDebuggerCommandArguments>
+    <LocalDebuggerCommandArguments>192.168.1.26 8888 192.168.1.133_C1 192.168.1.133_C1 34359990304 1 178298304</LocalDebuggerCommandArguments>
     <DebuggerFlavor>WindowsLocalDebugger</DebuggerFlavor>
   </PropertyGroup>
 </Project>

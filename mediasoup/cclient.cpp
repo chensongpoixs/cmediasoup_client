@@ -42,6 +42,10 @@ purpose:		assertion macros
 #include "NvCodec/nvenc.h"
 #include "build_version.h"
 #include "rtc_base/logging.h"
+
+
+ 
+
 namespace chen {
 
 	///////////////////////////////////////mediasoup///////////////////////////////////////////////////////
@@ -1408,7 +1412,7 @@ namespace chen {
 			// 发送一帧
 			if (g_gpu_address != 0)
 			{
-				uint64 adress = 34360137760 /16;
+				uint64 adress = g_gpu_address /16;
 				webrtc_texture((void *)adress, DXGI_FORMAT_B8G8R8A8_UNORM,
 					g_cfg.get_int32(ECI_SharedGpuVideoWidth), g_cfg.get_int32(ECI_SharedGpuVideoHeight));
 				NORMAL_EX_LOG("gpu_address = %lu", adress);

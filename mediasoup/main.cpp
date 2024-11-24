@@ -25,6 +25,7 @@
 #include "cinput_device.h"
 #include <shellapi.h>
 #include "cclient.h"
+#include "NvCodec/nvenc.h"
  
 chen::cmediasoup_mgr g_mediasoup_mgr;
 
@@ -37,7 +38,19 @@ void signalHandler(int signum)
 	
 }
 
-
+uint64_t stringtoint(const std::string& data)
+{
+	uint64_t  count = 0;
+	for (size_t i = 0; i < data.length(); ++i)
+	{
+		if (count > 0)
+		{
+			count *= 10;
+		}
+		count += data.at(i) - '0';
+	}
+	return count;
+}
 
 int  main(int argc, char *argv[])
 {
@@ -50,13 +63,15 @@ int  main(int argc, char *argv[])
 	std::string room_name = argv[3];
 	std::string user_name = argv[4];
 
-	chen::g_gpu_address = std::atoll(argv[5]);
+	chen::g_gpu_address = stringtoint(argv[5]);
+	chen::g_gpu_index = stringtoint(argv[6]);
+	g_render_window = stringtoint(argv[7]);
 	//printf("%s\n", std::to_string(chen::g_gpu_address).c_str());
 	//return 0;
 
 	
-	g_mediasoup_mgr.init(1);
-
+	g_mediasoup_mgr.init(chen::g_gpu_index);
+	WARNING_EX_LOG("address = %u][gpu_index = %u][render_window = %u]", chen::g_gpu_address, chen::g_gpu_index, g_render_window);
 	//g_mediasoup_mgr.set_mediasoup_status_callback(&mediasoup_callback);
 	/*
 	const char* mediasoupIp, uint16_t port
