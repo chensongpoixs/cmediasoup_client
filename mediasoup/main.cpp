@@ -36,12 +36,9 @@ void signalHandler(int signum)
 	stoped = true;
 	
 }
-
-
-
-int  fffmain(int argc, char *argv[])
+void testff()
 {
-	//HWND mwin = chen::FindMainWindow(28944);
+	HWND mwin = chen::FindMainWindow(28944);
 	//PostMessage(mwin, WM_KEYDOWN, VK_CONTROL, 1900545/*MAKELPARAM(0, 1900545)*/);
 	////PostMessage(mwin, WM_KEYDOWN, VK_CONTROL, MAKELPARAM(VK_CONTROL, VK_CONTROL));
 	//PostMessage(mwin, WM_LBUTTONDOWN, MAKEWPARAM(0, 0), MAKELPARAM(300, 300));
@@ -51,6 +48,19 @@ int  fffmain(int argc, char *argv[])
 	//PostMessage(mwin, WM_MOUSEMOVE /*WM_MOUSEMOVE*//*WM_INPUT 、 WM_NCMOUSEMOVE UE4 move dug TODO@chensong 20220611 */ /*WM_MOUSEMOVE*/, 0/*MAKEWPARAM(DeltaX, DeltaY)*/, /*MAKEWPARAM(DeltaX, DeltaY)*/MAKELPARAM(330, 301));
 	//PostMessage(mwin, WM_MOUSEMOVE /*WM_MOUSEMOVE*//*WM_INPUT 、 WM_NCMOUSEMOVE UE4 move dug TODO@chensong 20220611 */ /*WM_MOUSEMOVE*/, 0/*MAKEWPARAM(DeltaX, DeltaY)*/, /*MAKEWPARAM(DeltaX, DeltaY)*/MAKELPARAM(340, 301));
 
+}
+
+
+
+int main(int argc, char *argv[])
+{
+
+	//uint64_t  p = 1900545;
+	//uint64_t  w = p >> 16;
+	//printf("[p = %s][w = %s]\n", std::to_string(p).c_str(), std::to_string(w).c_str());
+
+
+	////
 	//return 0;
 	signal(SIGINT, signalHandler);
 	signal(SIGTERM, signalHandler);
