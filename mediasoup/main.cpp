@@ -24,6 +24,7 @@
 #include <detours.h>
 #include "cinput_device.h"
 #include <shellapi.h>
+#include "cwindow_util.h"
  
 cmediasoup::cmediasoup_mgr g_mediasoup_mgr;
 
@@ -40,6 +41,17 @@ void signalHandler(int signum)
 
 int  fffmain(int argc, char *argv[])
 {
+	//HWND mwin = chen::FindMainWindow(28944);
+	//PostMessage(mwin, WM_KEYDOWN, VK_CONTROL, 1900545/*MAKELPARAM(0, 1900545)*/);
+	////PostMessage(mwin, WM_KEYDOWN, VK_CONTROL, MAKELPARAM(VK_CONTROL, VK_CONTROL));
+	//PostMessage(mwin, WM_LBUTTONDOWN, MAKEWPARAM(0, 0), MAKELPARAM(300, 300));
+	//PostMessage(mwin, WM_MOUSEMOVE /*WM_MOUSEMOVE*//*WM_INPUT 、 WM_NCMOUSEMOVE UE4 move dug TODO@chensong 20220611 */ /*WM_MOUSEMOVE*/, 0/*MAKEWPARAM(DeltaX, DeltaY)*/, /*MAKEWPARAM(DeltaX, DeltaY)*/MAKELPARAM(310, 301));
+	//PostMessage(mwin, WM_MOUSEMOVE /*WM_MOUSEMOVE*//*WM_INPUT 、 WM_NCMOUSEMOVE UE4 move dug TODO@chensong 20220611 */ /*WM_MOUSEMOVE*/, 0/*MAKEWPARAM(DeltaX, DeltaY)*/, /*MAKEWPARAM(DeltaX, DeltaY)*/MAKELPARAM(315, 301));
+	//PostMessage(mwin, WM_MOUSEMOVE /*WM_MOUSEMOVE*//*WM_INPUT 、 WM_NCMOUSEMOVE UE4 move dug TODO@chensong 20220611 */ /*WM_MOUSEMOVE*/, 0/*MAKEWPARAM(DeltaX, DeltaY)*/, /*MAKEWPARAM(DeltaX, DeltaY)*/MAKELPARAM(320, 301));
+	//PostMessage(mwin, WM_MOUSEMOVE /*WM_MOUSEMOVE*//*WM_INPUT 、 WM_NCMOUSEMOVE UE4 move dug TODO@chensong 20220611 */ /*WM_MOUSEMOVE*/, 0/*MAKEWPARAM(DeltaX, DeltaY)*/, /*MAKEWPARAM(DeltaX, DeltaY)*/MAKELPARAM(330, 301));
+	//PostMessage(mwin, WM_MOUSEMOVE /*WM_MOUSEMOVE*//*WM_INPUT 、 WM_NCMOUSEMOVE UE4 move dug TODO@chensong 20220611 */ /*WM_MOUSEMOVE*/, 0/*MAKEWPARAM(DeltaX, DeltaY)*/, /*MAKEWPARAM(DeltaX, DeltaY)*/MAKELPARAM(340, 301));
+
+	//return 0;
 	signal(SIGINT, signalHandler);
 	signal(SIGTERM, signalHandler);
 
