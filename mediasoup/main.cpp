@@ -52,7 +52,7 @@ void testff()
 
 
 
-int main(int argc, char *argv[])
+int ff_test_main(int argc, char *argv[])
 {
 
 	//uint64_t  p = 1900545;

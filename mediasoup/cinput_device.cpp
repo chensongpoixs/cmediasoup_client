@@ -2118,7 +2118,7 @@ namespace chen {
 
 		//g_main_mouse_down_up = mwin;
 
-		WINDOW_MAIN();
+	//	WINDOW_MAIN();
 		//MOUSE_INPUT(mwin);
 		/*registerinputdevice(mwin);
 		SetForegroundWindow(mwin);
@@ -2134,130 +2134,130 @@ namespace chen {
 			//tme.hwndTrack = mwin; //当前窗口句柄
 			//::TrackMouseEvent(&tme); //注册发送消息
 
-			POINT CursorPoint;
-			CursorPoint.x = PosX;
-			CursorPoint.y = PosY;
-			//::ClientToScreen(mwin, &CursorPoint);
-			//::SetFocus(mwin);
-			//INPUT input[4];
-			//hwndConsole = GetConsoleWindow();
-			//hwndTX = FindWindow(TEXT("TXGuiFoundation"), TEXT("N3verL4nd"));
-			/*if (hwndTX != NULL)
-			{
-				for (int i = 0; i < 10; i++)
-				{
-					SendMessage(hwndTX, WM_CHAR, 'A', 0);
-				}*/
+		//	POINT CursorPoint;
+		//	CursorPoint.x = PosX;
+		//	CursorPoint.y = PosY;
+		//	//::ClientToScreen(mwin, &CursorPoint);
+		//	//::SetFocus(mwin);
+		//	//INPUT input[4];
+		//	//hwndConsole = GetConsoleWindow();
+		//	//hwndTX = FindWindow(TEXT("TXGuiFoundation"), TEXT("N3verL4nd"));
+		//	/*if (hwndTX != NULL)
+		//	{
+		//		for (int i = 0; i < 10; i++)
+		//		{
+		//			SendMessage(hwndTX, WM_CHAR, 'A', 0);
+		//		}*/
 
-				//SetForegroundWindow(hwndTX);
-				//memset(input, 0, sizeof(input));
-				/*input[0].type = input[1].type = input[2].type = input[3].type = INPUT_KEYBOARD;
-				input[0].ki.wVk = input[2].ki.wVk = VK_MENU;
-				input[1].ki.wVk = input[3].ki.wVk = 0x53;
-				input[2].ki.dwFlags = input[3].ki.dwFlags = KEYEVENTF_KEYUP;*/
-				//SendInput(4, input, sizeof(INPUT));
-				//SetForegroundWindow(hwndConsole);
-			/*{
-				INPUT Input = { 0 };
-				Input.type = INPUT_MOUSE;
-				Input.mi.dx = CursorPoint.x;
-				Input.mi.dy = CursorPoint.y;
-				Input.mi.mouseData = 0;
-				Input.mi.dwFlags = MOUSEEVENTF_MOVE;
-				Input.mi.time = 0;
-				Input.mi.dwExtraInfo = 0;
-				SendInput(1, &Input, sizeof(INPUT));
-			}*/
-			// TODO@chensong 20220612 完全为了兼容Win的input设备
-			//mouse_event();
-			//
-			//GetDesktopWindow()->GetActiveWindow() 
-				//GetForegroundWindow();
-			//SetForegroundWindow(mwin);
-			/*INPUT input;
-			input.type = INPUT_HARDWARE;
-			input.hi.uMsg = WM_INPUT;
-			input.hi.wParamL = MAKEWPARAM(DeltaX, DeltaY);
-			input.hi.wParamH = MAKELPARAM(CursorPoint.x, CursorPoint.y);*/
-			//static int x = 0;
-			//static int y = 0;
-			//int xx = CursorPoint.x ;
-			//int yy = CursorPoint.y ;
-			//input.mi.dx = xx - x;
-			//input.mi.dy = yy - y;
-			//x = xx;
-			//y = yy;
-			//input.mi.mouseData = 0;
-			//input.mi.dwFlags = /*MOUSEEVENTF_ABSOLUTE |*/ MOUSEEVENTF_MOVE;   //MOUSEEVENTF_ABSOLUTE 代表决对位置  MOUSEEVENTF_MOVE代表移动事件
-			//input.mi.time = 0;
-			//input.mi.dwExtraInfo = 0;
-			//SendInput(1, &input, sizeof(INPUT));
+		//		//SetForegroundWindow(hwndTX);
+		//		//memset(input, 0, sizeof(input));
+		//		/*input[0].type = input[1].type = input[2].type = input[3].type = INPUT_KEYBOARD;
+		//		input[0].ki.wVk = input[2].ki.wVk = VK_MENU;
+		//		input[1].ki.wVk = input[3].ki.wVk = 0x53;
+		//		input[2].ki.dwFlags = input[3].ki.dwFlags = KEYEVENTF_KEYUP;*/
+		//		//SendInput(4, input, sizeof(INPUT));
+		//		//SetForegroundWindow(hwndConsole);
+		//	/*{
+		//		INPUT Input = { 0 };
+		//		Input.type = INPUT_MOUSE;
+		//		Input.mi.dx = CursorPoint.x;
+		//		Input.mi.dy = CursorPoint.y;
+		//		Input.mi.mouseData = 0;
+		//		Input.mi.dwFlags = MOUSEEVENTF_MOVE;
+		//		Input.mi.time = 0;
+		//		Input.mi.dwExtraInfo = 0;
+		//		SendInput(1, &Input, sizeof(INPUT));
+		//	}*/
+		//	// TODO@chensong 20220612 完全为了兼容Win的input设备
+		//	//mouse_event();
+		//	//
+		//	//GetDesktopWindow()->GetActiveWindow() 
+		//		//GetForegroundWindow();
+		//	//SetForegroundWindow(mwin);
+		//	/*INPUT input;
+		//	input.type = INPUT_HARDWARE;
+		//	input.hi.uMsg = WM_INPUT;
+		//	input.hi.wParamL = MAKEWPARAM(DeltaX, DeltaY);
+		//	input.hi.wParamH = MAKELPARAM(CursorPoint.x, CursorPoint.y);*/
+		//	//static int x = 0;
+		//	//static int y = 0;
+		//	//int xx = CursorPoint.x ;
+		//	//int yy = CursorPoint.y ;
+		//	//input.mi.dx = xx - x;
+		//	//input.mi.dy = yy - y;
+		//	//x = xx;
+		//	//y = yy;
+		//	//input.mi.mouseData = 0;
+		//	//input.mi.dwFlags = /*MOUSEEVENTF_ABSOLUTE |*/ MOUSEEVENTF_MOVE;   //MOUSEEVENTF_ABSOLUTE 代表决对位置  MOUSEEVENTF_MOVE代表移动事件
+		//	//input.mi.time = 0;
+		//	//input.mi.dwExtraInfo = 0;
+		//	//SendInput(1, &input, sizeof(INPUT));
 
-			//::SetCursorPos(CursorPoint.x, CursorPoint.y);
-		//	MESSAGE(mwin, WM_INPUT/*WM_INPUT 、 WM_NCMOUSEMOVE UE4 move dug TODO@chensong 20220611 */ /*WM_MOUSEMOVE*/, MAKEWPARAM(DeltaX, DeltaY), MAKELPARAM(CursorPoint.x, CursorPoint.y));
-		//try sending 'W' 
-			RAWINPUT raw = { 0 };
-			//char c = 'W';
-			//header 
-			/*raw.header.dwSize = sizeof(raw);
-			raw.header.dwType = RIM_TYPEMOUSE;
-			raw.header.wParam = MAKEWPARAM(DeltaX, DeltaY);*/ //(wParam & 0xff =0 => 0) 
-			//raw.header.hDevice = hDevice;
+		//	//::SetCursorPos(CursorPoint.x, CursorPoint.y);
+		////	MESSAGE(mwin, WM_INPUT/*WM_INPUT 、 WM_NCMOUSEMOVE UE4 move dug TODO@chensong 20220611 */ /*WM_MOUSEMOVE*/, MAKEWPARAM(DeltaX, DeltaY), MAKELPARAM(CursorPoint.x, CursorPoint.y));
+		////try sending 'W' 
+		//	RAWINPUT raw = { 0 };
+		//	//char c = 'W';
+		//	//header 
+		//	/*raw.header.dwSize = sizeof(raw);
+		//	raw.header.dwType = RIM_TYPEMOUSE;
+		//	raw.header.wParam = MAKEWPARAM(DeltaX, DeltaY);*/ //(wParam & 0xff =0 => 0) 
+		//	//raw.header.hDevice = hDevice;
 
 
-			//data 
-			//raw.data.mouse.lLastX = DeltaX;
-			//raw.data.mouse.lLastY = DeltaY;
-			//raw.data.mouse.usFlags
-			//raw.data.keyboard.Reserved = 0;
-			//raw.data.keyboard.Flags = RI_KEY_MAKE;  //Key down 
-			//raw.data.keyboard.MakeCode = static_cast<WORD>(MapVirtualKeyEx(c, MAPVK_VK_TO_VSC, GetKeyboardLayout(0)));
-			//raw.data.keyboard.Message = WM_KEYDOWN;
-			//raw.data.keyboard.VKey = VkKeyScanEx(c, GetKeyboardLayout(0));
-			//raw.data.keyboard.ExtraInformation = 0;   //??? 
-			//HGLOBAL raw_input_ptr = ::GlobalAlloc(GHND, sizeof(RAWINPUT));
-			// *pRaw = reinterpret_cast<RAWINPUT*>(::GlobalLock(raw_input_ptr));
-			//if (pRaw)
-			if (false)
-			{
-				//char c = 'W';
-			//header
-				RAWINPUT pRaw;
-				pRaw.header.dwSize = sizeof(RAWINPUT);
-				pRaw.header.dwType = RIM_TYPEMOUSE;
-				pRaw.header.wParam = 0; //(wParam & 0xff =0 => 0)
-				pRaw.header.hDevice = 0;
+		//	//data 
+		//	//raw.data.mouse.lLastX = DeltaX;
+		//	//raw.data.mouse.lLastY = DeltaY;
+		//	//raw.data.mouse.usFlags
+		//	//raw.data.keyboard.Reserved = 0;
+		//	//raw.data.keyboard.Flags = RI_KEY_MAKE;  //Key down 
+		//	//raw.data.keyboard.MakeCode = static_cast<WORD>(MapVirtualKeyEx(c, MAPVK_VK_TO_VSC, GetKeyboardLayout(0)));
+		//	//raw.data.keyboard.Message = WM_KEYDOWN;
+		//	//raw.data.keyboard.VKey = VkKeyScanEx(c, GetKeyboardLayout(0));
+		//	//raw.data.keyboard.ExtraInformation = 0;   //??? 
+		//	//HGLOBAL raw_input_ptr = ::GlobalAlloc(GHND, sizeof(RAWINPUT));
+		//	// *pRaw = reinterpret_cast<RAWINPUT*>(::GlobalLock(raw_input_ptr));
+		//	//if (pRaw)
+		//	if (false)
+		//	{
+		//		//char c = 'W';
+		//	//header
+		//		RAWINPUT pRaw;
+		//		pRaw.header.dwSize = sizeof(RAWINPUT);
+		//		pRaw.header.dwType = RIM_TYPEMOUSE;
+		//		pRaw.header.wParam = 0; //(wParam & 0xff =0 => 0)
+		//		pRaw.header.hDevice = 0;
 
-				//data
-				pRaw.data.mouse.lLastX = g_width - width ;
-				pRaw.data.mouse.lLastY =    g_height - height;
-				//pRaw->data.keyboard.Reserved = 0;
-				//pRaw->data.keyboard.Flags = RI_KEY_MAKE;
-				//pRaw->data.keyboard.MakeCode = static_cast<WORD>(MapVirtualKeyEx(c, MAPVK_VK_TO_VSC, GetKeyboardLayout(0)));
-				//pRaw->data.keyboard.Message = WM_KEYDOWN;
-				//pRaw->data.keyboard.VKey = VkKeyScanEx(c, GetKeyboardLayout(0));
-				//pRaw->data.keyboard.ExtraInformation = 0;
-				//memcpy(g_hrawinput[g_write_index % RAW_INPUT_SIZE], &pRaw, sizeof(RAWINPUT));
-				//g_hrawinput[g_write_index % RAW_INPUT_SIZE] = pRaw;
-				
-				 {
-					clock_guard lock(g_mutex);
-					/*if (g_hrawinput.size() > 300)
-					{
-						g_hrawinput.clear();
-					}*/
-					//g_hrawinput.push_back(pRaw);
-					//DEBUG_LOG("MAKELPARAM(CursorPoint.x, CursorPoint.y) = %u", MAKELPARAM(CursorPoint.x, CursorPoint.y));
-					g_hrawinput[MAKELPARAM(CursorPoint.x, CursorPoint.y)] = pRaw;
-					//g_write_index++;
-				}
-				//::GlobalUnlock(raw_input_ptr);
+		//		//data
+		//		pRaw.data.mouse.lLastX = g_width - width ;
+		//		pRaw.data.mouse.lLastY =    g_height - height;
+		//		//pRaw->data.keyboard.Reserved = 0;
+		//		//pRaw->data.keyboard.Flags = RI_KEY_MAKE;
+		//		//pRaw->data.keyboard.MakeCode = static_cast<WORD>(MapVirtualKeyEx(c, MAPVK_VK_TO_VSC, GetKeyboardLayout(0)));
+		//		//pRaw->data.keyboard.Message = WM_KEYDOWN;
+		//		//pRaw->data.keyboard.VKey = VkKeyScanEx(c, GetKeyboardLayout(0));
+		//		//pRaw->data.keyboard.ExtraInformation = 0;
+		//		//memcpy(g_hrawinput[g_write_index % RAW_INPUT_SIZE], &pRaw, sizeof(RAWINPUT));
+		//		//g_hrawinput[g_write_index % RAW_INPUT_SIZE] = pRaw;
+		//		
+		//		 {
+		//			clock_guard lock(g_mutex);
+		//			/*if (g_hrawinput.size() > 300)
+		//			{
+		//				g_hrawinput.clear();
+		//			}*/
+		//			//g_hrawinput.push_back(pRaw);
+		//			//DEBUG_LOG("MAKELPARAM(CursorPoint.x, CursorPoint.y) = %u", MAKELPARAM(CursorPoint.x, CursorPoint.y));
+		//			g_hrawinput[MAKELPARAM(CursorPoint.x, CursorPoint.y)] = pRaw;
+		//			//g_write_index++;
+		//		}
+		//		//::GlobalUnlock(raw_input_ptr);
 
-				//UINT dataSz{ 0 };
-				 MOUSE_INPUT(g_main_mouse_down_up);
-				//Send the message ///*Raw input handle*/
-				MESSAGE(g_main_mouse_down_up, WM_INPUT, (WPARAM)RIM_INPUT, MAKELPARAM(CursorPoint.x, CursorPoint.y));  //TODO: Handle to raw input 
-			}
+		//		//UINT dataSz{ 0 };
+		//		 MOUSE_INPUT(g_main_mouse_down_up);
+		//		//Send the message ///*Raw input handle*/
+		//		MESSAGE(g_main_mouse_down_up, WM_INPUT, (WPARAM)RIM_INPUT, MAKELPARAM(CursorPoint.x, CursorPoint.y));  //TODO: Handle to raw input 
+		//	}
 			
 			//MOUSE_INPUT(mwin);
 			DWORD key = 0;

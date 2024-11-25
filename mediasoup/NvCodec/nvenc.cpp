@@ -536,7 +536,7 @@ static bool nvenc_init(void *nvenc_data, void *encoder_config)
 
 	initializeParams.tuningInfo = NV_ENC_TUNING_INFO_ULTRA_LOW_LATENCY;
 	initializeParams.frameRateNum = g_cfg.get_int32(ECI_RtcFrames);
-	initializeParams.encodeConfig->encodeCodecConfig.h264Config.enableIntraRefresh = 1;
+	/*initializeParams.encodeConfig->encodeCodecConfig.h264Config.enableIntraRefresh = 1;
 	initializeParams.encodeConfig->encodeCodecConfig.h264Config.intraRefreshPeriod = 180;
 	initializeParams.encodeConfig->encodeCodecConfig.h264Config.intraRefreshCnt = 180;
 	initializeParams.encodeConfig->encodeCodecConfig.h264Config.idrPeriod = NVENC_INFINITE_GOPLENGTH;
@@ -544,17 +544,22 @@ static bool nvenc_init(void *nvenc_data, void *encoder_config)
 	initializeParams.encodeConfig->encodeCodecConfig.h264Config.sliceMode = 0;
 	initializeParams.encodeConfig->encodeCodecConfig.h264Config.sliceModeData = 0;
  	initializeParams.encodeConfig->encodeCodecConfig.h264Config.outputPictureTimingSEI = 1;
- 	initializeParams.encodeConfig->encodeCodecConfig.h264Config.enableFillerDataInsertion = 1;
+ 	initializeParams.encodeConfig->encodeCodecConfig.h264Config.enableFillerDataInsertion = 1;*/
 	 
 	initializeParams.encodeConfig->rcParams.rateControlMode = NV_ENC_PARAMS_RC_CBR;
-	initializeParams.encodeConfig->rcParams.enableMinQP = 0;
-	initializeParams.encodeConfig->rcParams.enableMaxQP = 0;
+	initializeParams.encodeConfig->encodeCodecConfig.h264Config.enableIntraRefresh = 1;
+	initializeParams.encodeConfig->encodeCodecConfig.h264Config.intraRefreshPeriod = 180;
+	initializeParams.encodeConfig->encodeCodecConfig.h264Config.intraRefreshCnt = 180;
+	initializeParams.encodeConfig->encodeCodecConfig.h264Config.idrPeriod = NVENC_INFINITE_GOPLENGTH;
+	initializeParams.encodeConfig->encodeCodecConfig.h264Config.repeatSPSPPS = 1;
+	/*initializeParams.encodeConfig->rcParams.enableMinQP = 0;
+	initializeParams.encodeConfig->rcParams.enableMaxQP = 0;*/
 	 
 	initializeParams.encodeConfig->rcParams.averageBitRate = g_cfg.get_uint32(ECI_RtcAvgRate) * 1000;// DEFAULT_BITRATE;
 	initializeParams.encodeConfig->rcParams.maxBitRate = g_cfg.get_uint32(ECI_RtcMaxRate) * 1000;// DEFAULT_BITRATE; // Not used for CBR
 	initializeParams.encodeConfig->rcParams.multiPass = NV_ENC_TWO_PASS_FULL_RESOLUTION;
 	
-	initializeParams.encodeConfig->rcParams.lookaheadDepth = 10;
+	//initializeParams.encodeConfig->rcParams.lookaheadDepth = 10;
 	
 	NORMAL_EX_LOG("====>>>>%s", gpu_encode_info::g_MainParamToString(&initializeParams).c_str());
 	
