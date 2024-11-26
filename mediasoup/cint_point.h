@@ -37,10 +37,10 @@ namespace chen {
 	struct FIntPoint
 	{
 		/** Holds the point's x-coordinate. */
-		int32 X;
+		int64 X;
 
 		/** Holds the point's y-coordinate. */
-		int32 Y;
+		int64 Y;
 
 	//public:
 

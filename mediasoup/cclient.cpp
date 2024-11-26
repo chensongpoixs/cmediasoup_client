@@ -1403,7 +1403,7 @@ namespace chen {
 		uint32_t elapse = 0;
 		// 帧数
 
-		uint32 frame_ms = 1000 / g_cfg.get_uint32(ECI_RtcFrames);
+		uint32 frame_ms = 1000 / g_cfg.m_frame_fps;
 
 		while (!m_stoped)
 		{
@@ -1414,7 +1414,7 @@ namespace chen {
 			{
 				uint64 adress = g_gpu_address /16;
 				webrtc_texture((void *)adress, DXGI_FORMAT_B8G8R8A8_UNORM,
-					g_cfg.get_int32(ECI_SharedGpuVideoWidth), g_cfg.get_int32(ECI_SharedGpuVideoHeight));
+					g_cfg.m_width, g_cfg.m_heigth);
 				NORMAL_EX_LOG("gpu_address = %lu", adress);
 				//printf("[g_address = %lu][width = %u][][]\n", adress, g_cfg.get_int32(ECI_SharedGpuVideoWidth));
 			}

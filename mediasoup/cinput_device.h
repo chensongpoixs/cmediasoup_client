@@ -66,7 +66,7 @@ namespace chen {
 	public:
 		bool init();
 
-		bool set_point(uint32 x, uint32 y);
+		bool set_point(int64 x, int64 y);
 		void Destroy();
 		void startup();
 		void update();

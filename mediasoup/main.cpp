@@ -26,7 +26,7 @@
 #include <shellapi.h>
 #include "cclient.h"
 #include "NvCodec/nvenc.h"
- 
+#include "ccfg.h"
 chen::cmediasoup_mgr g_mediasoup_mgr;
 
 
@@ -66,6 +66,10 @@ int  main(int argc, char *argv[])
 	chen::g_gpu_address = stringtoint(argv[5]);
 	chen::g_gpu_index = stringtoint(argv[6]);
 	g_render_window = stringtoint(argv[7]);
+
+	chen::g_cfg.m_frame_fps = std::atoi(argv[8]);
+	chen::g_cfg.m_width  = std::atoi(argv[9]);
+	chen::g_cfg.m_heigth = std::atoi(argv[10]);
 	//printf("%s\n", std::to_string(chen::g_gpu_address).c_str());
 	//return 0;
 
@@ -242,3 +246,155 @@ BOOL APIENTRY DllMain(HINSTANCE hinst, DWORD reason, LPVOID unused1)
 }
 
 #endif // #if 0
+
+#if 0
+
+#include<Windows.h>
+HINSTANCE g_hInstance;
+HANDLE hOutputHandle;
+int n_xPos = 100, n_yPos = 100;
+void OnPaint(HWND hWnd)
+{
+	PAINTSTRUCT ps = { 0 };
+	HDC hDC = BeginPaint(hWnd, &ps);
+	TextOut(hDC, n_xPos, n_yPos, __TEXT("hello"), lstrlen(__TEXT("hello")));
+	EndPaint(hWnd, &ps);
+
+	TCHAR szText[256] = { 0 };
+	lstrcpy(szText, __TEXT("WM_PAINT\n"));
+	WriteConsole(hOutputHandle, szText, lstrlen(szText), NULL, NULL);
+}
+
+void OnLButtonDown(WPARAM wParam, LPARAM lParam)
+{
+	TCHAR szText[256] = { 0 };
+	wsprintf(szText, __TEXT("WM_LBUTTONDOWN:%08X,(%d,%d)\n"), wParam, LOWORD(lParam), HIWORD(lParam));
+	WriteConsole(hOutputHandle, szText, lstrlen(szText), NULL, NULL);
+}
+
+void OnLButtonUp(WPARAM wParam, LPARAM lParam)
+{
+	TCHAR szText[256] = { 0 };
+	wsprintf(szText, __TEXT("WM_LBUTTONUP:%08X,(%d,%d)\n"), wParam, LOWORD(lParam), HIWORD(lParam));
+	WriteConsole(hOutputHandle, szText, lstrlen(szText), NULL, NULL);
+}
+
+void OnLButtonDbclk(WPARAM wParam, LPARAM lParam)
+{
+	TCHAR szText[256] = { 0 };
+	wsprintf(szText, __TEXT("WM_LBUTTONDBLCLK:%08X,(%d,%d)\n"), wParam, LOWORD(lParam), HIWORD(lParam));
+	WriteConsole(hOutputHandle, szText, lstrlen(szText), NULL, NULL);
+}
+
+void OnMouseMove(HWND hWnd, WPARAM wParam, LPARAM lParam)
+{
+	TCHAR szText[256] = { 0 };
+	wsprintf(szText, __TEXT("WM_MOUSEMOVE:%08X,(%d,%d)\n"), wParam, LOWORD(lParam), HIWORD(lParam));
+	WriteConsole(hOutputHandle, szText, lstrlen(szText), NULL, NULL);
+	n_xPos = LOWORD(lParam);
+	n_yPos = HIWORD(lParam);
+	InvalidateRect(hWnd, NULL, TRUE);
+}
+
+void OnMouseWheel(WPARAM wParam, LPARAM lParam)
+{
+	TCHAR szText[256] = { 0 };
+	SHORT num = HIWORD(wParam);
+	wsprintf(szText, __TEXT("WM_MOUSEWHEEL:%08X,%d,(%d,%d)\n"), LOWORD(wParam), num, LOWORD(lParam), HIWORD(lParam));
+	WriteConsole(hOutputHandle, szText, lstrlen(szText), NULL, NULL);
+}
+
+LRESULT CALLBACK MyProc(HWND   hWnd, UINT   uMsg, WPARAM wParam, LPARAM lParam)
+{
+	switch (uMsg)
+	{
+		//鼠标消息
+	case WM_MOUSEWHEEL:
+		OnMouseWheel(wParam, lParam);
+		break;
+	case WM_MOUSEMOVE:
+		OnMouseMove(hWnd, wParam, lParam);
+		break;
+	case WM_LBUTTONDBLCLK:
+		OnLButtonDbclk(wParam, lParam);
+		break;
+	case WM_LBUTTONDOWN:
+		OnLButtonDown(wParam, lParam);
+		break;
+	case WM_LBUTTONUP:
+		OnLButtonUp(wParam, lParam);
+		break;
+	case WM_PAINT:
+		OnPaint(hWnd);
+		break;
+	case WM_SYSCOMMAND:
+		if (wParam == SC_CLOSE)
+		{
+			if (IDOK == MessageBox(hWnd, __TEXT("确定要关闭窗口？"), __TEXT("提示"), MB_OKCANCEL))
+			{
+				PostQuitMessage(0);
+			}
+			else
+			{
+				return 0;
+			}
+		}
+		break;
+	}
+	return DefWindowProc(hWnd, uMsg, wParam, lParam);
+}
+
+ATOM Register(LPCWSTR className)
+{
+	WNDCLASSEX wc = { 0 };
+	wc.cbClsExtra = 0;
+	wc.cbSize = sizeof(WNDCLASSEX);
+	wc.cbWndExtra = 0;
+	wc.hbrBackground = (HBRUSH)COLOR_WINDOW;
+	wc.hCursor = NULL;
+	wc.hIcon = NULL;
+	wc.hIconSm = NULL;
+	wc.hInstance = g_hInstance;
+	wc.lpfnWndProc = MyProc;
+	wc.lpszClassName = className;
+	wc.lpszMenuName = NULL;
+	//要窗口实现双击功能，需要在注册窗口类中添加 CS_DBLCLKS 这种风格
+	wc.style = CS_HREDRAW | CS_VREDRAW | CS_DBLCLKS;
+	return RegisterClassEx(&wc);
+}
+
+HWND Create(LPCWSTR className, LPCWSTR windowName)
+{
+	return CreateWindowEx(0, className, windowName, WS_OVERLAPPEDWINDOW, 100, 100, 600, 600, NULL, NULL, g_hInstance, NULL);
+}
+
+void Show(HWND hWnd)
+{
+	ShowWindow(hWnd, SW_SHOW);
+	UpdateWindow(hWnd);
+}
+
+void Message()
+{
+	MSG ms = { 0 };
+	while (GetMessage(&ms, NULL, 0, 0))
+	{
+		TranslateMessage(&ms);
+		DispatchMessage(&ms);
+	}
+}
+
+
+int CALLBACK WinMain(HINSTANCE hInstance, HINSTANCE hPrevInstance, LPSTR lpCmdLine, int nCmdShow)
+{
+	AllocConsole();
+	g_hInstance = hInstance;
+	hOutputHandle = GetStdHandle(STD_OUTPUT_HANDLE);
+	Register(__TEXT("Main"));
+	HWND hWnd = Create(__TEXT("Main"), __TEXT("This is test"));
+	Show(hWnd);
+	Message();
+	return 0;
+}
+
+#endif 

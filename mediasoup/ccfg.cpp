@@ -26,6 +26,9 @@ namespace chen {
 	ccfg g_cfg;
 	
 	ccfg::ccfg()
+		: m_width(1920)
+		, m_heigth(1080)
+		, m_frame_fps(30)
 	{
 	}
 
@@ -54,7 +57,7 @@ namespace chen {
 		set_uint32(ECI_WebSocketTimers, "websocket_timer", 3);
 		set_uint32(ECI_RtcAvgRate, "rtc_avg_rate", 8000);
 		set_uint32(ECI_RtcMaxRate, "rtc_max_rate", 12000);
-		set_uint32(ECI_RtcFrames, "rtc_frame", 50);
+		//set_uint32(ECI_RtcFrames, "rtc_frame", 50);
 		
 		set_uint32(ECI_EncoderArraySize, "encoder_array_size", 3);
 
@@ -72,8 +75,8 @@ namespace chen {
 		set_uint32(ECI_EnableSendRtcTcp, "enable_send_rtc_tcp", 0);
 		set_uint32(ECI_EnableRecvRtcTcp, "enable_recv_rtc_tcp", 0);
 		set_uint32(ECI_SharedGpuAddress, "shared_gpu_address", 0);
-		set_uint32(ECI_SharedGpuVideoWidth, "shared_gpu_video_width", 0);
-		set_uint32(ECI_SharedGpuVideoHeight, "shared_gpu_video_height", 0);
+		/*set_uint32(ECI_SharedGpuVideoWidth, "shared_gpu_video_width", 0);
+		set_uint32(ECI_SharedGpuVideoHeight, "shared_gpu_video_height", 0);*/
 		set_uint32(ECI_SharedWindowId, "shared_window_id", 0);
 		set_uint32(ECI_BrowserAppIdleTime, "browser_app_idle_time", 60 * 3);
 #if _DEBUG

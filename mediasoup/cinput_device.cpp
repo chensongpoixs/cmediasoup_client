@@ -151,7 +151,7 @@ namespace chen {
 //#define WINDOW_MAIN()		HWND mwin = FindMainWindow();  g_main_mouse_down_up = mwin
 	 
 #define WINDOW_MAIN()		HWND mwin = (HWND)(g_render_window/16);  g_main_mouse_down_up = mwin
-#define WINDOW_CHILD()	HWND childwin =(HWND)(g_render_window/16) ; 
+#define WINDOW_CHILD()	HWND childwin =MainChildPoint(mwin, pt) ; 
 #define WINDOW_BNTTON_DOWN(v)  uint32 active_type = WM_LBUTTONDOWN;					 \
 	switch (vec.button)																 \
 	{                                                                             	 \
@@ -904,7 +904,7 @@ namespace chen {
 			NORMAL_EX_LOG("app_event = %u", m_app_events);
 		}
 	}
-	bool cinput_device::set_point(uint32 x, uint32 y)
+	bool cinput_device::set_point(int64 x, int64 y)
 	{
 		m_int_point.X = x;
 		m_int_point.Y = y;
@@ -1888,7 +1888,23 @@ namespace chen {
 
 		MouseDownEvent.GetMouseClick(active_type, PosX, PosY);
 		//ProcessEvent(MouseDownEvent);
-		
+		 
+		/*if (PosX > 20)
+		{
+			PosX -= 20;
+		}
+		else
+		{
+			PosX = 0;
+		}
+		if (PosY > 20)
+		{
+			PosY -= 20;
+		}
+		else
+		{
+			PosY = 0;
+		}*/
 		g_width = PosX;
 		g_height = PosY;
 		
@@ -1919,16 +1935,22 @@ namespace chen {
 		{
 			g_r_button = true;
 		}
-		//WINDOW_CHILD();
+		WINDOW_CHILD();
 		//WINDOW_BNTTON_DOWN(vec);
 		/*if (mwin)
 		{
 		::PostMessageW(mwin, active_type, MAKEWPARAM(0, 0), MAKEWPARAM(PosX, PosY));
 		}*/
-
-		if (mwin)
+		if (childwin)
 		{
-			MOUSE_INPUT(mwin);
+			//MOUSE_INPUT(childwin);
+		//	CliENTTOSCREENPOINT(childwin, PosX, PosY);
+			MESSAGE(childwin, active_type, MAKEWPARAM(0, 0), MAKELPARAM(PosX, PosY));//::PostMessageW(mwin, WM_KEYUP, KeyCode, 1);
+		}
+		else if (mwin)
+		{
+			//MOUSE_INPUT(mwin);
+		//	CliENTTOSCREENPOINT(mwin, PosX, PosY);
 			//CliENTTOSCREENPOINT(m_main_win, PosX, PosY);
 			MESSAGE(mwin, active_type, MAKEWPARAM(0,0), MAKELPARAM(PosX, PosY));//::PostMessageW(mwin, WM_KEYUP, KeyCode, 1);
 		}
@@ -2030,7 +2052,22 @@ namespace chen {
 		MouseDownEvent.SetMouseClick(Button, PosX, PosY);
 		uint32  active_type;
 		MouseDownEvent.GetMouseClick(active_type, PosX, PosY);
-		
+		/*if (PosX > 20)
+		{
+			PosX -= 20;
+		}
+		else
+		{
+			PosX = 0;
+		}
+		if (PosY > 20)
+		{
+			PosY -= 20;
+		}
+		else
+		{
+			PosY = 0;
+		}*/
 		g_width = PosX;
 		g_height = PosY;
 		/*
@@ -2061,20 +2098,22 @@ namespace chen {
 		/*registerinputdevice(mwin);
 		SetForegroundWindow(mwin);
 		SetActiveWindow(mwin);*/
-		/*SET_POINT();
-		WINDOW_CHILD();*/
+		SET_POINT();
+		WINDOW_CHILD();
 		//WINDOW_BNTTON_UP(vec);
-		
-		if (mwin)
+		if (childwin)
 		{
-			{
-				MOUSE_INPUT(mwin);
-				//CliENTTOSCREENPOINT(m_main_win, PosX, PosY);
-				MESSAGE(mwin, active_type, MAKEWPARAM(0, 0), MAKELPARAM(PosX, PosY));
-			}//::PostMessageW(mwin, WM_KEYUP, KeyCode, 1);
-			
-			
+			//MOUSE_INPUT(childwin);
+			//CliENTTOSCREENPOINT(childwin, PosX, PosY);
+			MESSAGE(childwin, active_type, MAKEWPARAM(0, 0), MAKELPARAM(PosX, PosY));//::PostMessageW(mwin, WM_KEYUP, KeyCode, 1);
 		}
+		else if (mwin)
+		{
+			//MOUSE_INPUT(mwin);
+			//CliENTTOSCREENPOINT(mwin, PosX, PosY);
+			MESSAGE(mwin, active_type, MAKEWPARAM(0, 0), MAKELPARAM(PosX, PosY));//::PostMessageW(mwin, WM_KEYUP, KeyCode, 1);
+		}
+		
 		/*if (mwin)
 		{
 			::PostMessageW(mwin, active_type, MAKEWPARAM(0, 0), MAKEWPARAM( PosX, PosY));
@@ -2361,7 +2400,7 @@ namespace chen {
 				key |= MK_RBUTTON;
 			}
 			//MOUSE_INPUT(mwin);
-			MESSAGE(g_main_mouse_down_up, WM_MOUSEMOVE /*WM_MOUSEMOVE*//*WM_INPUT 、 WM_NCMOUSEMOVE UE4 move dug TODO@chensong 20220611 */ /*WM_MOUSEMOVE*/, key, MAKELPARAM(PosX, PosY));
+			MESSAGE(g_main_mouse_down_up, WM_MOUSEMOVE /*WM_MOUSEMOVE*//*WM_INPUT 、 WM_NCMOUSEMOVE UE4 move dug TODO@chensong 20220611 */ /*WM_MOUSEMOVE*/, MAKEWPARAM(DeltaX, DeltaY)/*key*/, MAKELPARAM(PosX, PosY));
 			//MESSAGE(mwin, WM_INPUT /*WM_MOUSEMOVE*//*WM_INPUT 、 WM_NCMOUSEMOVE UE4 move dug TODO@chensong 20220611 */ /*WM_MOUSEMOVE*/, MAKEWPARAM(DeltaX, DeltaY), MAKELPARAM(CursorPoint.x, CursorPoint.y));
 
 
@@ -2654,20 +2693,21 @@ namespace chen {
 		WINDOW_MAIN();
 
 		SET_POINT();
-		//WINDOW_CHILD();
+		WINDOW_CHILD();
 		//WINDOW_BNTTON_DOWN(vec);
 		/*if (mwin)
 		{
 		::PostMessageW(mwin, active_type, MAKEWPARAM(0, 0), MAKEWPARAM(PosX, PosY));
 		}*/
-		//if (childwin)
-		//{
-		//	CliENTTOSCREENPOINT(childwin, PosX, PosY);
-		//	MESSAGE(childwin, WM_LBUTTONDBLCLK, MAKEWPARAM(0, 0), MAKELPARAM(CursorPoint.x, CursorPoint.y));//::PostMessageW(childwin, WM_KEYUP, KeyCode, 1);
-		//}
-		//else 
-			if (mwin) 
+		if (childwin)
 		{
+			MOUSE_INPUT(childwin);
+			//CliENTTOSCREENPOINT(childwin, PosX, PosY);
+			MESSAGE(childwin, WM_LBUTTONDBLCLK, MAKEWPARAM(0, 0), MAKELPARAM(PosX, PosY));//::PostMessageW(childwin, WM_KEYUP, KeyCode, 1);
+		}
+		else if (mwin) 
+		{
+			MOUSE_INPUT(mwin);
 			//CliENTTOSCREENPOINT(mwin, PosX, PosY);
 			MESSAGE(mwin, WM_LBUTTONDBLCLK, MAKEWPARAM(0, 0), MAKELPARAM(PosX, PosY));//::PostMessageW(mwin, WM_KEYUP, KeyCode, 1);
 		}
@@ -2703,6 +2743,22 @@ namespace chen {
 		FEvent MouseWheelEvent(EventType::MOUSE_WHEEL);
 		MouseWheelEvent.SetMouseWheel(Delta, PosX, PosY);
 		//ProcessEvent(MouseWheelEvent);
+	/*	if (PosX > 20)
+		{
+			PosX -= 20;
+		}
+		else
+		{
+			PosX = 0;
+		}
+		if (PosY > 20)
+		{
+			PosY -= 20;
+		}
+		else
+		{
+			PosY = 0;
+		}*/
 		g_width = PosX;
 		g_height = PosY;
 		/*PosX = g_width;

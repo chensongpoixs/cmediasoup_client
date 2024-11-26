@@ -43,7 +43,7 @@ namespace chen {
 		ECI_WebSocketTimers, //断线从新连接的次数
 		ECI_RtcAvgRate, // 
 		ECI_RtcMaxRate,
-		ECI_RtcFrames,
+		//ECI_RtcFrames,
 		ECI_EncoderVideoGop,
 		ECI_LogLevel,
 		ECI_EncoderArraySize,
@@ -58,8 +58,8 @@ namespace chen {
 		ECI_EnableSendRtcTcp,
 		ECI_EnableRecvRtcTcp,
 		ECI_SharedGpuAddress,
-		ECI_SharedGpuVideoWidth,
-		ECI_SharedGpuVideoHeight,
+	/*	ECI_SharedGpuVideoWidth,
+		ECI_SharedGpuVideoHeight,*/
 		ECI_SharedWindowId,
 		ECI_BrowserAppIdleTime,
 	//	ECI_Time_Zone,
@@ -81,6 +81,10 @@ namespace chen {
 	public:
 		bool init(const char *file_name);
 		void destroy();
+	public:
+		uint32_t  m_width;
+		uint32_t  m_heigth;
+		uint32_t  m_frame_fps;
 	};
 
 	extern 	ccfg g_cfg;
