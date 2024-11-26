@@ -535,7 +535,7 @@ static bool nvenc_init(void *nvenc_data, void *encoder_config)
 	initializeParams.enableEncodeAsync = 0;
 
 	initializeParams.tuningInfo = NV_ENC_TUNING_INFO_ULTRA_LOW_LATENCY;
-	initializeParams.frameRateNum = g_cfg.get_int32(ECI_RtcFrames);
+	initializeParams.frameRateNum = 30;
 	/*initializeParams.encodeConfig->encodeCodecConfig.h264Config.enableIntraRefresh = 1;
 	initializeParams.encodeConfig->encodeCodecConfig.h264Config.intraRefreshPeriod = 180;
 	initializeParams.encodeConfig->encodeCodecConfig.h264Config.intraRefreshCnt = 180;
