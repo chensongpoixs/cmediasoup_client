@@ -353,7 +353,10 @@ namespace chen {
 	static std::map<const  WNDCLASSW*,const  WNDCLASSW*> g_wnd_classW;
 	static SHORT    g_ctrl = 0;
 	static SHORT    g_alt = 0;//  
-
+	static bool     g_l_button = false;
+	static bool		g_r_button = false;
+	static bool     g_m_button = false;
+	static bool		g_shift = false;
 
 	static uint64  g_hot_key = 0;
 	
@@ -1132,7 +1135,7 @@ namespace chen {
 		WINDOW_CHILD();
 		if (VK_CONTROL == KeyCode)
 		{
-			g_ctrl = 4294967168;
+			g_ctrl = VK_CONTROL;
 			       //4294934529;
 		}
 	 	if (VK_MENU == KeyCode)
@@ -1143,70 +1146,71 @@ namespace chen {
 		{
 			g_ctrl = 0;
 		}*/
-		if (childwin)
-		{
-			//PostMessageW
-	        /*
-			这个 KeyDown与 KeyUP 是有讲究哈 ^_^
-			发送1次按键结果出现2次按键的情况
-发送一次WM_KEYDOWN及一次WM_KEYUP结果出现了2次按键，原因是最后一个参数lParam不规范导致，
-此参数0到15位为该键在键盘上的重复次数，经常设为1，即按键1次；
-16至23位为键盘的扫描码，通过API函数MapVirtualKey可以得到；24位为扩展键，
-即某些右ALT和CTRL；29一般为0；30位-[原状态]已按下为1否则0（KEYUP要设为1）；31位-[状态切换]（KEYDOWN设为0，KEYUP要设为1）。
-
-
-资料显示第30位对于keydown在和shift等结合的时候通常要设置为1，未经验证。
-
-
-			*/
-			
-			//{//MAKELPARAM(PosX, PosY)
-			//	keybd_event(VK_CONTROL, 0, 0, 0);
-			//	//MESSAGE(mwin, WM_KEYUP, KeyCode, 1);
-			//}
-			//else
-			{
-				MOUSE_INPUT(childwin);
-			//	MESSAGE(childwin, WM_KEYDOWN, KeyCode, 3224961025/*Repeat*/);
-				 if (KeyCode != 18)
-				{
-
-					MESSAGE(childwin, WM_KEYDOWN, KeyCode, 3224961025);
-				}
-				 else
-				{
-					MESSAGE(childwin, WM_SYSKEYDOWN, KeyCode, 1614282753);
-				} 
-				  
-				 // g_app_hot[vk][fsModifiers] = id;
-				 //if (g_app_hot[KeyCode][MOD_CONTROL] != 0)
-				 if (VK_F1 == KeyCode  && g_ctrl)
-				 {
-					 NORMAL_EX_LOG("---> mod");
-					 MESSAGE(NULL, WM_HOTKEY, 10001, 10001);
-					 g_hot_key = 10001;
-					 MESSAGE(NULL, WM_HOTKEY, g_hot_key, g_hot_key);
-				 }
-				 else if (VK_F2 == KeyCode && g_ctrl)
-				 {
-					 NORMAL_EX_LOG("---> mod");
-					 MESSAGE(NULL, WM_HOTKEY, 10002, 10002);
-					 g_hot_key = 10002;
-					 MESSAGE(NULL, WM_HOTKEY, g_hot_key, g_hot_key);
-				 }
-
-			}//if (KeyCode == 17 || KeyCode == 77 || KeyCode == 109)
-			//{
-			//	//keybd_event(16, 0, 0, 0);//按下Shift键
-			//	//keybd_event('A', 0, 0, 0);//按下a键
-			//	//keybd_event('A', 0, KEYEVENTF_KEYUP, 0);//松开a键
-			//	//keybd_event(16, 0, KEYEVENTF_KEYUP, 0);//松开Shift键
-			//	keybd_event(KeyCode, 0, 0, 0);
-			//	SendInput();
-			//}
-			
-		}
-		else  if ( mwin   )
+//		if (childwin)
+//		{
+//			//PostMessageW
+//	        /*
+//			这个 KeyDown与 KeyUP 是有讲究哈 ^_^
+//			发送1次按键结果出现2次按键的情况
+//发送一次WM_KEYDOWN及一次WM_KEYUP结果出现了2次按键，原因是最后一个参数lParam不规范导致，
+//此参数0到15位为该键在键盘上的重复次数，经常设为1，即按键1次；
+//16至23位为键盘的扫描码，通过API函数MapVirtualKey可以得到；24位为扩展键，
+//即某些右ALT和CTRL；29一般为0；30位-[原状态]已按下为1否则0（KEYUP要设为1）；31位-[状态切换]（KEYDOWN设为0，KEYUP要设为1）。
+//
+//
+//资料显示第30位对于keydown在和shift等结合的时候通常要设置为1，未经验证。
+//
+//
+//			*/
+//			
+//			//{//MAKELPARAM(PosX, PosY)
+//			//	keybd_event(VK_CONTROL, 0, 0, 0);
+//			//	//MESSAGE(mwin, WM_KEYUP, KeyCode, 1);
+//			//}
+//			//else
+//			{
+//				MOUSE_INPUT(childwin);
+//			//	MESSAGE(childwin, WM_KEYDOWN, KeyCode, 3224961025/*Repeat*/);
+//				 if (KeyCode != 18)
+//				{
+//
+//					MESSAGE(childwin, WM_KEYDOWN, KeyCode, 3224961025);
+//				}
+//				 else
+//				{
+//					MESSAGE(childwin, WM_SYSKEYDOWN, KeyCode, 1614282753);
+//				} 
+//				  
+//				 // g_app_hot[vk][fsModifiers] = id;
+//				 //if (g_app_hot[KeyCode][MOD_CONTROL] != 0)
+//				 if (VK_F1 == KeyCode  && g_ctrl)
+//				 {
+//					 NORMAL_EX_LOG("---> mod");
+//					 MESSAGE(NULL, WM_HOTKEY, 10001, 10001);
+//					 g_hot_key = 10001;
+//					 MESSAGE(NULL, WM_HOTKEY, g_hot_key, g_hot_key);
+//				 }
+//				 else if (VK_F2 == KeyCode && g_ctrl)
+//				 {
+//					 NORMAL_EX_LOG("---> mod");
+//					 MESSAGE(NULL, WM_HOTKEY, 10002, 10002);
+//					 g_hot_key = 10002;
+//					 MESSAGE(NULL, WM_HOTKEY, g_hot_key, g_hot_key);
+//				 }
+//
+//			}//if (KeyCode == 17 || KeyCode == 77 || KeyCode == 109)
+//			//{
+//			//	//keybd_event(16, 0, 0, 0);//按下Shift键
+//			//	//keybd_event('A', 0, 0, 0);//按下a键
+//			//	//keybd_event('A', 0, KEYEVENTF_KEYUP, 0);//松开a键
+//			//	//keybd_event(16, 0, KEYEVENTF_KEYUP, 0);//松开Shift键
+//			//	keybd_event(KeyCode, 0, 0, 0);
+//			//	SendInput();
+//			//}
+//			
+//		}
+		//else 
+			if ( mwin   )
 		{
 			//if (VK_CONTROL == KeyCode)
 			//{
@@ -1215,15 +1219,21 @@ namespace chen {
 			//}
 			//else
 			{
+				uint64  new_wparam = MAKELPARAM(KeyCode, KeyCode);
+				if (KeyCode == VK_CONTROL)
+				{
+					new_wparam = 1900545;
+				}
+
 				MOUSE_INPUT(mwin);
 				if (KeyCode != 18)
 				{
 
-					MESSAGE(mwin, WM_KEYDOWN, KeyCode, 3224961025);
+					MESSAGE(mwin, WM_KEYDOWN, KeyCode, new_wparam);
 				}
 				else
 				{
-					MESSAGE(mwin, WM_SYSKEYDOWN, KeyCode, 1614282753);
+					MESSAGE(mwin, WM_SYSKEYDOWN, KeyCode, new_wparam);
 				}
 				/*if (g_app_hot[KeyCode][MOD_CONTROL] != 0)
 				{
@@ -1437,37 +1447,38 @@ namespace chen {
 		
 		
 		SET_POINT();
-		WINDOW_CHILD();
+		//WINDOW_CHILD();
 		MOUSE_INPUT(mwin);
-		if (childwin)
-		{
-			//if (VK_CONTROL == KeyCode)
-			//{
-			//	keybd_event(VK_CONTROL, 0, KEYEVENTF_KEYUP, 0);
-			//	//MESSAGE(mwin, WM_KEYUP, KeyCode, 1);
-			//}
-			//else
-			{
-				MOUSE_INPUT(childwin);
-				if (KeyCode != 18)
-				{
+		//if (childwin)
+		//{
+		//	//if (VK_CONTROL == KeyCode)
+		//	//{
+		//	//	keybd_event(VK_CONTROL, 0, KEYEVENTF_KEYUP, 0);
+		//	//	//MESSAGE(mwin, WM_KEYUP, KeyCode, 1);
+		//	//}
+		//	//else
+		//	{
+		//		MOUSE_INPUT(childwin);
+		//		if (KeyCode != 18)
+		//		{
 
-					MESSAGE(childwin, WM_KEYUP, KeyCode, 3224961025);
-				}
-				else
-				{
-					MESSAGE(childwin, WM_SYSKEYUP, KeyCode, 0);
-				}
-			}//if (KeyCode == 17 || KeyCode == 77 || KeyCode == 109)
-			//{
-			//	//keybd_event(16, 0, 0, 0);//按下Shift键
-			//	//keybd_event('A', 0, 0, 0);//按下a键
-			//	//keybd_event('A', 0, KEYEVENTF_KEYUP, 0);//松开a键
-			//	//keybd_event(16, 0, KEYEVENTF_KEYUP, 0);//松开Shift键
-			//	keybd_event(KeyCode, 0, KEYEVENTF_KEYUP, 0);
-			//}
-		}
-		else  if (mwin)
+		//			MESSAGE(childwin, WM_KEYUP, KeyCode, 3224961025);
+		//		}
+		//		else
+		//		{
+		//			MESSAGE(childwin, WM_SYSKEYUP, KeyCode, 0);
+		//		}
+		//	}//if (KeyCode == 17 || KeyCode == 77 || KeyCode == 109)
+		//	//{
+		//	//	//keybd_event(16, 0, 0, 0);//按下Shift键
+		//	//	//keybd_event('A', 0, 0, 0);//按下a键
+		//	//	//keybd_event('A', 0, KEYEVENTF_KEYUP, 0);//松开a键
+		//	//	//keybd_event(16, 0, KEYEVENTF_KEYUP, 0);//松开Shift键
+		//	//	keybd_event(KeyCode, 0, KEYEVENTF_KEYUP, 0);
+		//	//}
+		//}
+		// else 
+			if (mwin)
 		{
 			 
 			//if (VK_CONTROL == KeyCode)
@@ -1477,15 +1488,20 @@ namespace chen {
 			//}
 			//else
 			{
-				MOUSE_INPUT(childwin);
+				uint64  new_wparam = MAKELPARAM(KeyCode, KeyCode);
+				if (KeyCode == VK_CONTROL)
+				{
+					new_wparam = 3223126017;
+				}
+				//MOUSE_INPUT(childwin);
 				 if (KeyCode != 18)
 				{
 
-					MESSAGE(childwin, WM_KEYUP, KeyCode, 3224961025);
+					MESSAGE(mwin, WM_KEYUP, KeyCode, new_wparam);
 				}
 				  else
 				{
-					MESSAGE(childwin, WM_SYSKEYUP, KeyCode, 0);
+					MESSAGE(mwin, WM_SYSKEYUP, KeyCode, new_wparam);
 				}  
 			}
 			
@@ -1674,18 +1690,19 @@ namespace chen {
 
 		
 		SET_POINT();
-		WINDOW_CHILD();
-		MOUSE_INPUT(mwin);
-		if (childwin)
+		//WINDOW_CHILD();
+		//MOUSE_INPUT(mwin);
+		/*if (childwin)
 		{
 			MOUSE_INPUT(childwin);
 			MESSAGE(childwin, WM_CHAR, Character, 3224961025);
-		}
-		else if (mwin)
+		}*/
+		//else 
+			 if (mwin)
 		{
 			MOUSE_INPUT(mwin);
 			//MESSAGE(mwin, WM_PR, Character, 0);
-			MESSAGE(mwin, WM_CHAR, Character, 3224961025);
+			MESSAGE(mwin, WM_CHAR, Character, 1);
 		}
 		else
 		{
@@ -1890,6 +1907,18 @@ namespace chen {
 		SetActiveWindow(mwin);*/
 		//g_main_mouse_down_up = mwin;
 		SET_POINT();
+		if (Button == 0)
+		{
+			g_l_button = true;
+		}
+		else if (Button == 1)
+		{
+			g_m_button = true;
+		}
+		else if (Button == 2)
+		{
+			g_r_button = true;
+		}
 		//WINDOW_CHILD();
 		//WINDOW_BNTTON_DOWN(vec);
 		/*if (mwin)
@@ -2011,6 +2040,18 @@ namespace chen {
 		//ProcessEvent(MouseDownEvent);
 		// 
 		// 
+		if (Button == 0)
+		{
+			g_l_button = false;
+		}
+		else if (Button == 1)
+		{
+			g_m_button = false;
+		}
+		else if (Button == 2)
+		{
+			g_r_button = false;
+		}
 	/*	s_client.input_device_callback(MouseDownEvent);
 		return true;*/
 		//g_move_init = false;
@@ -2302,9 +2343,25 @@ namespace chen {
 				//Send the message ///*Raw input handle*/
 				MESSAGE(g_main_mouse_down_up, WM_INPUT, (WPARAM)RIM_INPUT, MAKELPARAM(CursorPoint.x, CursorPoint.y));  //TODO: Handle to raw input 
 			}
-			
+			DWORD key = 0;
+			if (g_ctrl != 0)
+			{
+				key |= MK_CONTROL;
+			}
+			if (g_l_button)
+			{
+				key |= MK_LBUTTON;
+			}
+			if (g_m_button)
+			{
+				key |= MK_MBUTTON;
+			}
+			if (g_r_button)
+			{
+				key |= MK_RBUTTON;
+			}
 			//MOUSE_INPUT(mwin);
-			MESSAGE(g_main_mouse_down_up, WM_MOUSEMOVE /*WM_MOUSEMOVE*//*WM_INPUT 、 WM_NCMOUSEMOVE UE4 move dug TODO@chensong 20220611 */ /*WM_MOUSEMOVE*/, MAKEWPARAM(DeltaX, DeltaY) , MAKELPARAM(PosX, PosY));
+			MESSAGE(g_main_mouse_down_up, WM_MOUSEMOVE /*WM_MOUSEMOVE*//*WM_INPUT 、 WM_NCMOUSEMOVE UE4 move dug TODO@chensong 20220611 */ /*WM_MOUSEMOVE*/, key, MAKELPARAM(PosX, PosY));
 			//MESSAGE(mwin, WM_INPUT /*WM_MOUSEMOVE*//*WM_INPUT 、 WM_NCMOUSEMOVE UE4 move dug TODO@chensong 20220611 */ /*WM_MOUSEMOVE*/, MAKEWPARAM(DeltaX, DeltaY), MAKELPARAM(CursorPoint.x, CursorPoint.y));
 
 
