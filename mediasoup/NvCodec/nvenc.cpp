@@ -552,6 +552,10 @@ static bool nvenc_init(void *nvenc_data, void *encoder_config)
 	initializeParams.encodeConfig->encodeCodecConfig.h264Config.intraRefreshCnt = 180;
 	initializeParams.encodeConfig->encodeCodecConfig.h264Config.idrPeriod = NVENC_INFINITE_GOPLENGTH;
 	initializeParams.encodeConfig->encodeCodecConfig.h264Config.repeatSPSPPS = 1;
+	initializeParams.encodeConfig->encodeCodecConfig.h264Config.sliceMode = 0;
+	initializeParams.encodeConfig->encodeCodecConfig.h264Config.sliceModeData = 0;
+	initializeParams.encodeConfig->encodeCodecConfig.h264Config.outputPictureTimingSEI = 1;
+	initializeParams.encodeConfig->encodeCodecConfig.h264Config.enableFillerDataInsertion = 1;
 	/*initializeParams.encodeConfig->rcParams.enableMinQP = 0;
 	initializeParams.encodeConfig->rcParams.enableMaxQP = 0;*/
 	 
@@ -798,12 +802,13 @@ int nvenc_set_bitrate(void *nvenc_data, uint32_t bitrate_bps)
 		return 0;
 	}
 	using namespace chen;
+	
 	NORMAL_EX_LOG("------bitrate_bps = %u----->", bitrate_bps);
 	 if (g_cfg.get_uint32(ECI_EnableEncoderCbr) > 0)
 	{ 
 		return 0;
 	} 
-	 
+	 return 0 ; 
 	if ((bitrate_bps / 1000) > g_cfg.get_uint32(ECI_RtcMaxRate))
 	{
 		NORMAL_EX_LOG("[bitrate_bps = %u ]too big [defalut max bitrate = %u]", bitrate_bps/ 1000, g_cfg.get_uint32(ECI_RtcMaxRate));
@@ -858,7 +863,7 @@ int nvenc_set_framerate(void *nvenc_data, uint32_t framerate)
 		return 0;
 	} 
  	//NORMAL_EX_LOG("----------->");
-	//return 0;
+return 0;
 	struct nvenc_data *enc = (struct nvenc_data *)nvenc_data;
 
 	std::lock_guard<std::mutex> locker(enc->mutex);
