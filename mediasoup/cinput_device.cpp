@@ -2654,18 +2654,19 @@ namespace chen {
 		WINDOW_MAIN();
 
 		SET_POINT();
-		WINDOW_CHILD();
+		//WINDOW_CHILD();
 		//WINDOW_BNTTON_DOWN(vec);
 		/*if (mwin)
 		{
 		::PostMessageW(mwin, active_type, MAKEWPARAM(0, 0), MAKEWPARAM(PosX, PosY));
 		}*/
-		if (childwin)
-		{
-			CliENTTOSCREENPOINT(childwin, PosX, PosY);
-			MESSAGE(childwin, WM_LBUTTONDBLCLK, MAKEWPARAM(0, 0), MAKELPARAM(CursorPoint.x, CursorPoint.y));//::PostMessageW(childwin, WM_KEYUP, KeyCode, 1);
-		}
-		else if (mwin) 
+		//if (childwin)
+		//{
+		//	CliENTTOSCREENPOINT(childwin, PosX, PosY);
+		//	MESSAGE(childwin, WM_LBUTTONDBLCLK, MAKEWPARAM(0, 0), MAKELPARAM(CursorPoint.x, CursorPoint.y));//::PostMessageW(childwin, WM_KEYUP, KeyCode, 1);
+		//}
+		//else 
+			if (mwin) 
 		{
 			//CliENTTOSCREENPOINT(mwin, PosX, PosY);
 			MESSAGE(mwin, WM_LBUTTONDBLCLK, MAKEWPARAM(0, 0), MAKELPARAM(PosX, PosY));//::PostMessageW(mwin, WM_KEYUP, KeyCode, 1);
