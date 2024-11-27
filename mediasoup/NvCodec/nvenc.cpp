@@ -556,11 +556,16 @@ static bool nvenc_init(void *nvenc_data, void *encoder_config)
 	//initializeParams.encodeConfig->encodeCodecConfig.h264Config.h264VUIParameters.colourPrimaries = 1;
 	//initializeParams.encodeConfig->encodeCodecConfig.h264Config.h264VUIParameters.transferCharacteristics = 1;
 	//initializeParams.encodeConfig->encodeCodecConfig.h264Config.h264VUIParameters.transferCharacteristics = 1;
+	initializeParams.encodeConfig->rcParams.rateControlMode = NV_ENC_PARAMS_RC_CBR;
 	initializeParams.encodeConfig->encodeCodecConfig.h264Config.enableIntraRefresh = 1;
 	initializeParams.encodeConfig->encodeCodecConfig.h264Config.intraRefreshPeriod = 180;
 	initializeParams.encodeConfig->encodeCodecConfig.h264Config.intraRefreshCnt = 180;
 	initializeParams.encodeConfig->encodeCodecConfig.h264Config.idrPeriod = NVENC_INFINITE_GOPLENGTH;
 	initializeParams.encodeConfig->encodeCodecConfig.h264Config.repeatSPSPPS = 1;
+	initializeParams.encodeConfig->encodeCodecConfig.h264Config.sliceMode = 0;
+	initializeParams.encodeConfig->encodeCodecConfig.h264Config.sliceModeData = 0;
+	initializeParams.encodeConfig->encodeCodecConfig.h264Config.outputPictureTimingSEI = 1;
+	initializeParams.encodeConfig->encodeCodecConfig.h264Config.enableFillerDataInsertion = 1;
 	//initializeParams.encodeConfig->encodeCodecConfig.h264Config.enableIntraRefresh = 1;
 	//initializeParams.encodeConfig->encodeCodecConfig.h264Config.intraRefreshPeriod = 180;
 	//initializeParams.encodeConfig->encodeCodecConfig.h264Config.intraRefreshCnt = 180;
