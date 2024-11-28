@@ -79,6 +79,7 @@ namespace chen {
 		set_uint32(ECI_SharedGpuVideoHeight, "shared_gpu_video_height", 0);*/
 		set_uint32(ECI_SharedWindowId, "shared_window_id", 0);
 		set_uint32(ECI_BrowserAppIdleTime, "browser_app_idle_time", 60 * 3);
+		set_uint32(ECI_EnableNetConfig, "enable_net_config", 0);
 #if _DEBUG
 		set_uint32(ECI_LogLevel, "log_level", ELogLevel_Num);
 #endif // _DEBUG

@@ -620,8 +620,21 @@ static bool nvenc_init(void *nvenc_data, void *encoder_config)
 	{
 		RateControlParams.rateControlMode = NV_ENC_PARAMS_RC_VBR;
 	}*/
-	initializeParams.encodeConfig->rcParams.averageBitRate = g_cfg.get_uint32(ECI_RtcAvgRate) * 1000;// DEFAULT_BITRATE;
-	initializeParams.encodeConfig->rcParams.maxBitRate = g_cfg.get_uint32(ECI_RtcMaxRate) * 1000;// DEFAULT_BITRATE; // Not used for CBR
+	if (g_cfg.get_uint32(ECI_EnableNetConfig) > 0)
+	{
+		initializeParams.encodeConfig->rcParams.averageBitRate = g_cfg.get_uint32(ECI_RtcAvgRate) * 1000;// DEFAULT_BITRATE;
+		initializeParams.encodeConfig->rcParams.maxBitRate = g_cfg.get_uint32(ECI_RtcMaxRate) * 1000;// DEFAULT_BITRATE; // Not used for CBR
+	}
+	else
+	{
+		double bitrate = std::min((int64_t)(3 * enc->framerate * enc->width * enc->height), (int64_t)(INT_MAX / 2));
+		int64_t lbit_rate = (int64_t)bitrate;
+		lbit_rate += (bitrate / 2);
+		lbit_rate = std::min(lbit_rate, (int64_t)INT_MAX);
+		initializeParams.encodeConfig->rcParams.averageBitRate = lbit_rate;// DEFAULT_BITRATE;
+		initializeParams.encodeConfig->rcParams.maxBitRate = lbit_rate * (1.2);// DEFAULT_BITRATE; // Not used for CBR
+
+	}
 	initializeParams.encodeConfig->rcParams.multiPass = NV_ENC_TWO_PASS_FULL_RESOLUTION;
 	//initializeParams.encodeConfig->rcParams.lowDelayKeyFrameScale = 1; //
 	//if (g_cfg.get_uint32(ECI_EnableEncoderCbr) == 0)
