@@ -635,7 +635,7 @@ static bool nvenc_init(void *nvenc_data, void *encoder_config)
 		lbit_rate = std::min(lbit_rate, (int64_t)INT_MAX);*/
 		// 带宽 = 视频宽度 × 视频高度 × 色深 × 帧率 × 压缩比
 		double  avg_rate = 8000000 /(1920 * 1080)  ;
-		double  max_rate = 10000000 / (1920 * 1080);
+		double  max_rate = 12000000 / (1920 * 1080);
 		//double  max_rate = 8000000 / (1920 * 1080);
 		uint32_t  new_avg_rate = enc->width * enc->height * avg_rate;
 		uint32_t  new_max_rate = enc->width * enc->height * max_rate;
