@@ -627,12 +627,21 @@ static bool nvenc_init(void *nvenc_data, void *encoder_config)
 	}
 	else
 	{
-		double bitrate = std::min((int64_t)(3 * enc->framerate * enc->width * enc->height), (int64_t)(INT_MAX / 2));
+		/*double bitrate = std::min((int64_t)(3 * enc->framerate * enc->width * enc->height), (int64_t)(INT_MAX / 2));
 		int64_t lbit_rate = (int64_t)bitrate;
-		lbit_rate += (bitrate / 2);
-		lbit_rate = std::min(lbit_rate, (int64_t)INT_MAX);
-		initializeParams.encodeConfig->rcParams.averageBitRate = lbit_rate;// DEFAULT_BITRATE;
-		initializeParams.encodeConfig->rcParams.maxBitRate = lbit_rate * (1.2);// DEFAULT_BITRATE; // Not used for CBR
+		lbit_rate += (bitrate / 2);12000
+		// 2K => 2560 * 1440
+		// 4K => 3840*2160
+		lbit_rate = std::min(lbit_rate, (int64_t)INT_MAX);*/
+		// 带宽 = 视频宽度 × 视频高度 × 色深 × 帧率 × 压缩比
+		double  avg_rate = 8000000 /(1920 * 1080)  ;
+		double  max_rate = 10000000 / (1920 * 1080);
+		//double  max_rate = 8000000 / (1920 * 1080);
+		uint32_t  new_avg_rate = enc->width * enc->height * avg_rate;
+		uint32_t  new_max_rate = enc->width * enc->height * max_rate;
+		//if ()
+		initializeParams.encodeConfig->rcParams.averageBitRate = new_avg_rate;// DEFAULT_BITRATE;
+		initializeParams.encodeConfig->rcParams.maxBitRate = new_max_rate  ;// DEFAULT_BITRATE; // Not used for CBR
 
 	}
 	initializeParams.encodeConfig->rcParams.multiPass = NV_ENC_TWO_PASS_FULL_RESOLUTION;
