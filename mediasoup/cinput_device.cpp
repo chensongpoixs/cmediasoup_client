@@ -1836,7 +1836,15 @@ namespace chen {
 		NORMAL_EX_LOG("g_width = %d, g_height = %d, active_type = %d, PosX = %d, PoxY = %d", g_width, g_height, active_type, PosX, PosY );
 		//g_move_init = true;
 		#if defined(_MSC_VER)
-		WINDOW_MAIN();
+		static time_t cur_time = 0;// std::time(NULL);
+		static HWND mwin = 0;// FindMainWindow();  g_main_mouse_down_up = mwin
+		//WINDOW_MAIN();
+		if ((cur_time + 60) < std::time(NULL))
+		{
+			mwin =  FindMainWindow();  
+			g_main_mouse_down_up = mwin;
+			cur_time = std::time(NULL);
+		}
 		//MOUSE_INPUT(mwin);
 		/*registerinputdevice(mwin);
 		SetForegroundWindow(mwin);
@@ -1975,8 +1983,17 @@ namespace chen {
 		//ProcessEvent(MouseDownEvent);
 		//g_move_init = false;
 		#if defined(_MSC_VER)
-		WINDOW_MAIN();
-		//MOUSE_INPUT(mwin);
+	//	WINDOW_MAIN();
+		static time_t cur_time = 0;// std::time(NULL);
+		static HWND mwin = 0;// FindMainWindow();  g_main_mouse_down_up = mwin
+		//WINDOW_MAIN();
+		if ((cur_time + 60) < std::time(NULL))
+		{
+			mwin = FindMainWindow();
+			g_main_mouse_down_up = mwin;
+			cur_time = std::time(NULL);
+		}
+	//MOUSE_INPUT(mwin);
 		/*registerinputdevice(mwin);
 		SetForegroundWindow(mwin);
 		SetActiveWindow(mwin);*/
@@ -2621,7 +2638,16 @@ namespace chen {
 		/*PosX = g_width;
 		PosY = g_height;*/
 		#if defined(_MSC_VER)
-		WINDOW_MAIN();
+		//WINDOW_MAIN();
+		static time_t cur_time = 0;// std::time(NULL);
+		static HWND mwin = 0;// FindMainWindow();  g_main_mouse_down_up = mwin
+		//WINDOW_MAIN();
+		if ((cur_time + 60) < std::time(NULL))
+		{
+			mwin = FindMainWindow();
+			g_main_mouse_down_up = mwin;
+			cur_time = std::time(NULL);
+		}
 		NORMAL_EX_LOG(" PosX = %d, PoxY = %d", PosX, PosY);
 		if (mwin)
 		{
